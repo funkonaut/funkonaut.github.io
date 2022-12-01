@@ -10,7 +10,7 @@ description: >- # this means to ignore newlines until "baseurl:"
 keywords: [STEM,accessible,blind,visually impaired, screen reader]
 baseurl: '' # the subpath of your site, e.g. /`blog
 url: '' # the base hostname & protocol for your site, e.g. http://example.com
-domain: 'example.com' # the domain name for your site, e.g. example.com
+domain: 'tsbvi.edu' # the domain name for your site, e.g. example.com
 language: en
 # Supported languages list:
 # en: English
