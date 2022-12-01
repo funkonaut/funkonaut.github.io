@@ -1,7 +1,7 @@
 - title: About
   url: ''
 
-- default: menu_category
+- title: menu_category
   url: 'categories'
 
 - title: 'Projects'
