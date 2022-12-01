@@ -1,5 +1,6 @@
 ---
-layout: page
+layout: default
 ---
 
-{% include_relative pages/about.md %}
+{% capture my_include %}{% include_relative pages/about.md %}{% endcapture %}
+{{ my_include | markdownify }}
