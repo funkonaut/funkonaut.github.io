@@ -2,11 +2,11 @@
 #
 # This is the configuration file for your blog, please change these items after forked.
 
-title: Fundamentals of Computer Science
+title: TSBVI Computer Science
 email: correllc@tsbvi.edu
 name: Christopher Correll
 description: >- # this means to ignore newlines until "baseurl:"
-  Accessible Lessons On OpenSCAD and Digital Fabrication
+  Accessible Programming for Digital Fabrication
 keywords: [STEM,accessible,blind,visually impaired, screen reader]
 baseurl: '' # the subpath of your site, e.g. /`blog
 url: '' # the base hostname & protocol for your site, e.g. http://example.com
