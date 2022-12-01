@@ -1,10 +1,3 @@
-Jekyll Paper is a simple Jekyll theme, and it is aim to helping you to create your own blog by the easiest way.
+# Texas School for the Blind and Visually Impaired
 
-You can find more information in [Jekyll Paper][jekyll-paper] or [Jekyll Paper for Github][jekyll-paper-github]. If you have any questions or suggestions, you can contact me in [Jekyll Paper Issues][jekyll-paper-issues], [Jekyll Paper for Github Issues][jekyll-paper-github-issues] or send email to [me](mailto:i@ghosind.com). 
-
-Wish you enjoying your blog life!
-
-[jekyll-paper]: https://github.com/ghosind/Jekyll-Paper
-[jekyll-paper-github]: https://github.com/ghosind/Jekyll-Paper-Github
-[jekyll-paper-issues]: https://github.com/ghosind/Jekyll-Paper/issues
-[jekyll-paper-github-issues]: https://github.com/ghosind/Jekyll-Paper-Github/issues
+Welcome to Texas School for the Blind and Visually Impaired Computer Science resources website. This website contains accessible resources targeted towards blind and visually imparied (BVI) students (but also beneficial to any student!) who are learning computer science. As of of right now {{ site.time | date: '%m-%d-%Y' }}, this site mostly contains resources related to OpenSCAD programming and command shell scripting, but be sure to check back frequently. As our students and computer science program grows we hope to become a hub of knowledge and resources for both BVI and sighted students everywhere!
