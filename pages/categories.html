@@ -10,7 +10,7 @@ permalink: /lessons/
     {% for category in site.categories %}
     <li id="{{ category | first }}"><h2>{{ category | first }}</h2>
       {{% for sub_category in site.sub_categories %}}
-      <li id="{{ sub_category | first }}"><h3>{{ sub_category | first }}</h3>
+      <ul class="categories-list"><li id="{{ sub_category | first }}"><h3>{{ sub_category | first }}</h3>
     {% assign sorted_posts = site.posts | sort: 'date' %}{% for post in sorted_posts %}{%if post.categories contains category[0] and post.sub_categories contains sub_categories[0]%}
       <div class="posts-list-item">
         <span class="posts-list-item-name float-left"><a href="{{ post.url }}">{{ post.title }}</a></span>
@@ -18,7 +18,8 @@ permalink: /lessons/
       </div>
     {% endif %}{% endfor %}
     </li>
-
+    {% endfor %}
+    </ul>
     </li>
     {% endfor %}
   </ul>
