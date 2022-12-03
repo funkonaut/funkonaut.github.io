@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Welcome to Jekyll Paper!"
+title:  "Welcome to Jekyll Paper 3.0!"
 date:   2021-02-11
 last_modified_at: 2021-10-16
 categories: [Stuff]
