@@ -28,9 +28,7 @@ layout: default
       <span>{{ site.data.lang[site.language].post_categories }}</span>
       {% for category in page.categories %}
       <div>
-        <span class="post-tag">
-          {{ category }}
-        </span>
+        <span class="post-tag">{{ category }}</span>
       </div>
       {% endfor %}
     </div>
