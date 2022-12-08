@@ -15,11 +15,11 @@ Find all tags in category for display : disp_tags
     {% assign disp_tags = '' %}
     {% for post in site.posts %}
       {% if post.categories contains category[0] %} 
-        {% assign disp_tags = disp_tags | append: post.tags | join: ',' | split: ',' %}
-        <h3>{{ disp_tags }}</h3>
-        {% endif %}
-    {% endfor %} 
+        {% assign disp_tags = disp_tags | append: post.tags | join: ','%}
 
+      {% endif %}
+    {% endfor %} 
+    <h3>{{ disp_tags }}</h3>
 
     <li id="{{ category | first }}">
       <div class="category-name">
