@@ -3,14 +3,8 @@ layout: page
 title: Projects
 permalink: /projects
 ---
-Download project files here.
-
-<br>
-
 ## OpenSCAD Projects
-
-<br>
-
+  
 ### Lesson 1
 - [Project 1](https://github.com/funkonaut/openSCAD_lessons): Doing stuff with things!
 
