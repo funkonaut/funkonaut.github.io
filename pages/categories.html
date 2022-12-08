@@ -19,7 +19,11 @@ Find all tags in category for display : disp_tags
         {% assign disp_tags = disp_tags | append: post.tags | map: 'tags' | join: ',' | split: ',' | uniq %}
       {% endif %}
     {% endfor %} 
-    {{ variable | disp_tags }}
+
+    {% for tag in disp_tags %}
+    <h3>{{ tag | first }}</h3>
+    {% endfor %} 
+
     <li id="{{ category | first }}">
       <div class="category-name">
         <h2>{{ category | first }}</h2>
