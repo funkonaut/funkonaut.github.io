@@ -13,9 +13,9 @@ permalink: /lessons/
 Find all tags in category for display : disp_tags
 {% endcomment %}
     {% assign disp_tags = '' %}
-    {% assign sorted_posts1 = site.posts | sort: 'date' %}
-    {% for post in sorted_posts1 %}
+    {% for post in site.posts %}
       {% if post.categories contains category[0] %} 
+      <h3>hello</h3>
         {% assign disp_tags = disp_tags | append: post.tags | map: 'tags' | join: ',' | split: ',' | uniq %}
       {% endif %}
     {% endfor %} 
