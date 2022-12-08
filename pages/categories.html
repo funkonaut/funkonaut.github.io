@@ -11,11 +11,12 @@ permalink: /lessons/
     {% for category in site.categories %}
 {% comment %}
 Find all tags in category for display : disp_tags
+Posts can only have one tag and one category?
 {% endcomment %}
     {% assign disp_tags = '' %}
     {% for post in site.posts %}
       {% if post.categories contains category[0] %} 
-        {% assign disp_tags = disp_tags | append: post.tags | map: "tag" %}
+        {% assign disp_tags = disp_tags | append: post.tags[0] %}
 
       {% endif %}
     {% endfor %} 
