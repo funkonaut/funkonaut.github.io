@@ -15,8 +15,7 @@ Find all tags in category for display : disp_tags
     {% assign disp_tags = '' %}
     {% for post in site.posts %}
       {% if post.categories contains category[0] %} 
-        {% assign disp_tags = disp_tags | append: post.tags | join: ','%}
-
+        {% assign disp_tags = disp_tags | append: post.tags | join: '\"]'%}
       {% endif %}
     {% endfor %} 
     <h3>{{ disp_tags }}</h3>
