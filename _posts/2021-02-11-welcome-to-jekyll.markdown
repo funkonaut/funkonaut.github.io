@@ -4,7 +4,7 @@ title:  "Welcome to Jekyll Paper 3.0!"
 date:   2021-02-11
 last_modified_at: 2021-10-16
 categories: [Stuff]
-tags: [Lesson 1]
+tags: Lesson 1
 ---
 
 Jekyll Paper is a Jekyll theme, it is designed to helping you to create your own blog by the easiest way. Now, you can learn how to use this blog by this post.
