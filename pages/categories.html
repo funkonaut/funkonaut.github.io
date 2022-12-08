@@ -19,6 +19,7 @@ Posts can only have one tag and one category?
         {% assign disp_tags = disp_tags | append: post.tags[0] | append: "," %}
       {% endif %}
     {% endfor %} 
+    <h3>{{ disp_tags }}</h3>
     {% assign disp_tags = disp_tags | split: "," | uniq %}
     <h3>{{ disp_tags }}</h3>
 
