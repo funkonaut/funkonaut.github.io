@@ -16,15 +16,17 @@ Posts can only have one tag and one category?
     {% assign disp_tags = '' %}
     {% for post in site.posts %}
       {% if post.categories contains category[0] %} 
-        {% assign disp_tags = disp_tags | append: post.tags[0] | append: "," | split: "," | uniq %}
+        {% assign disp_tags = disp_tags | append: post.tags[0] | append: "," %}
       {% endif %}
     {% endfor %} 
+    {% assign disp_tags = disp_tags | split: "," | uniq %}
     <h3>{{ disp_tags }}</h3>
 
     {% assign beatles = "John, Paul, George, Ringo" | split: ", " %}
     {% for member in beatles %}
   <h3>{{ member }}</h3>
 {% endfor %}
+
     <li id="{{ category | first }}">
       <div class="category-name">
         <h2>{{ category | first }}</h2>
