@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Welcome to Jekyll Paper 3.0!"
+title:  "PowerShell Lesson 2: Navigating with Power"
 date:   1112-02-11
 last_modified_at: 2021-10-16
 categories: [PowerShell]
