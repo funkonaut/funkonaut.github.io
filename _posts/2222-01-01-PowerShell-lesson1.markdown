@@ -1,0 +1,55 @@
+---
+layout: post
+title:  "PowerShell Lesson 1: Getting Started on the Right Path"
+date:   2222-01-01
+last_modified_at: 2022-12-18
+categories: [PowerShell]
+tags: [Lesson 1]
+---
+
+## Pre-Requisite Knowledge
+- Typing skills
+- Text editing skills
+- Basic Windows Navigation skills
+- Basic screen reading skills
+- Basic knowledge of what a computer **operating system** is and its features (ie file/folders/applications/shortcuts/file extenstions/etc.)
+- Basic knowledge of computer hardware (hard drive/usb and other peripheral ports/cloud vs local storage)
+- Basic understanding of variables and parameters
+- Basic internet navigation skills and (URL structure)
+
+## What is PowerShell?
+Windows PowerShell is "a cross-platform task automation solution made up of a **command-line shell**, a scripting language, and a configuration management framework. PowerShell runs on Windows, Linux, and macOS," but what the heck does that mean? 
+
+Essentially PowerShell is a way to access your computer through text instead of through a graphical user interface (**GUI**). Most computer users are sighted therefore most computer programs and operating systems have a GUI where users interact with the computer primarily by using a mouse to navigate to and click on elements. PowerShell is, primarily for our purposes, a command-line shell this means we can control the computer with a keyboard and text instead of through GUI with a mouse! PowerShell also has a scripting language and a configuration managment framework, but we don't really need to worry about that (if are interested check out the links under the Helpful Resources heading), for now if you understand what a command line-shell is then we are good to move on.
+
+## What will we do with it and why should we use it?
+We will use PowerShell to run several different programs from their command-line interface (**CLI**). If you remember what our command-line shell is then you should be able to infer that a command line interface is, a text based interface for interacting with an application, don't worry if you are confused it will make more sense when we start to practice. We will also use PowerShell to navigate and move files and folders on our computer, the PowerShell allows us to navigate our computer much like the file explorer, but with text, i.e. without having to tab around or use keyboard shortcuts. As you might have guessed, the powershell is pretty useful if you are navigating your computer auditorily. At the end of this lesson you will understand how the command line shell can be super powerful. 
+
+## Tutorial
+The best way to learn (in my opinion) is by doing. So lets launch a PowerShell and see what this thing can do. Windows X will pull up a list of options where you can select PowerShell you can also use the Windows key to search for PowerShell.             
+
+Upon launch it will read you a header that has some copyright information and a warning that it detected a screen reader, it will then read you where you are currently at in the computer. You are now in a command-line shell (command-line for short). 
+
+We call where things are located in the computer a **path** an adress to a fodler or file. Its kind of like a URL for where files and folders are on your computer. A path will read something like `C:\Users\name\`. When you launch PowerShell it should default you to your **home directory**. Directory is just another name for a folder they can be used interchangably. The home directory has a path shortcut it is `~/` this will be useful so you don't have to type `C:\Users\name\` every time you want to use the home folder path. 
+
+**parent directory** 
+Paths are structured by seperating folder and file names with either a forward or backslash. Each seperation is a level. The **root directory** is the lowest level directory it will typically be `C:\` a shortcut for it is `/`. For instance `C:\Users` is the path to all of the folder containing all of the Users on the C: drive. A path will typically be made up of folders and subfolders and will end in a file name. You would not see something like
+`/Users/photo.jpg/name/filename.txt` 
+This would mean that a file has a subfolder, which can not be the case. Folders can have sub folders but files can not.
+
+You can use the tab key to autocomplete directory or file names when typing a path 
+**try typing `~/D` and then press tab**
+This will autocomplete to the full home path and most likely your Desktop folder if you hit tab again it will go through the next folder starting with D in alphabetical order. If you dont type anything and press tab it will go through the folders and files in your current path in alphabetical order.
+
+You may notice that we typed a forward slash to seperate the folders and the path autocompleted to using back slashes on Windows the system uses back slashes on other operating systems like Mac and Linux it uses forward slashes since everyone likes those better Windows added support for forward slashes in ther powershell command line environment we are going to stick with forward slashes for the most part.
+
+A final note on paths `./` is a shortcut to the current path and `../` is a shortcut to the path above the current path. Try typing 
+`./` and tab a couple times to listen to the files and folders in your current path
+`../` and tab a couple times to listen to the files and folders in the folder above your current path
+
+You may have noticed some files and directories begin with a "." this means they are hidden and thusly GUI users most likely won't use them or know about them. 
+
+Quotes surround paths with spaces for string 
+
+#### Realtive paths vs full paths 
+relative paths are usually quickerwiyth the screen reader because full paths even with shortcuts autocomplete to full path name ie "C:/user/etc/etc/etc"
