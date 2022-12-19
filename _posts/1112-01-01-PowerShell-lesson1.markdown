@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "PowerShell Lesson 1: Getting Started on the Right Path"
-date:   2222-01-01
+date:   1112-01-01
 last_modified_at: 2022-12-18
 categories: [PowerShell]
 tags: [Lesson 1]

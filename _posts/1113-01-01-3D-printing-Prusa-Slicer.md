@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Prusa Slicer: Your First 3D Print"
-date:   2333-01-01
+date:   1113-01-01
 last_modified_at: 2022-12-18
 categories: [3D Printing]
 tags: [Slicing]
