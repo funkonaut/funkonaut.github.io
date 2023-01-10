@@ -11,5 +11,5 @@ tags: [Lesson ]
 {Learning objectives/brief description}
 
 
-## Resources/Files 
+## Resources
 []()

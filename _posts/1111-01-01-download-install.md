@@ -31,13 +31,15 @@ While OpenSCAD is not a traditional first programming language, we like to intro
 ## Downloading OpenSCAD
 To download OpenSCAD:
 1. [Navigate to the OpenSCAD webpage](https://openscad.org/) 
-2. Find the link "Download OpenSCAD..."
-    - This link should be dynamically changed to whatever operating system your computer is running (ie Windows, Linux, Mac OSX) if it is not you can find several download links under your operating systems heading on [OpenSCAD's Downloads page](https://openscad.org/downloads.html)
+2. Find the link "Download OpenSCAD..."*
+
+**Note: This link should be dynamically changed to whatever operating system your computer is running (ie Windows, Linux, Mac OSX) if it is not you can find several download links under your operating systems heading on [OpenSCAD's Downloads page](https://openscad.org/downloads.html)*
 <br>
 <br>
 
 ## Installing OpenSCAD
 *You may need admin privileges to install on your computer.*
+<br>
 To install OpenSCAD:
 1. Run the installer file you downloaded
 2. Click through the installer window dialogue and install the program
@@ -45,7 +47,7 @@ To install OpenSCAD:
 <br>
 <br>
 
-## Resources/Files 
+## Resources 
 - [OpenSCAD's website](https://openscad.org/)  
 - [OpenSCAD's documentation](https://openscad.org/documentation.html)
 - [Wikipedia Page for OpenSCAD](https://en.wikipedia.org/wiki/OpenSCAD)
