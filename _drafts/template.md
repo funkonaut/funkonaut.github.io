@@ -6,10 +6,15 @@ last_modified_at:
 categories: [CATEGORY]
 tags: [Lesson ]
 ---
-
-# TITLE/DESCRIPTION
+<br>
 {Learning objectives/brief description}
+<br>
+<br>
 
+## 
+<br>
+<br>
+<br>
 
 ## Resources
 []()
