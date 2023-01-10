@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "{CATEGORY} {TAG}: {Title}"
+title:  "CATEGORY TAG: Title"
 date:   1111-01-01
 last_modified_at: 
 categories: [CATEGORY]
-tags: [LESSON NUMBER]
+tags: [Lesson ]
 ---
 
 # TITLE/DESCRIPTION
