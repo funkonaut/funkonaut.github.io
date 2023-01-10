@@ -34,7 +34,7 @@ diagram: true # Diagrams support
 paginate: 25
 paginate_path: '/page:num/'
 
-permalink: /:categories/:tags/:title
+permalink: none #/:categories/:title:output_ext
 
 sass:
   sass_dir: _sass
