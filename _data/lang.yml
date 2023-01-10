@@ -9,8 +9,8 @@ en:
   post_update_date: 'Updated: '
   post_categories: 'Category: '
   post_tags: 'Sub-Category: '
-  post_previous: 'Previous: '
-  post_next: 'Next: '
+  post_previous: ''
+  post_next: ''
   post_author: 'Author: '
   categories_title: 'Lessons'
 

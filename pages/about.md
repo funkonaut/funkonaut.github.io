@@ -5,7 +5,7 @@ Welcome to Texas School for the Blind and Visually Impaired Computer Science res
 As of the sites last update, {{ site.time | date: '%m-%d-%Y' }}, this site mostly contains resources related to OpenSCAD programming and command shell scripting with powershell and linux, but be sure to check back frequently. As our students and computer science program grow we hope to become a hub of knowledge and resources for both BVI and sighted students everywhere.
 <br>
 <br>
-This web page is organized into three sub pages: About, Lessons, and Projects. You are on the About page. In Lessons you will find lessons organized by topic and sub topic, they will be mostly in tutorial format and will all end with a "Resources" section where you can download relevant files (mostly code files...). In Projects you will find a list of projects and exercises organized by topic. 
+This web page is organized into three sub pages: About, Lessons, and Projects. You are on the About page. In Lessons you will find lessons organized by topic and sub topic, they will be mostly in tutorial format and will all end with a "Resources" section where you can download relevant files (mostly code files...). At the bottom of each lesson is a next and previous link. In Projects you will find a list of projects and exercises organized by topic. 
 <br>
 <br>
 <br>    

@@ -46,5 +46,5 @@ To install OpenSCAD:
 ## Resources 
 - [OpenSCAD's website](https://openscad.org/)  
 - [OpenSCAD's documentation](https://openscad.org/documentation.html)
-- [Wikipedia Page for OpenSCAD](https://en.wikipedia.org/wiki/OpenSCAD)
+- [Wikipedia page for OpenSCAD](https://en.wikipedia.org/wiki/OpenSCAD)
 <br><br><br>
