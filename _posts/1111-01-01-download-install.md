@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "OpenSCAD Lesson 0: What, Why, and How (to install)?"
+title:  "OpenSCAD Lesson 0.1: What, Why, and How (to Install)?"
 date:   1111-01-01
 last_modified_at: 2023-01-10
-categories: [OpenSCAD]
+categories: [OpenSCAD]  
 tags: [Lesson 0]
 ---
 <br><br>
@@ -40,7 +40,7 @@ To install OpenSCAD:
 2. Click through the installer window dialogue and install the program*
 3. Once you are done launch OpenSCAD and move on to the next lesson.
 <br><br>
-**Note: *You may need admin privileges to install OpenSCAD on your computer.*
+**Note: You may need admin privileges to install OpenSCAD on your computer.*
 <br><br><br>
 
 ## Resources 

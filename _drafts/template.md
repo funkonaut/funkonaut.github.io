@@ -16,6 +16,11 @@ PARAGRAPH
 PARAGRAPH
 <br><br><br>
 
+## Section
+TEXT:
+- BULLET OR NUMBERED LIST
+<br><br><br>
+
 ## Resources
 - []()
 <br><br><br>
