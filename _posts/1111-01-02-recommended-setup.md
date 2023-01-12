@@ -7,8 +7,10 @@ categories: [OpenSCAD]
 tags: [Lesson 1]
 ---
 <br><br>
-***IT IS IMPORTANT TO NOTE: At this time, OpenSCAD's preferences menu is not accessible via screen reader (or at least we haven't figure out how to navigate it, please let us know if you figure it out or there is a work around!)**
-<br>
+**IT IS IMPORTANT TO NOTE: At this time, OpenSCAD's preferences menu is not accessible via screen reader (or at least we haven't figure out how to navigate it, please let us know if you figure it out or there is a work around!)**
+<br><br>
+
+## Contents
 * Table of contents
 {:toc}
 <br><br>
