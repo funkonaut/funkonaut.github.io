@@ -16,13 +16,14 @@ In addition to programming your first model you will also learn about navigating
 
 ## The Editor Window
 The editor window is where you write your code. Whenever you open a OpenSCAD file or create a new file your focus will be defaulted to this window where you can type your code. To return focus to the editor window at any time you can navigate to the menu bar (alt) first letter navigate to the "Window" menu (w) and first letter navigate to the "Editor" (e) option.
+<br><br><br>
 
 ## Your first model
 While you are in the editor window lets go ahead and type our first line of code:
-<br>
+<br><br>
 
 `cube(1);`
-<br>
+<br><br>
 
 Make sure to type it in exactly as how it appears above or will get an error or warning. Now press f5 to preview your code, if you did not hear anything a 1 by 1 by 1 cube should have shown up in the preview window.*
 <br><br>
@@ -31,7 +32,7 @@ Make sure to type it in exactly as how it appears above or will get an error or 
 <br><br><br>
 
 ## The Preview Window
-The preview window is where your code is previewed. It consist of 3 axis, the X, Y, and Z axis. These are like the Cartesian axis (X and Y axis), but with an added dimension, the Z or we can  colloquially referred to it as height. The X axis is referred to as width and the Y axis as depth.
+The preview window is where your code is previewed. It consist of 3 axis, the X, Y, and Z axis. These are like the Cartesian axis (X and Y axis), but with an added dimension, the Z axis, referred to as height. The X axis is referred to as width and the Y axis as depth.
 <br><br>
 
 We can navigate the preview window without the use of a mouse with several keyboard shortcuts. Even if you are using OpenSCAD non visually becoming acquainted with the preview window keyboard shortcuts can be helpful before you learn to 3D print your designs and want a sighted user to describing your model to you. 
@@ -41,12 +42,15 @@ We can navigate the preview window without the use of a mouse with several keybo
 Lets practice changing size of our cube and explore some preview keyboard shortcuts to change the view of our preview window:
 <br><br>
 
-Change your cube code to
-`cube(10);` 
+Change your cube code to `cube(10);` 
 <br><br>
 
-We now have a larger cube in the preview window (apologies but, take my word for all of this if you can not see the preview window). We just changed the side length parameter for our cube. What happens if we change it to something even larger say 1000? You may notice that only a portion of our cube is displayed in the preview window. This is because while our cube changed our view did not. In order to view the whole shape in the preview window you can use the "View All" keyboard shortcut: **control + shift + v**. Try it, you will see your large cube now centered in the preview window, this will probably be the most useful keyboard shortcut.  
+We now have a larger cube in the preview window (apologies but, take my word for all of this if you can not see the preview window). We just changed the side length parameter for our cube. What happens if we change it to something even larger say 1000? You may notice that only a portion of our cube is displayed in the preview window. This is because while our cube changed our view did not. 
 <br><br>
+
+In order to view the whole shape in the preview window you can use the "View All" keyboard shortcut: **control + shift + v**. Try it, you will see your large cube now centered in the preview window, this will probably be the most useful keyboard shortcut.  
+<br><br>
+
 You can adjust the view by using the mouse, scrolling or two finger drag up and down for a touchpad will zoom in and out, a left click and drag will rotate your axis, and right click and drag will translate (move) your axis. This is fine and all but we prefer to use the keyboard shortcuts, they are more efficient and accessible. You can see all the view commands in the View menu (alt > v). 
 <br><br>
 
@@ -54,21 +58,28 @@ You can adjust the view by using the mouse, scrolling or two finger drag up and 
 Try out the following helpful View keyboard shortcuts with your large cube!
 <br><br>
 
-| Shortcut            | Description   |
-|---------------------|---------------|
-| control + shift + v | view all      |
-| control + 4         | top view      |
-| control + 5         | bottom view   |
-| control + 6         | left view     |
-| control + 7         | right view    |
-| control + 8         | front view    |
-| control + 9         | back view     |
-| control + 0         | diagonal view |
-| control + [         | zoom out      |
-| control + ]         | zoom in       |
+| Shortcut            	| Description   	|
+|---------------------	|---------------	|
+| control + shift + v 	| view all      	|
+| control + 4         	| top view      	|
+| control + 5         	| bottom view   	|
+| control + 6         	| left view     	|
+| control + 7         	| right view    	|
+| control + 8         	| front view    	|
+| control + 9         	| back view     	|
+| control + 0         	| diagonal view 	|
+| control + [         	| zoom out      	|
+| control + ]         	| zoom in       	|
 <br><br><br>
 
 ## The Error Window
+Now lets see what happens when you get something wrong. Change your code to read an incorrect command say:
+<br>
+
+`cue(1000);`
+<br>
+
+### Warnings Vs. Errors
 
 ## The Console Window
 
