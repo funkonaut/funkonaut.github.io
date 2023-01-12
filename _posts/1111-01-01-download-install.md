@@ -6,8 +6,13 @@ last_modified_at: 2023-01-10
 categories: [OpenSCAD]  
 tags: [Lesson 1]
 ---
+<br>
+* Table of contents
+{:toc}
 <br><br>
-Welcome to TSBVI's lessons on OpenSCAD. If you go through all these lesson and the lessons on 3D printing, you will be up and running creating 3D models in no time. In this first lesson you will learn about what OpenSCAD is, why you should learn programming in OpenSCAD, and how to download and install the program. You can go ahead and skip to the ing "Download OpenSCAD" heading if you are ready to start coding in OpenSCAD!
+
+## Learning Objectives
+Welcome to TSBVI's lessons on OpenSCAD. If you go through all these lesson and the lessons on 3D printing, you will be up and running creating 3D models in no time. In this first lesson you will learn about what OpenSCAD is, why you should learn programming in OpenSCAD, and how to download and install the program. You can go ahead and skip to the "Download OpenSCAD" section if you are ready to start coding in OpenSCAD!
 <br><br><br>
 
 ## What OpenSCAD is.

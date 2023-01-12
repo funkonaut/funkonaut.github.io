@@ -22,7 +22,7 @@ In addition to programming your first model you will also learn about navigating
 The editor window is where you write your code. Whenever you open a OpenSCAD file or create a new file your focus will be defaulted to this window where you can type your code. To return focus to the editor window at any time you can navigate to the menu bar (alt) first letter navigate to the "Window" menu (w) and first letter navigate to the "Editor" (e) option.
 <br><br><br>
 
-## Your first model
+## Your First Model
 While you are in the editor window lets go ahead and type our first line of code:
 <br><br>
 

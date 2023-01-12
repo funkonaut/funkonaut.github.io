@@ -6,11 +6,15 @@ last_modified_at:
 categories: [CATEGORY]
 tags: [Lesson ]
 ---
-<br><br>
-LEARNING OBJ/DESCRIPTION
-<br><br><br>
+<br>
 
-## SECTION 
+* Table of contents
+{:toc}
+<br><br>
+
+## Learning Objectives
+
+## Section Title Case 
 PARAGRAPH
 <br><br>
 PARAGRAPH
