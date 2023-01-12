@@ -58,17 +58,17 @@ You can adjust the view by using the mouse, scrolling or two finger drag up and 
 Try out the following helpful View keyboard shortcuts with your large cube!
 <br><br>
 
-| Shortcut            	| Description   	|
-|---------------------	|---------------	|
-| control + shift + v 	| view all      	|
-| control + 4         	| top view      	|
-| control + 5         	| bottom view   	|
-| control + 6         	| left view     	|
-| control + 7         	| right view    	|
-| control + 8         	| front view    	|
-| control + 9         	| back view     	|
-| control + 0         	| diagonal view 	|
-| control + [         	| zoom out      	|
+| Shortcut            	| Description   	|<br>
+|---------------------	|---------------	|<br>
+| control + shift + v 	| view all      	|<br>
+| control + 4         	| top view      	|<br>
+| control + 5         	| bottom view   	|<br>
+| control + 6         	| left view     	|<br>
+| control + 7         	| right view    	|<br>
+| control + 8         	| front view    	|<br>
+| control + 9         	| back view     	|<br>
+| control + 0         	| diagonal view 	|<br>
+| control + [         	| zoom out      	|<br>
 | control + ]         	| zoom in       	|
 <br><br><br>
 
@@ -89,8 +89,8 @@ Now lets see what happens when you get something wrong. Change your code to read
 
 ## Review
 In this lesson you learned:
-- How to create a simple cube in OpenSCAD.
-- How to navigate the different OpenSCAD windows.
+- How to create a simple cube of different sizes in OpenSCAD.
+- How to navigate the different OpenSCAD windows: Editor, Preview, Error Log, and Console.
 - How to comment and uncomment line(s) of code in OpenSCAD and why you would want to do such.
 <br><br><br>
 
