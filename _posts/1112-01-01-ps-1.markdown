@@ -3,7 +3,7 @@ layout: post
 title:  "PowerShell Lesson 1: Getting Started on the Right Path"
 date:   1112-01-01
 last_modified_at: 2022-12-18
-categories: [PowerShell]
+categories: [Command Line Shell]
 tags: [Lesson 1]
 ---
 

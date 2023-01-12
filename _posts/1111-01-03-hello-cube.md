@@ -78,7 +78,7 @@ Try out the following helpful View keyboard shortcuts with your large cube!
 | control + [         	| zoom out      	| 
 | control + ]         	| zoom in       	| 
 
-<br><br><br>
+<br><br>
 
 ## The Error Window
 Now lets see what happens when you get something wrong. Change your code to read an incorrect command say:
