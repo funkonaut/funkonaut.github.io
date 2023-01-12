@@ -7,6 +7,9 @@ categories: [OpenSCAD]
 tags: [Lesson 1]
 ---
 <br>
+
+## Contents
+{:.no_toc}
 * Table of contents
 {:toc}
 <br><br>

@@ -11,6 +11,7 @@ tags: [Lesson 1]
 <br><br>
 
 ## Contents
+{:.no_toc}
 * Table of contents
 {:toc}
 <br><br>
