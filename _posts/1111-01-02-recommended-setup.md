@@ -6,6 +6,7 @@ last_modified_at: 2023-01-10
 categories: [OpenSCAD]
 tags: [Lesson 0]
 ---
+<br><br>
 ***IT IS IMPORTANT TO NOTE: At this time, OpenSCAD's preferences menu is not accessible via screen reader (or atleast we haven't figure out how to navigate it, please let us know if you figure it out or there is a work around!**
 <br><br>
 In this lesson we will go over our recommended OpenSCAD settings for blind or visually impaired learners. We will split this lesson into three sections: "All Users", "Blind Users", and "Low Vision Users"
@@ -16,8 +17,8 @@ We recommend the following settings for all learners new to OpenSCAD:
 1. *In the Preferences sub menu (alt > e > p > p > enter)*
   - 3D View - uncheck "Show Warnings and Errors in 3D View" ???SHOULD WE DO THIS???
   - Editor 
-    - check "Auto-Indent"
-    - uncheck "Enable Auto-Completion"*
+    * check "Auto-Indent"
+    * uncheck "Enable Auto-Completion"*
   - Advanced
     - uncheck "Show Welcome Screen"
 2. *In the Window Menu (alt > w)*
