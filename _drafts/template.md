@@ -21,6 +21,12 @@ TEXT:
 - BULLET OR NUMBERED LIST
 <br><br><br>
 
+
+## Review
+In this lesson you learned:
+- 
+<br><br><br>
+
 ## Resources
 - []()
 <br><br><br>

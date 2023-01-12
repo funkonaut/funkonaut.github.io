@@ -8,6 +8,12 @@ As of the sites last update, {{ site.time | date: '%m-%d-%Y' }}, this site mostl
 This web page is organized into three sub pages: About, Lessons, and Projects. You are on the About page. In Lessons you will find lessons organized by topic and sub topic, they will be mostly in tutorial format and will all end with a "Resources" section where you can download relevant files (mostly code files...). At the bottom of each lesson is a next and previous link. In Projects you will find a list of projects and exercises organized by topic. 
 <br>
 <br>
+- Pre req skills for each
+- recommended HW set up (braille display etc.)
+- recommended Pedagogy (ps and os to learn programming )
+
+<br>
+<br>
 <br>    
 ## Contact Me
 E-Mail: [correllc@tsbvi.edu](mailto:correllc@tsbvi.edu)

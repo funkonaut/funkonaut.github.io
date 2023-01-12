@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "OpenSCAD Lesson 0.1: What, Why, and How (to Install)?"
+title:  "OpenSCAD Lesson 1.1: What, Why, and How (to Install)?"
 date:   1111-01-01
 last_modified_at: 2023-01-10
 categories: [OpenSCAD]  
-tags: [Lesson 0]
+tags: [Lesson 1]
 ---
 <br><br>
 Welcome to TSBVI's lessons on OpenSCAD. If you go through all these lesson and the lessons on 3D printing, you will be up and running creating 3D models in no time. In this first lesson you will learn about what OpenSCAD is, why you should learn programming in OpenSCAD, and how to download and install the program. You can go ahead and skip to the ing "Download OpenSCAD" heading if you are ready to start coding in OpenSCAD!
@@ -13,7 +13,7 @@ Welcome to TSBVI's lessons on OpenSCAD. If you go through all these lesson and t
 ## What OpenSCAD is.
 OpenSCAD is a 3D modeling application available for Windows, Mac (OS X), and Linux. Open means its open source (ie anyone can view the applications code, make changes, or pose issues!), but what does the SCAD mean? SCAD stands for "Solid Computer Aided Design," this means that OpenSCAD allows you to build 3D models by combining different shapes (called primitives). 
 <br><br>
-What is really interesting about OpenSCAD is that it is all scripting based, that means you define your 3D models only using text and math (don't worry its the fun kind of math!) which makes it accessible to non-visual designers. A script based modeling application has many of other benefits, but we won't get into those just yet. 
+What is really interesting about OpenSCAD is that it is all scripting based, that means you define your 3D models only using text and math (don't worry its the fun kind of math!) which makes it accessible to non-visual designers. OpenSCAD scripts have the file extension (ending) ".scad". A script based modeling application has many of other benefits, but we won't get into those just yet. 
 <br><br>
 We highly recommend you check out [OpenSCAD's website](https://openscad.org/) and [documentation](https://openscad.org/documentation.html) at some point. They have a lot of great learning resources, these lessons will cover most all of what they have to offer, but it is always a good idea to become acquainted with a program or languages documentation for troubleshooting and reference!
 <br><br><br>
@@ -41,6 +41,14 @@ To install OpenSCAD:
 3. Once you are done launch OpenSCAD and move on to the next lesson.
 <br><br>
 **Note: You may need admin privileges to install OpenSCAD on your computer.*
+<br><br><br>
+
+
+## Review
+In this lesson you learned:
+- What OpenSCAD is.
+- Why you might want to learn OpenSCAD and why it is a great first language for BVI and sighted students to learn programming concepts with.
+- How to download and install OpenSCAD.
 <br><br><br>
 
 ## Resources 
