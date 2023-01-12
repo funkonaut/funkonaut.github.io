@@ -42,6 +42,8 @@ sass:
 
 # Build settings
 markdown: kramdown
+kramdown:
+  auto_ids : true
 plugins:
   - jekyll-feed
   - jekyll-paginate
