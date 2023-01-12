@@ -6,12 +6,12 @@ last_modified_at: 2023-01-12
 categories: [OpenSCAD]
 tags: [Lesson 1]
 ---
-<br><br>
-
-* A markdown unordered list which will be replaced with the ToC, excluding the "Contents header" from above
+<br>
+* Table of contents
 {:toc}
 <br><br>
 
+## Learning Objectives
 Typically when one is learning how to program they begin with a "Hello World" activity where one programs the text "Hello World" to appear on the screen. Since we are working with 3D models we will start with a simple alternation on "Hello World", "Hello Cube". We highly recommend you review the [terminology text file](DO-THIS.com) now so we are all on the same page with technical terminology (don't worry if some words and their definitions are unclear right now we will address them all in further lessons) 
 <br><br>
 
