@@ -95,15 +95,19 @@ Now lets see what happens when you get something wrong. Change your code to read
 
 <br><br><br>
 
+## Next Steps
+Now that you have become acquainted with the OpenSCAD application and have created your first shape, we recommend that you read through our [lessons on 3D printing](LINK LESSONS!!!!) so you can begin making your designs come to life! Once you complete the 3D printing lessons you can give [Project 1](LINK PROJECT 1!!!!) a go.  
+
 ## Review
 In this lesson you learned:
-- How to create a simple cube of different sizes in OpenSCAD.
+- How to create and preview a simple cube of different sizes in OpenSCAD.
 - How to navigate the different OpenSCAD windows: Editor, Preview, Error Log, and Console.
 - How to comment and uncomment line(s) of code in OpenSCAD and why you would want to do such.
 <br><br><br>
 
 ## Resources
 - [OpenSCAD Terminology]()
-- [Your first cube code])()
-- [OpenSCAD keyboard shortcuts list]()
+- [Your first cube code]()
+- [Project 1?]()
+
 <br><br><br>

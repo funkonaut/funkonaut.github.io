@@ -34,17 +34,12 @@ We recommend the following settings for all learners new to OpenSCAD:
 <br><br><br>
 
 ## Blind Users
-We recommend the following settings for screen readers and the OpenSCAD application for blind learners new to OpenSCAD:
+We recommend the following settings for screen readers, we do not have any OpenSCAD application recommendation aside from the recommendation for all for blind learners new to OpenSCAD:
 <br><br>
 
-### Screen Reader Settings
 **Note: We use JAWS but NVDA should be similar, if you are an NVDA user please let us know on our [github page](https://github.com/funkonaut/openSCAD_lessons) any issues or differences that you experience*
-1. 
-<br><br>
-
-### OpenSCAD Settings
-1. 
-
+1. Turn on read all punctuation
+2. If you are using a braille display make sure to have it set to uncontracted Braille (???? IS THIS TRUE???)
 <br><br><br>
 
 ## Low Vision Users
@@ -66,5 +61,3 @@ In this lesson you learned:
 - How to set up OpenSCAD's preferences according to our recommendations 
 <br><br><br>
 
-## Resources/Files 
-[]()

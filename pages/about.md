@@ -12,7 +12,7 @@ This web page is organized into three sub pages: About, Lessons, and Projects. Y
 <br><br><br>
 
 ## Recommended Sequencing
-Depending on if you have a 3D printer or not and if you are accessing OpenSCAD non-visually we recommend trying to go through the introductory command line shell and 3D printing lessons after you complete all of the lessons in OpenSCAD Lesson 1. That way you can get up and running printing while you are learning OpenSCAD! Then once you finish all of the OpenSCAD lessons or at least lessons 1-6 move on to Python and the intermediate command line shell lessons. That said feel free to skip around as little or as much as you'd like.
+Depending on if you have a 3D printer or not and if you are accessing OpenSCAD non-visually we recommend trying to go through the introductory command line shell and 3D printing lessons after you complete all of the lessons in OpenSCAD Lesson 1. That way you can get up and running printing while you are learning OpenSCAD! Then once you finish all of the OpenSCAD lessons or at least lessons 1-6 move on to Python and the intermediate command line shell lessons. That said feel free to skip around as little or as much as you'd like. If you are committed to learning programming through this website you should go through and type all of the commands along with the lessons, and complete every practice problem.
 <br><br><br>
 
 ## Pre-Requisite Knowledge
