@@ -16,7 +16,8 @@ Post date used to order not actual shown
 {% endcomment %}
 
     {% assign disp_tags = '' %}
-    {% for post in site.posts %}
+    {% assign sorted_posts = site.posts | sort: 'date' %}
+    {% for post sorted_posts %}
       {% if post.categories contains category[0] %} 
         {% assign disp_tags = disp_tags | append: post.tags[0] | append: "," %}
       {% endif %}
