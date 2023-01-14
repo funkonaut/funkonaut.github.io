@@ -27,10 +27,10 @@ The editor window is where you write your code. Whenever you open a OpenSCAD fil
 
 ## Your First Model
 While you are in the editor window lets go ahead and type our first line of code:
-<br><br>
+<br>
 
 `cube(1);`
-<br><br>
+<br>
 
 Make sure to type it in exactly as how it appears above or will get an error or warning. Now press f5 to preview your code, if you did not hear anything a 1 by 1 by 1 cube should have shown up in the preview window.*
 <br><br>
@@ -52,7 +52,7 @@ Lets practice changing size of our cube and explore some preview keyboard shortc
 Change your cube code to `cube(10);` 
 <br><br>
 
-We now have a larger cube in the preview window (apologies but, take my word for all of this if you can not see the preview window). We just changed the side length parameter for our cube. What happens if we change it to something even larger say 1000? You may notice that only a portion of our cube is displayed in the preview window. This is because while our cube changed our view did not. 
+We now have a larger cube in the preview window (apologies but, take my word for all of this if you can not see the preview window). We just changed the side length for our cube. What happens if we change it to something even larger say 1000? You may notice that only a portion of our cube is displayed in the preview window. This is because while our cube changed our view did not. 
 <br><br>
 
 In order to view the whole shape in the preview window you can use the "View All" keyboard shortcut: **control + shift + v**. Try it, you will see your large cube now centered in the preview window, this will probably be the most useful keyboard shortcut.  
@@ -84,30 +84,58 @@ Try out the following helpful View keyboard shortcuts with your large cube!
 Now lets see what happens when you get something wrong. Change your code to read an incorrect command say:
 <br>
 
-`cue(1000);`
+`cue(500);`
 <br>
 
-### Warnings Vs. Errors
+Notice you will either not see your design change in the preview window, or if you are using a screen reader you will here "error-log window table warning...". The error-log is a window (default position is in the lower right portion of the screen) that will have a table with the errors or warnings that show up when you try to preview or render your code. You can navigate to the window to here what the warning or error is by navigating to the "Window" menu and then navigating to error-log (alt > w > l).
+<br><br><br>
 
-## The Console Window
+### The Error Table
+The error Table is organized into 4 columns: Group, File, Line, Info. You can tab navigate through the different cells. The group column will display Warning or Error. The file column will display the file name, or nothing if there is no file name, line will display the line number causing the warning or error, it will sometimes be blank (we will discuss why later), and the info column will have an info message about why the warning or error is happening.  
+<br><br><br>
+
+### Warnings Vs. Errors
+Warnings will preview but incorrectly and errors will cause OpenSCAD to not preview. Errors are usually are related to your codes syntax, such as forgetting a semi-colon or argument. Warnings are a bit trickier, for example  you might misspell a shape command this would not be an error (for reasons we will discuss later), but would be a warning. That is why it is important to read the error-log if you get any warnings or errors.
+<br><br><br>
 
 ## Comments: Single Line and Multiline
+Now we will learn about a very important concept in coding, the comment. A comment is a command that lets the computer know to ignore code that follows. Comments in OpenSCAD can be either a single line comment or  a comment block. A single line comment will begin with `//` everything on the same line that follows the `//` will be ignored by the computer. A multiline comment block will begin with `/*` and end with `*/` everything in between the `/*` and `*/` will be ignored by the computer 
+<br><br>
+
+Comments are important to add notes or directions to your code. It is always important to add notes or document your code so future you or someone else who is reading your code will better understand (or remember!) how your code works. Try adding a single line comment in front of your cube code: `//cube(1);` and preview it (f5) notice how nothing was shown, that is because the computer is now ignoring your cube command.
+<br><br>
+
+If you want to comment out multiple lines but don't want to type `//` infront of every line you can use a comment block. Try deleting your single line comment and surround your cube code with a multiline comment symbols:
+<br>
+```c
+/*
+cube(1);
+Anything else you write here 
+No matter what line it is on
+is ignored by the computer...
+*/
+```
+<br>
+
 
 <br><br><br>
 
+## Previewing, Rendering and Exporting
+
+
 ## Next Steps
 Now that you have become acquainted with the OpenSCAD application and have created your first shape, we recommend that you read through our [lessons on 3D printing](LINK LESSONS!!!!) so you can begin making your designs come to life! Once you complete the 3D printing lessons you can give [Project 1](LINK PROJECT 1!!!!) a go.  
+<br><br><br>
 
 ## Review
 In this lesson you learned:
-- How to create and preview a simple cube of different sizes in OpenSCAD.
-- How to navigate the different OpenSCAD windows: Editor, Preview, Error Log, and Console.
+- How to create, preview, render, and export a simple cube of different sizes in OpenSCAD.
+- How to navigate the different OpenSCAD windows: Editor, Preview, and Error Log.
 - How to comment and uncomment line(s) of code in OpenSCAD and why you would want to do such.
 <br><br><br>
 
 ## Resources
 - [OpenSCAD Terminology]()
-- [Your first cube code]()
-- [Project 1?]()
+- [Your first cube exercise]()
 
 <br><br><br>

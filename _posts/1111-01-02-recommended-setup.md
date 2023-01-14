@@ -7,7 +7,7 @@ categories: [OpenSCAD]
 tags: [Lesson 1]
 ---
 <br><br>
-**IT IS IMPORTANT TO NOTE: At this time, OpenSCAD's preferences menu is not accessible via screen reader (or at least we haven't figure out how to navigate it, please let us know if you figure it out or there is a work around!)**
+**IT IS IMPORTANT TO NOTE: At this time, OpenSCAD's preferences menu (alt > e > p > p) is not accessible via screen reader (or at least we haven't figure out how to navigate it, please let us know if you figure it out or there is a work around!)**
 <br><br>
 
 ## Contents
@@ -29,6 +29,7 @@ We recommend the following settings for all learners new to OpenSCAD:
   - Advanced - uncheck "Show Welcome Screen"
 2. *In the Window Menu (alt > w)*
   - Click "Hide Customizer"
+  - click "Hide Console"
 <br><br>
 **Note: Auto completion is a great addition to an editor but as you are learning it will help commit the syntax to memory to disable the feature*
 <br><br><br>
@@ -38,8 +39,8 @@ We recommend the following settings for screen readers, we do not have any OpenS
 <br><br>
 
 **Note: We use JAWS but NVDA should be similar, if you are an NVDA user please let us know on our [github page](https://github.com/funkonaut/openSCAD_lessons) any issues or differences that you experience*
-1. Turn on read all punctuation
-2. If you are using a braille display make sure to have it set to uncontracted Braille (???? IS THIS TRUE???)
+1. [Turn on high verbosity for web](https://www.freedomscientific.com/SurfsUp/Web_Verbosity.htm) this will make sure all code is read correctly in your tutorials. If you are on NVDA us NVDA + p to change the symbol level (punctuation level) to all.
+
 <br><br><br>
 
 ## Low Vision Users
