@@ -16,8 +16,8 @@ Post date used to order not actual shown
 {% endcomment %}
 
     {% assign disp_tags = '' %}
-    
-    {% for post in site.posts %}
+    {% assign sorted_posts = site.posts | sort: 'date' %}
+    {% for post sorted_posts %}
       {% if post.categories contains category[0] %} 
         {% assign disp_tags = disp_tags | append: post.tags[0] | append: "," %}
       {% endif %}
@@ -36,7 +36,6 @@ Post date used to order not actual shown
         <div class="category-name">
           <h3>{{ tag }}</h3>
         </div>
-        {% assign sorted_posts = site.posts | sort: 'date' %}
         {% for post in sorted_posts %}
           {% if post.categories contains category[0] and post.tags contains tag %}
           <div class="posts-list-item">
