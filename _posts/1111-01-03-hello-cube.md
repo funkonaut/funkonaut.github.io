@@ -115,13 +115,20 @@ No matter what line it is on
 is ignored by the computer...
 */
 ```
-<br>
-
-
 <br><br><br>
 
 ## Previewing, Rendering and Exporting
+So far we have only been previewing our cube, but in order to get our models out of OpenSCAD we need to render them and export them. Rendering is the process of turning the programmatic description of your model into the image of that model. Exporting is the process of taking that image model and generating a file that is able to be used in other programs. You can render your code by pressing f6, you will here a "bling" if your code renders successfully, and export your code by press f7. 
+<br><br>
 
+Exporting your code will bring up a file dialogue so you can determine where you would like to save your file and what you would like to name it as. Export will default to naming your file what your code is named, and exporting it as a STL file type. We won't get into the other types of files for 3D models right now, but STL models are the ones we typically use for 3D printing. You can also access the export feature in the file menu (alt > f > x) if you want to export as another file type.
+<br><br>
+
+When you preview your model you are using OpenSCAD's program to show the image of your model very quickly, this is fine for working in OpenSCAD and developing your code, but previewed models can not be used in other programs. For that you have to render and export. Rendering and Exporting are two different steps and keyboard shortcuts in OpenSCAD even though the process is usually done together, that is because sometimes you will find issues with your code that happen in the rendering phase but not the preview phase. 
+<br><br>
+
+For instance type the code that gave us a warning: `cue(500);` When we press f6 we get an additionally warning to the one we got when we previewed the code. Try it out, you should here a bling, unfortunately there will not be an auditory cue that the second warning showed up but the second entry in the error-log read something like "No top level geometry rendered." This warning is the typically what you would run into and means that there is no model in OpenSCAD's render so you would just be exporting an empty file. This is why it is important to check you error-log after rendering but before exporting to make sure there are no warnings as warnings will still allow your code to render, but incorrectly.
+<br><br><br>
 
 ## Next Steps
 Now that you have become acquainted with the OpenSCAD application and have created your first shape, we recommend that you read through our [lessons on 3D printing](LINK LESSONS!!!!) so you can begin making your designs come to life! Once you complete the 3D printing lessons you can give [Project 1](LINK PROJECT 1!!!!) a go.  
@@ -135,7 +142,7 @@ In this lesson you learned:
 <br><br><br>
 
 ## Resources
-- [OpenSCAD Terminology]()
-- [Your first cube exercise]()
+- [OpenSCAD terminology]()
+- [Your first cube exercises]()
 
 <br><br><br>
