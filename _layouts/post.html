@@ -7,12 +7,12 @@ layout: default
     {% if page.next %}
     <div>
         {% if page.previous %}
-          <a href="{{ page.previous.url }}">
-            Previous
+          <a href="{{ page.previous.url }}" align="left">
+            previous
           </a>
         {% endif %}
-      <a href="{{ page.next.url }}">
-        Next
+      <a href="{{ page.next.url }}" align="right">
+        next
       </a>
     </div>
     {% endif %}
@@ -53,9 +53,6 @@ layout: default
     <div class="post-other">
       {% if page.next %}
       <div>
-        <span>
-          {{ site.data.lang[site.language].post_next }}
-        </span>
         <a href="{{ page.next.url }}">
           Next: {{ page.next.title }}
         </a>
@@ -63,9 +60,6 @@ layout: default
       {% endif %}
       {% if page.previous %}
       <div>
-        <span>
-          {{ site.data.lang[site.language].post_previous }}
-        </span>
         <a href="{{ page.previous.url }}">
           Previous: {{ page.previous.title }}
         </a>
