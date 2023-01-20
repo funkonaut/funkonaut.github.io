@@ -37,12 +37,14 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
   - basic arithmetic and computation
 <br><br><br>
 
-## Recommended Hardware
+## Recommended Hardware and Learning Tools
 - Mainly using JAWS and Windows/ start with OpenSCAD editor instead of other text editor 
-- Recommended HW set up 
+- Recommended HW set up and learning tools 
   - Prusa 3D Printer 
   - Braille Display
   - Tactile Calipers/measuring devices
+  - Tactile Graph board
+  - Play-Doh for quick prototyping to demonstrate desings and teach concepts tactually
 <br><br><br>
 
 ## Contact Me
