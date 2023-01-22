@@ -16,7 +16,7 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
 <br><br><br>
 
 ## Pre-Requisite Knowledge
-### Technological
+### Technological Pre-Reqs
 *All skills to be completed with a laptop, unless otherwise noted.*
 - keyboarding 20 WPM all characters and symbols
 - basic Windows OS navigation (launching programs, file explorer navigation, window/settings navigation, keyboard shortcuts)
@@ -29,7 +29,7 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
 - text editing familiarity 
 <br><br>
 
-### Mathematical
+### Mathematical Pre-Reqs
 - knowledge of basic algebra and geometry
   - basic grid system (X Y Cartesian Coordinate system)
   - names and conceptualization of different shapes in 2D and 3D

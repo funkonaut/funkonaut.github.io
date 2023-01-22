@@ -6,14 +6,17 @@ last_modified_at: 2023-01-10
 categories: [OpenSCAD]
 tags: [Lesson 1]
 ---
-<br><br>
-**IT IS IMPORTANT TO NOTE: At this time, OpenSCAD's preferences menu (alt > e > p > p) is not accessible via screen reader (or at least we haven't figure out how to navigate it, please let us know if you figure it out or there is a work around!)**
-<br><br>
+
+<br>
 
 ## Contents
 {:.no_toc}
 * Table of contents
 {:toc}
+<br><br>
+
+## Important Accessibility Note
+**At this time, OpenSCAD's preferences menu (alt > e > p > p) is not accessible via screen reader (or at least we haven't figure out how to navigate it, please let us know if you figure it out or there is a work around!)**
 <br><br>
 
 ## Learning Objectives
