@@ -3,8 +3,8 @@ layout: post
 title:  "CATEGORY TAG: Title"
 date:   1113-01-02
 last_modified_at: 
-categories: [CATEGORY]
-tags: [Lesson ]
+categories: [3D Printing]
+tags: [ ]
 ---
 <br>
 
