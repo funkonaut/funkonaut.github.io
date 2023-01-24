@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Prusa Slicer: Your First 3D Print"
+title:  "3D Printing Slicing/Printing: Prusa Slicer Setup and Use"
 date:   1113-01-01
-last_modified_at: 2022-01-24
+last_modified_at: 2023-01-24
 categories: [3D Printing]
 tags: [Slicing/Printing]
 ---
