@@ -4,7 +4,7 @@ title:  "CATEGORY TAG: Title"
 date:   1113-01-02
 last_modified_at: 
 categories: [3D Printing]
-tags: [ ]
+tags: []
 ---
 <br>
 

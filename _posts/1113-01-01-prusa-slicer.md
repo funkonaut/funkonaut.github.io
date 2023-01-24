@@ -4,7 +4,7 @@ title:  "Prusa Slicer: Your First 3D Print"
 date:   1113-01-01
 last_modified_at: 2022-01-24
 categories: [3D Printing]
-tags: [Slicing]
+tags: [Slicing/Printing]
 ---
 <br>
 
@@ -39,7 +39,7 @@ These steps will allow you to run the Prusa Slicer program from anywhere and not
 4. Test and make sure it worked by running powershell and typing `pru` and pressing tab a couple times it should autocomplete to `prusa-slicer-console.exe` after two tabs and then add the help flag the whole command should read `prusa-slicer-console.exe --help` and will output a whole lot of text you can output it to a text file (ie: `prusa-slicer-console.exe --help > prusa-slicer_help.txt` if you are interested in reading it or [visit the slic3r documentation page on using the command line tools](https://manual.slic3r.org/advanced/command-line)
 <br><br>
 
-*Note:The prusa-slicer-console exe is the one you want for command line commands the other slicer exe files are not for command line usage, and will most likely launch the less than accessible GUI program*
+*Note: The prusa-slicer-console exe is the one you want for command line commands the other slicer exe files are not for command line usage, and will most likely launch the less than accessible GUI program*
 <br><br><br>
 
 ## Using Prusa Slicer CLI
@@ -49,7 +49,7 @@ In this folder you will find a subfolder [profiles](https://github.com/funkonaut
 *Note if you try to download a configuration profile and it is not showing up in your Downloads folder you may be getting a warning from your browser press f6 to switch to the browser pane with the warning and tab to "keep" and press enter.*
 <br><br>
 
-### Steps for basic printing 
+### Steps for Basic Printing 
 1. Determine the model of printer you are using and type of material you are printing in and download a configuration profile for the printer, make sure it is either in the same directory that you are located in or you know the path to it. *Note: It is possible to not use a configuration profile and use several command line flags but we recommend for beginners to use a profile that best suites their needs and then modify them as needed by editing the configuration file or overriding the file with command line flags*
 2. Run the following command, where you replace the paths in brackets with the configuration file and model file paths: `prusa-slicer-console.exe -g --load [./my_config.ini] [./my_model.stl]` You should receive output stating the file is done slicing, it will be available in your current directory as where layer-height, material, and supports/no-supports are determined by your configuration file probably something like: `[filename]_[layer-height]_[material]_[printer-model]_[time-to-print].gcode`
 3. Plug in your 3D printer SD card to your computer and determine the drive name of your external media (3D printer SD card) use the list drives command or guess and see if powershell throws an error (ie `ls d:` `ls e:` `ls f:` etc.)
@@ -62,7 +62,7 @@ In this folder you will find a subfolder [profiles](https://github.com/funkonaut
 - Determine that the model size fits on your print bed (max for MK3s is 250 by 210 by 210). Run: `prusa-slicer-console.exe --info [./my_model.stl]]`
 <br><br><br>
 
-## Adding or creating a new config file in the GUI
+## Adding or Creating a New Config File in the GUI
 - Set your slicer config (probably best to keep infill default at 20% and just use command line flags to override it)
 - Export config from prusa slicer GUI (file > export config or ctrl + e) and name it as `[layer-height]_[material]_[printer-name]_[supports/no-supports]`
 <br><br><br>
