@@ -76,7 +76,7 @@ In this lesson you learned:
 
 ## Resources
 - [Download Prusa Slicer](https://www.prusa3d.com/page/prusaslicer_424/)
-- [3D printing configuration profiles for Prusa Slicer](https://github.com/funkonaut/openSCAD_lessons/tree/main/3D_Printing/profiles)
+- [3D printing configuration profiles repo for Prusa Slicer](https://github.com/funkonaut/openSCAD_lessons/tree/main/3D_Printing/profiles)
 <br><br><br>
 
 
