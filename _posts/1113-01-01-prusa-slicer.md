@@ -21,11 +21,11 @@ In this lesson you will learn how to set up and use the Prusa Slicer software wi
 ## Pre-Requisites 
 - basic command line knowledge
 - typing skills
-- basic knowledge of how command lines work and folder nav file navigation
+- basic knowledge of how command lines work and folder and file navigation
 <br><br><br>
 
 ## Command Line Prusa Slicer Install
-- [Download Prusa Slicer](https://www.prusa3d.com/page/prusaslicer_424/)
+- [Download Prusa Slicer if you have not already](https://www.prusa3d.com/page/prusaslicer_424/)
 <br><br>
 
 ### Windows Install
@@ -43,10 +43,10 @@ These steps will allow you to run the Prusa Slicer program from anywhere and not
 <br><br><br>
 
 ## Using Prusa Slicer CLI
-In this folder you will find a subfolder [profiles](https://github.com/funkonaut/openSCAD_lessons/tree/main/3D_Printing/profiles) that will have different slicing profiles for different printers. We obtained these by setting up the profile in the prusa-slicer GUI program (not very accessible) and exporting them to .ini files you can use these with your printer. Feel free to contribute ini files for other printers. Using a profile can be helpful to get you started printing fast.
+[In this folder](https://github.com/funkonaut/openSCAD_lessons/tree/main/3D_Printing/profiles) you will find different slicing profiles for different printers. We obtained these by setting up the profile in the prusa-slicer GUI program (not very accessible) and exporting them to .ini files you can use these with your printer. Feel free to contribute ini files for other printers. Using a profile can be helpful to get you started printing fast. You can download these via git or open the .ini file and tab to the "raw" button select all and copy it into an empty .ini file on your computer. 
 <br><br>
 
-*Note if you try to download a configuration profile and it is not showing up in your Downloads folder you may be getting a warning from your browser press f6 to switch to the browser pane with the warning and tab to "keep" and press enter.*
+*Note if you try to download a configuration profile and you hear a warning about the file harming your computer hit f6 until you move to the downloads bar and tab to "keep".*
 <br><br>
 
 ### Steps for Basic Printing 
