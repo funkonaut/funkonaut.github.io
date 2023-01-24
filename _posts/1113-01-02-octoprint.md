@@ -4,7 +4,7 @@ title:  "3D Printing Slicing/Printing: Octoprint Server Setup and Use"
 date:   1113-01-02
 last_modified_at: 2023-01-24
 categories: [3D Printing]
-tags: [Slicing/Printing]
+tags: [Slicing & Printing]
 ---
 <br>
 
