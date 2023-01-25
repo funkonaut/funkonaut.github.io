@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "3D Printing Slicing/Printing: Prusa Slicer Setup and Use"
+title:  "Fab Lab 3D Printing: Prusa Slicer Setup and Use"
 date:   1113-01-01
 last_modified_at: 2023-01-24
-categories: [3D Printing]
-tags: [Slicing & Printing]
+categories: [Fabrication Lab]
+tags: [3D Printing]
 ---
 <br>
 

@@ -1,0 +1,104 @@
+---
+layout: post
+title:  "Fab Lab Laser Cutting: Design Resources for BVI Makers"
+date:   1113-02-01
+last_modified_at: 2023-01-24
+categories: [Fabrication Lab]
+tags: [Laser Cutting]
+---
+<br>
+
+## Contents
+{:.no_toc}
+* Table of contents
+{:toc}
+<br><br>
+
+## Learning Objectives
+This lesson is more of a bank of resources for designing for the laser cutter. There are a lot of ideas here and they will be updated as we learn of and develop more accessible resources. If you want a more of a how to we would recommend checking out the "Follow Along Projects" under the "Laser Cutter" heading on [our projects page.](https://funkonaut.github.io/projects)
+<br><br><br>
+
+## Generators
+These are some web apps to quickly generate vector designs to cut out on the laser cutter. All apps can be accessed non visually, however the screen reader friendly apps have all fields labeled and are much simpler to keyboard navigate. 
+<br><br>
+
+### Screen Reader Friendly
+- [Simple Box website](https://boxdesigner.connectionlab.org/)
+- [More complex box website](https://www.festi.info/boxes.py/index.html)
+- [Vector ruler](http://robbbb.github.io/VectorRuler/)
+<br><br>
+
+### **NOT** Screen Reader Friendly
+- [Gear website](http://hessmer.org/gears/InvoluteSpurGearBuilder.html?circularPitch=8&pressureAngle=20&clearance=0.05&backlash=0.05&profileShift=0&gear1ToothCount=30&gear1CenterHoleDiamater=4&gear2ToothCount=8&gear2CenterHoleDiamater=4&showOption=3)
+- [Puzzle website](https://draradech.github.io/jigsaw/index.html)
+- [Maze generator](https://www.mazegenerator.net/)
+- [Paper box templates *note: most fields labeled but cumbersome to keyboard navigate webpage*](https://www.templatemaker.nl/en/)
+<br><br><br>
+
+## Vector Design Software
+This software is downloadable or web based and can be used to create vector designs
+<br><br>
+
+### Visual (Not Screen Reader Compatible)
+- [Inkscape - free](https://inkscape.org/release/inkscape-1.2.1/)
+  - Laptop (Windows/Mac OSX)
+- [Illustrator - cost money](https://www.adobe.com/products/illustrator.html)
+  - Laptop (Windows/Mac OSX)
+  - Make sure to uncheck "Responsive" box for scaling issues in glowforge app when exporting SVG file
+- [Vectornator - free](https://www.vectornator.io/)
+  - Compatible with iOS Mac OSC
+- [Google Draw](https://docs.google.com/drawings/)
+  - Web app (cross platform)
+<br><br>
+
+### Non Visual (Screen Reader Compatible))
+These options are highly technical but accessible to screen reader users. SVG draw is a java application developed by [Professor Dick Baldwin](dickbaldwin.com), there are help documents included in the zip file. OpenSCAD is a 2d and 3d design program that is coding (text) based.
+<br><br>
+
+- [SVG Draw](http://www.austincc.edu/baldwin/SWT-SVG/SVGDraw01.zip)
+- [OpenSCAD](https://openscad.org/downloads.html)
+  - [3d to 2d projection for exporting SVG files](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/3D_to_2D_Projection)
+  - [Commands cheat sheet](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/3D_to_2D_Projection)
+  - [OpenSCAD lessons](https://openscad.org/documentation.html)
+  - [TSBVI lessons](https://funkonaut.github.io/lessons/)
+<br><br><br>
+
+## Graphic (Raster) Design Software
+Raster or graphic files are engraved on the laser cutter. The below apps are all visual. I am not aware of a non visual way to design or edit raster files, if anyone does or have a good work flow for getting images, [please let me know!](mailto:correllc@tsbvi.edu)
+<br><br>
+
+### Visual Graphic Design Software
+- iOS photos app (on all iOS devices)
+- Photoshop (cost money)
+- GIMP (free photoshop alternative)
+- Microsoft Paint (on all Windows Devices)
+- Screen shots (native application on all operating systems and a great way to capture raster images from online or on your computer screen is to take a screen shot)
+- Procreate iOS raster drawing application (cost money on iOS)
+<br><br><br>
+
+
+## Online Miscellaneous Design Utilities  
+The following are helpful utilities for specialized tasks that you might like to use while designing your laser cut piece.
+<br><br>
+
+- Background remover (screen reader friendly)
+- Outline vectorize for quick raster to vector conversion (screen reader friendly)
+- Black and white converter (not yet tested with screen reader)
+- SVG nester (very cool app for automatic positioning of cut files to maximize material usage) (not screen reader friendly… yet)
+<br><br><br>
+
+## Graphics and Vector Repositories
+These websites are searchable and a have a variety of graphic and vector files that can be laser engraved or cut. The quality varies and it is up to the users discretion to determine if they will suffice. Typically you want vector designs to be simple outlines, and graphics to be at least 300 dpi.
+<br><br>
+
+- [Google Image Search (right click save image as jpeg or take a screen shot if its a .webp file)](https://www.google.com/imghp?hl=en&ogbl)
+- [SVG repo](https://www.svgrepo.com/)
+- [Simple Vector Shapes](CREATE GITHUB DIRECT DOWNLOAD LINK!!!)
+<br><br><br>
+
+## Review
+In this lesson you learned:
+- Visual and non-visually accessible software resources for vector design
+- Visual software resources for graphic design
+- Graphic and Vector pre-made design web site repositories and generators.
+<br><br><br>

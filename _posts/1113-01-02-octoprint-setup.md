@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "3D Printing Slicing/Printing: Octoprint Server Setup and Use"
+title:  "Fab Lab 3D Printing: Octoprint Server Setup and Use"
 date:   1113-01-02
 last_modified_at: 2023-01-24
 categories: [Fabrication Lab]
