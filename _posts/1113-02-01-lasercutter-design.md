@@ -81,10 +81,13 @@ Raster or graphic files are engraved on the laser cutter. The below apps are all
 The following are helpful utilities for specialized tasks that you might like to use while designing your laser cut piece.
 <br><br>
 
-- Background remover (screen reader friendly)
-- Outline vectorize for quick raster to vector conversion (screen reader friendly)
-- Black and white converter (not yet tested with screen reader)
-- SVG nester (very cool app for automatic positioning of cut files to maximize material usage) (not screen reader friendly… yet)
+- [Background remover](https://www.remove.bg/)
+  - Screen reader support: “upload image button” > "download link"
+- [Outline images (vectorize) for quick raster to vector conversion (screen reader friendly but usually requires cleaning up in a vector program which is visual)](http://kilobtye.github.io/potrace/)
+ - Screen reader support: "open an image link" > "download link"
+- [Black and white converter](https://blackandwhite.imageonline.co/)
+  - Screen reader support: “upload image button” > "convert image button" > "download image button"
+- [SVG nester - very cool app for automatic positioning of cut files to maximize material usage) (not screen reader friendly… yet](https://svgnest.com/)
 <br><br><br>
 
 ## Graphics and Vector Repositories
