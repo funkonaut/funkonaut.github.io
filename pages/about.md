@@ -4,7 +4,7 @@
 Welcome to Texas School for the Blind and Visually Impaired Computer Science resources website. This website contains accessible resources targeted towards blind and visually impaired (BVI) students (but also beneficial to any student) who are learning computer science. There are not a whole lot of pictures on this webpage, but there is a lot of accessible text and information, enjoy!
 <br><br>
 
-As of the sites last update, {{ site.time | date: '%m-%d-%Y' }}, this site mostly contains resources related to OpenSCAD programming and command shell scripting with powershell and linux, but be sure to check back frequently. As our students and computer science program grow we hope to become a hub of knowledge and resources for both BVI and sighted students everywhere.
+As of the sites last update, {{ site.time | date: '%m-%d-%Y' }}, this site mostly contains resources related to OpenSCAD programming and command shell scripting with powershell and linux, but be sure to check back frequently and make sure to pay attention to the last updated dates at the bottom of articles about setup and installation as sometimes processes may change and be out of date, typically they will remain mostly the same and we will try to update them regularly. As our students and computer science program grow we hope to become a hub of knowledge and resources for both BVI and sighted students everywhere.
 <br><br><br>
 
 ## Website Layout
@@ -38,15 +38,16 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
 <br><br><br>
 
 ## Recommended Hardware and Learning Tools
-- Mainly using JAWS and Windows/ start with OpenSCAD editor instead of other text editor 
+- Mainly using JAWS and Windows for auditory users and Windows and the builtin Windows Magnifier for LV users, that said most information should be extendable to other operating systems and screen readers.
 - Recommended HW set up and learning tools 
-  - Prusa 3D Printer 
+  - Prusa MK3s 3D Printer 
   - Braille Display
   - Tactile Calipers/measuring devices
   - Tactile Graph board
-  - Play-Doh for quick prototyping to demonstrate desings and teach concepts tactually
+  - Play-Doh for quick prototyping to demonstrate designs and teach concepts tactually
 <br><br><br>
 
 ## Contact Me
 E-Mail: [correllc@tsbvi.edu](mailto:correllc@tsbvi.edu)
-Github: [funkonaut](github.com/funkonaut)
+<br>
+Github: [@funkonaut](https://www.github.com/funkonaut)

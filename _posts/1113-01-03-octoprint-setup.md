@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Fab Lab 3D Printing: Octoprint Server Setup and Use"
-date:   1113-01-02
+date:   1113-01-03
 last_modified_at: 2023-01-24
 categories: [Fabrication Lab]
 tags: [3D Printing]
