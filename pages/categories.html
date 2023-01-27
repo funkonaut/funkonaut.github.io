@@ -7,10 +7,12 @@ permalink: /lessons/
 
 <article class="container-page">
   <h1 class="page-title">{{ site.data.lang[site.language].categories_title }}</h1>
+  {% comment %}
   {% for post in site.posts %}
   <p>{{ post.title }}</p>
   <p>{{ post.date }}</p>
   {% endfor %}
+  {% endcomment %}
   <ul class="categories-list" style="list-style-type: none;">
     {% for category in site.categories %}
 {% comment %}
