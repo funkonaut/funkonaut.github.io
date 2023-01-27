@@ -8,7 +8,7 @@ permalink: /lessons/
 <article class="container-page">
   <h1 class="page-title">{{ site.data.lang[site.language].categories_title }}</h1>
   {% for post in site.posts %}
-  <h2>{{post.title}}</h2>
+  <p>{{ post.title }}</p>
   {% endfor %}
   <ul class="categories-list" style="list-style-type: none;">
     {% for category in site.categories %}
