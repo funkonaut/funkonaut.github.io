@@ -91,7 +91,7 @@ We recommend trying out the CLI Prusa Slicer set up in the previous tutorial at 
   - the rotate tool (r) will allow you to rotate your model
   - the place on face tool (f) will allow you to click a face of your model and anchor it to the print bed, its helpful to use in place of rotating if you want your model in a different orientation.
 4. When your model(s) slicer settings are selected and it is positioned and sized correctly on the build plate (plater) you can slice the model by clicking the "slice now" button in the bottom right area of the screen or by pressing ctrl + r
-5. After your model is sliced you will see stats about the print appear in the right sidebar including the estimated filament used (in grams) and the print time. You can click the "Export G-code" button or press ctrl + g which will launch a Windows file dialogue where you can save your G-code file on an external SD card.
+5. After your model is sliced you will see stats about the print appear in the right sidebar including the estimated filament used (in grams) and the print time. You can click the "Export G-code" button or press ctrl + u which will launch a Windows file dialogue where you can save your G-code file on an external SD card.
 6. You can now print your model by plugging in your SD card into the 3D printer and selecting the file you just uploaded.
 <br><br>
 
