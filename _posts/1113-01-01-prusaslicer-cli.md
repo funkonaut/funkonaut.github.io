@@ -68,8 +68,7 @@ These steps will allow you to run the Prusa Slicer program from anywhere and not
 
 ### Troubleshooting
 - Sometimes if your command is incorrect you will launch the Prusa Slicer GUI
-- If your slicer fails to slice try making sure you are in the same folder as your .stl file
-- Determine that the model size fits on your print bed (max for MK3s is 250 by 210 by 210). Run: `prusa-slicer-console.exe --info [./my_model.stl]]`
+- Determine that the model size fits on your print bed (max for MK3s is 250 by 210 by 210). Run: `prusa-slicer-console.exe --info [./my_model.stl]]` if your model is not slicing or throwing any errors this is probably why. 
 <br><br><br>
 
 ## Adding or Creating a New Config File in the GUI
