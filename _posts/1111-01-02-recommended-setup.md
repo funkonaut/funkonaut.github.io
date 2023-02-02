@@ -41,7 +41,6 @@ We recommend the following settings for all learners new to OpenSCAD:
 We recommend the following settings for screen readers, we do not have any OpenSCAD application recommendation aside from the recommendation for all for blind learners new to OpenSCAD:
 <br><br>
 
-**Note: We use JAWS but NVDA should be similar, if you are an NVDA user please let us know on our [github page](https://github.com/funkonaut/openSCAD_lessons) any issues or differences that you experience*
 1. [Turn on high verbosity for web](https://www.freedomscientific.com/SurfsUp/Web_Verbosity.htm) this will make sure all code is read correctly in your tutorials. If you are on NVDA us NVDA + p to change the symbol level (punctuation level) to all.
 
 <br><br><br>

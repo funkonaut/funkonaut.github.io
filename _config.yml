@@ -2,15 +2,15 @@
 #
 # This is the configuration file for your blog, please change these items after forked.
 
-title: TSBVI Computer Science
+title: Accessible STEM
 email: correllc@tsbvi.edu
 name: Christopher Correll
 description: >- # this means to ignore newlines until "baseurl:"
-  Accessible Programming Lessons
+  Accessible Programming and STEM Lessons
 keywords: [STEM,accessible,blind,visually impaired, screen reader]
 baseurl: '' # the subpath of your site, e.g. /`blog
 url: '' # the base hostname & protocol for your site, e.g. http://example.com
-domain: 'tsbvi.edu' # the domain name for your site, e.g. example.com
+domain: 'accessiblestem.org' # the domain name for your site, e.g. example.com
 language: en
 # Supported languages list:
 # en: English

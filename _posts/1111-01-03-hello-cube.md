@@ -15,7 +15,7 @@ tags: [Lesson 1]
 <br><br>
 
 ## Learning Objectives
-Typically when one is learning how to program they begin with a "Hello World" activity where one programs the text "Hello World" to appear on the screen. Since we are working with 3D models we will start with a simple alternation on "Hello World", "Hello Cube". We highly recommend you review the [terminology text file](DO-THIS.com) now so we are all on the same page with technical terminology (don't worry if some words and their definitions are unclear right now we will address them all in further lessons) 
+Typically when one is learning how to program they begin with a "Hello World" activity where one programs the text "Hello World" to appear on the screen. Since we are working with 3D models we will start with a simple alternation on "Hello World", "Hello Cube". We highly recommend you review the [terminology text file](DO-THIS.com) now so we are all on the same page with technical terminology (don't worry if some words and their definitions are unclear right now we will address them all in further lessons).
 <br><br>
 
 In addition to programming your first model you will also learn about navigating the OpenSCAD app and it's different windows. If you followed out recommended setup you should be able to launch OpenSCAD and it will default you to a new code file "Untitled," if OpenSCAD opens to a dialogue go ahead and tab navigate to the "New" button to create a new file. 
@@ -23,6 +23,9 @@ In addition to programming your first model you will also learn about navigating
 
 ## The Editor Window
 The editor window is where you write your code. Whenever you open a OpenSCAD file or create a new file your focus will be defaulted to this window where you can type your code. To return focus to the editor window at any time you can navigate to the menu bar (alt) first letter navigate to the "Window" menu (w) and first letter navigate to the "Editor" (e) option.
+<br><br>
+
+**Important note: if you are using a screen reader and OpenSCAD ever stops reading to you hit alt to focus the menu bar and then escape to return focus back to the editor window and it should start reading again**
 <br><br><br>
 
 ## Your First Model
