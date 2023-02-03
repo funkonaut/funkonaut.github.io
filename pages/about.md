@@ -31,7 +31,7 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
 
 ### Mathematical Pre-Reqs Helpful for OpenSCAD
 - knowledge of basic algebra and geometry
-  - basic grid system (X Y Cartesian Coordinate system)
+  - basic grid system (X Y Z Cartesian Coordinate system)
   - names and conceptualization of different shapes in 2D and 3D
   - basic measurement skills and concept of scale and proportion
   - basic arithmetic and computation
@@ -49,6 +49,6 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
 <br><br><br>
 
 ## Contact Me
-E-Mail: [correllc@tsbvi.edu](mailto:correllc@tsbvi.edu)
+E-Mail: [Contact me!](mailto:correllc@tsbvi.edu)
 <br>
 Github: [@funkonaut](https://www.github.com/funkonaut)
