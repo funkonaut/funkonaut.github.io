@@ -27,7 +27,7 @@ In this lesson you will learn how to navigate the Glowforge application with a s
 <br><br><br>
 
 ## Step by Step Instructions
-The following sub sections will go over your first laser cut. Before you begin download one of the key chain design files from this [google folder]() they are all two by two inches to begin. This lesson is only on using the Glowforge web app if you are interested in designing for the Glowforge laser cutter check out our lessons on laser cutter design and OpenSCAD Lesson 4. 
+The following sub sections will go over your first laser cut. Before you begin download one of the key chain design files from this [google folder](https://drive.google.com/drive/u/0/folders/1m3VweN7iyKRvgXnwPwTxe4nmGAdFkEvE) they are all two by two inches to begin. This lesson is only on using the Glowforge web app if you are interested in designing for the Glowforge laser cutter check out our lessons on laser cutter design and OpenSCAD Lesson 4. 
 <br><br>
 
 
@@ -41,7 +41,8 @@ Once logged in to the [Glowforge web app](https://app.glowforge.com/) (your lase
 <br><br>
 
 ### Uploading a Design 
-Now that you are in the Glowforge web app design space you will upload your design
+Now that you are in the Glowforge web app design space you will upload your design to the web app to upload it to the laser cutter.
+<br><br>
 1. Activate the "Import artwork" form field button
 2. Activate the "Upload" form field button 
 3. Select the key chain file you downloaded in the pop up file dialogue 
@@ -51,17 +52,17 @@ Now that you are in the Glowforge web app design space you will upload your desi
 All of the designs in the google folder will default to the top left portion of the Glowforge bed. Depending on if you have used material you may need to reposition the design. We recommend keeping tactile calipers or an accessible measuring tool around to help you figure out where you need to place your design on in the web app. 
 <br><br>
 
-#### Resizing your Design *Optional*
+#### Resizing your Design *(Optional)*
 If you would like your key chain to be smaller or larger then 2" by 2" you can resize it with the following steps. Your design should be focused and selected if you are having trouble finding elements in the steps below try hitting escape a couple of times and then making sure the Virtual PC cursor is off (forms mode) and then select all by pressing control + a.
 <br><br>
 
 1. With your design selected activate the "Reposition and resize artwork" form field button
 2. Activate the W form field to resize the width of your key chain. 
-3. Type out the value in inches you would like to make your keychain.
+3. Type out the value in inches you would like to make your key chain.
 4. Changing the value of your designs with will automatically scale the design's height (H form field). 
 <br><br>
 
-#### Determining Placement for Used Materials *Optional*
+#### Determining Placement for Used Materials *(Optional)*
 If you are using used materials (they have holes in them from others laser cuts) then you will want to make sure you place your design where there is un modified material. If you are using a fresh sheet of 11" by 19.5" material you can skip this.
 <br><br>
 
@@ -87,7 +88,7 @@ Now that your design is ready lets make the cut (and engrave...). We will first 
 You will want to double check your material settings incase your QR code was damaged. After the machine scans your material into the Glowforge it will show up in the design space after about 30 or so seconds. You will now see a new form field button something like "Medium Blue Acrylic" or whatever your material is if you do not you will see an "UNKNOWN" form field button. If that is the case activate the button and type the material you want in the search bar then tab through the results until you hear the material you are using and activate it.
 <br><br>
 
-#### Setting Engrave Settings *Optional*
+#### Setting Engrave Settings *(Optional)*
 You will most likely want to change the engrave settings so the graphic design is a bit more pronounced. The default setting is "Draft Graphic" with is acceptable but leaves wanting more... Unfortunately this is a little bit cumbersome due to the web apps somewhat inaccessible design, but it is doable.
 <br><br>
 
@@ -117,6 +118,6 @@ In this lesson you learned:
 <br><br><br>
 
 ## Resources
-- [Glowforge web app]() 
-- [Key chain design repo (Google Drive folder)]() 
+- [Glowforge web app](https://app.glowforge.com/) 
+- [Key chain design repo (Google Drive folder)](https://drive.google.com/drive/u/0/folders/1m3VweN7iyKRvgXnwPwTxe4nmGAdFkEvE) 
 <br><br><br>
