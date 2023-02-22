@@ -16,6 +16,7 @@ tags: [Laser Cutting]
 
 ## Learning Objectives
 In this lesson you will learn how to navigate the Glowforge application with a screen reader by cutting out a simple key chain design from a repository of pre-made designs. Currently there are some accessibility limitations to laying out and uploading your design in the web application. We are working with Glowforge to improve work flow and resolve the issues for screen reader users, but in the meantime we recommend laying out your designs in OpenSCAD or another accessible layout application that works with vector and raster files, and then uploading the whole design into openSCAD. In part two of this lesson we will dive deeper into the web application and go over adjusting settings and other aligning multiple objects. **IMPORTANT NOTE: This step by step is simply for using the Glowforge web app with a screen reader it does not cover very important safety instructions for using hte laser cutter, please complete a safety training before making any cuts**
+<br><br><br>
 
 ## Materials and Tools
 - A (preferably new) 11" by 19.5" sheet of [proofgrade material](https://shop.glowforge.com/collections/materials)
@@ -23,7 +24,7 @@ In this lesson you will learn how to navigate the Glowforge application with a s
 - Computer with an internet connection
 - A screen reading software
 - An accessible measuring device
-<br><br>
+<br><br><br>
 
 ## Step by Step Instructions
 The following sub sections will go over your first laser cut. Before you begin download one of the key chain design files from this [google folder]() they are all two by two inches to begin. This lesson is only on using the Glowforge web app if you are interested in designing for the Glowforge laser cutter check out our lessons on laser cutter design and OpenSCAD Lesson 4. 
@@ -96,7 +97,7 @@ You will most likely want to change the engrave settings so the graphic design i
 4. There should now be some new form field buttons on screen. We suggest activating the "3D Engrave" or "SD Graphic" form field buttons. The 3D Engrave setting is deeper while the SD Graphic setting provides a nice frosting effect especially on translucent material.
 <br><br>
 
-### Making the Cut
+### Firing the Laser
 1. Activate the "PRINT" form field button. *Note: If this is your machines first cut there may be some link that you have click on like "blah blah first cut blah blah" click that or your design won't upload to the machine.*
 2. It will take around 30 seconds to a minute for your design to process and upload to the machine if you are interested there is a cancel link that shows up (for canceling the print) above that link is some text that will give you a seconds and minutes read out for how long your design is going to take to make it should be around 5 to 10 minutes depending on the size of your key chain.
 3. Go to the laser cutter make sure the exhaust system is on and put on laser safety glasses. There is a large (~3" in diameter) button that should be flashing blue. If you hit it it will start firing the laser. If you hit it again it will pause the laser. If at any time you open the lid while the laser is firing the machine will cancel your print.
@@ -105,7 +106,7 @@ You will most likely want to change the engrave settings so the graphic design i
 Open the lid and remove your material and print. Scan the crumb tray and make sure your print has been removed. If you have any pieces that are waste you can use a shop vacuum below the machine to remove them or pick them out of the machine.
 6. You will now need to clean the masking tape material off of your print. I recommend using a super tacky tape to pull the less tacky masking tape off of your print. 
 7. When your print is clean you can now enjoy your new key chain. CONGRATS ON YOUR NEW OBJECT!
-<br><br>
+<br><br><br>
 
 ## Review
 In this lesson you learned:
