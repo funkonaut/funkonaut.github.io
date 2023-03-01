@@ -15,17 +15,14 @@ tags: [Lesson 2]
 <br><br>
 
 ## Learning Objectives
-Before starting this lesson, it is recommended that students review the terminology listed in the "terminology.txt" file. It is also important to review the XYZ coordinate system and the different windows in the program such as the preview and editor windows.
-<br><br>
-
-In this lesson, we will be creating basic 3D primitives using OpenSCAD. As you might remember from the terminology text file, primitives are how we build our models in OpenSCAD, the word is synonymous with base shape. 
+Before starting this lesson, it is recommended that you review the "terminology.txt" file. In this lesson, we will be creating basic 3D primitives using OpenSCAD. As you might remember from our terminology and previous lessons, primitives are how we build our models in OpenSCAD, the word is synonymous with base shape. 
 <br><br><br>
 
 # Primitive Shape Commands in OpenSCAD
 In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape `cube(1);` Go ahead and write the code for a cube and preview it (remember to preview the shape, hit f5.)
 <br><br>
 
-A shape command is made up of multiple parts: 
+A shape command is made up of multiple parts:
 <br>
 1. The name of the shape command: "cube"
 2. The parameters that defines the shape "1" 
