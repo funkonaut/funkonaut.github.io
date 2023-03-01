@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab 3D Printing: Prusa Slicer Setup and Use (GUI for LV)"
+title:  "Fab Lab 3D Printing: Prusa Slicer Setup and Use (For LV)"
 date:   1113-01-02
 last_modified_at: 2023-01-26
 categories: [Fabrication Lab]

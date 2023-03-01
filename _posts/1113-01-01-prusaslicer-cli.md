@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab 3D Printing: Prusa Slicer Setup and Use (CLI for Screen Readers)"
+title:  "Fab Lab 3D Printing: Prusa Slicer Setup and Use (For Screen Readers)"
 date:   1113-01-01
 last_modified_at: 2023-01-26
 categories: [Fabrication Lab]
