@@ -15,7 +15,7 @@ tags: [Resources ]
 <br><br>
 
 ## Learning Objectives
-As of the post last update, {{ post.time | date: '%m-%d-%Y' }} this is a list of links for current AI tools and resources. As of right now not everything is vetted for screen reader usage, please [email me](mailto:correllc@tsbvi.edu) if you have any updates. Feel free to use this and pass it along share everything you make, and please share this website and article if you do!
+As of this post's last update this is a list of links for current AI tools and resources. Right now not everything is vetted for screen reader usage, please [email me](mailto:correllc@tsbvi.edu) if you have any updates. Feel free to use this and pass it along, share everything you make, and please share this website and article if you do!
 <br><br><br>
 
 ## Popular AI Tools (no code needed)
