@@ -94,7 +94,7 @@ The following are helpful utilities for specialized tasks that you might like to
 These websites are searchable and a have a variety of graphic and vector files that can be laser engraved or cut. The quality varies and it is up to the users discretion to determine if they will suffice. Typically you want vector designs to be simple outlines, and graphics to be at least 300 dpi.
 <br><br>
 
-- [Google Image Search (right click save image as jpeg or take a screen shot if its a .webp file)](https://www.google.com/imghp?hl=en&ogbl)
+- [Google Image Search (right click save image as or take a screen shot if its a .webp file)](https://www.google.com/imghp?hl=en&ogbl)
 - [SVG repo](https://www.svgrepo.com/)
 - [Simple Vector Shapes](CREATE GITHUB DIRECT DOWNLOAD LINK!!!)
 <br><br><br>
