@@ -3,7 +3,7 @@ layout: post
 title:  "Artificial Intelligence Resources for BVI Students"
 date:   1111-01-01
 last_modified_at: 2023-03-24
-categories: [Artificial Intelligence]
+categories: [Teacher Resources]
 tags: [Resources ]
 ---
 <br>
@@ -20,7 +20,7 @@ As of this post's last update this is a list of links for current AI tools and r
 
 ## Popular AI Tools (no code needed)
 - [OpenAI ChatGPT](https://chat.openai.com/) - this in itself a whole two-day course text generation is huge right now, you'll need to sign up for it (free)
-  - A little inefficeint fort screen readers usage as of {{ post.time | date: '%m-%d-%Y' }} 
+  - A little inefficient for screen readers usage
     - Ctrl home > read all command to read through chat thread
     - I believe the chat input box is a form field
 - [Midjourney](https://www.midjourney.com/home/?callbackUrl=%2Fapp%2F) - text to art generation makes really nice “fine art” you can access it via discord chat servers

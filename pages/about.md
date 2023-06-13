@@ -48,6 +48,24 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
   - Tactile Graph board and Play-Doh: these can be helpful as a teaching tool or to  generate mockups of designs if you are working with a sighted partner   
 <br><br><br>
 
+## Course Sequence
+1. Fabrication Lab 3D Printing
+ - Prusa Slicer Setup
+ - 3D Printer Orientation 
+ - Project 1, Project 2
+2. OpenSCAD Lessons
+ - Lesson 1, Project 3
+ - Lesson 2, Project 4
+3. Fabrication Lab Laser Cutting
+ - Design Resources
+ - Using the Glowforge App
+ - Laser Cutter Safety
+ - Project 5, Project 6
+4. OpenSCAD Lessons
+ - Lesson 3, Project 7
+ - Lesson 4, Project 8
+<br><br><br>
+
 ## Contact Me
 E-Mail: [Contact me!](mailto:correllc@tsbvi.edu)
 <br>
