@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab Laser Cutting: Using the Glowforge App for BVI Makers (Part 1)"
+title:  "Fab Lab Laser Cutting: Accessing the Glowforge App"
 date:   1113-02-02
 last_modified_at: 2023-01-24
 categories: [Fabrication Lab]
