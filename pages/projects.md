@@ -11,8 +11,8 @@ permalink: /projects
 <br><br>
 
 ### Laser Cutting
-1. [Your first thing.](https://github.com/funkonaut/openSCAD_lessons): Make a box.
-2. [Your second thing that solves a thing.](https://github.com/funkonaut/openSCAD_lessons): Solve a problem.
+1. [Your first thing](https://github.com/funkonaut/openSCAD_lessons): Make a box.
+2. [Your second thing that solves a thing](https://github.com/funkonaut/openSCAD_lessons): Solve a problem.
 <br><br><br>
 
 ## OpenSCAD
@@ -22,9 +22,9 @@ permalink: /projects
 <br><br>
 
 ### Lesson 2: Modifying Shapes and Booleans
-1. [Make it your own.](https://github.com/funkonaut/openSCAD_lessons): Modify someone elses design using OpenSCAD.
-2. [Solve a problem.](https://github.com/funkonaut/openSCAD_lessons): Interact with external stake holders, and use your 3D printing and coding skills to solve a problem.
-3. [Make a necklace.](https://github.com/funkonaut/openSCAD_lessons): Make a two different types of beads and then assemble a beaded necklace with at least 6 beads. 
+1. [Make it your own](https://github.com/funkonaut/openSCAD_lessons): Modify someone elses design using OpenSCAD.
+2. [Solve a problem](https://github.com/funkonaut/openSCAD_lessons): Interact with external stake holders, and use your 3D printing and coding skills to solve a problem.
+3. [Make a necklace](https://github.com/funkonaut/openSCAD_lessons): Make a two different types of beads and then assemble a beaded necklace with at least 6 beads. 
 <br><br>
 
 ### Lesson 3: 2D Design Primitives
