@@ -12,7 +12,28 @@ This web page is organized into three sub pages: About, Lessons, and Projects. Y
 <br><br><br>
 
 ## Recommended Sequencing
-Depending on if you have a 3D printer or not and if you are accessing OpenSCAD non-visually we recommend trying to go through the introductory command line shell and 3D printing lessons after you complete all of the lessons in OpenSCAD Lesson 1. That way you can get up and running printing while you are learning OpenSCAD! Then once you finish all of the OpenSCAD lessons or at least lessons 1-6 move on to Python and the intermediate command line shell lessons. That said feel free to skip around as little or as much as you'd like. If you are committed to learning programming through this website you should go through and type all of the commands along with the lessons, and complete every attached practice problem.
+## Course Sequence
+1. Fabrication Lab: 3D Printing
+ - Prusa Slicer Setup
+ - 3D Printer Orientation 
+ - Project 1
+ - Project 2
+2. Fabrication Lab: Laser Cutting
+ - Design Resources
+ - Using the Glowforge App
+ - Laser Cutter Safety
+ - Project 1
+ - Project 2
+3. OpenSCAD Lessons
+ - Lesson 1 
+ - Project 1
+ - Lesson 2 
+ - Project 2
+4. OpenSCAD Lessons
+ - Lesson 3
+ - Project 1
+ - Lesson 4 
+ - Project 2
 <br><br><br>
 
 ## Helpful Pre-Requisite Knowledge
@@ -46,30 +67,6 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
     - [We love these 1mm resolution tactile callipers](https://tactilevisiongraphics.com/product/metric-braille-caliper/)
     - [These bluetooth ones work okay with mobile device screen readers](https://www.amazon.com/iGaging-Electronic-Absolute-Bluetooth-Connectivity/dp/B0716B8Q99/ref=sr_1_1?keywords=bluetooth%2Bcaliper&qid=1638566825&sr=8-1&th=1)
   - Tactile Graph board and Play-Doh: these can be helpful as a teaching tool or to  generate mockups of designs if you are working with a sighted partner   
-<br><br><br>
-
-## Course Sequence
-1. Fabrication Lab: 3D Printing
- - Prusa Slicer Setup
- - 3D Printer Orientation 
- - Project 1
- - Project 2
-2. Fabrication Lab: Laser Cutting
- - Design Resources
- - Using the Glowforge App
- - Laser Cutter Safety
- - Project 1
- - Project 2
-3. OpenSCAD Lessons
- - Lesson 1 
- - Project 1
- - Lesson 2 
- - Project 2
-4. OpenSCAD Lessons
- - Lesson 3
- - Project 1
- - Lesson 4 
- - Project 2
 <br><br><br>
 
 ## Contact Me
