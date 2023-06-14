@@ -12,28 +12,27 @@ This web page is organized into three sub pages: About, Lessons, and Projects. Y
 <br><br><br>
 
 ## Recommended Sequencing
-## Course Sequence
 1. Fabrication Lab: 3D Printing
- - Prusa Slicer Setup
- - 3D Printer Orientation 
- - Project 1
- - Project 2
+ - [Prusa Slicer Setup](https://www.accessiblestem.org/fabrication%20lab/prusaslicer-gui.html)
+ - [3D Printer Orientation](https://www.accessiblestem.org/fabrication%20lab/)
+ - [Project 1]
+ - [Project 2]
 2. Fabrication Lab: Laser Cutting
- - Design Resources
- - Using the Glowforge App
- - Laser Cutter Safety
- - Project 1
- - Project 2
+ - [Design Resources]
+ - [Using the Glowforge App]
+ - [Laser Cutter Safety]
+ - [Project 1]
+ - [Project 2]
 3. OpenSCAD Lessons
- - Lesson 1 
- - Project 1
- - Lesson 2 
- - Project 2
+ - [Lesson 1]
+ - [Project 1]
+ - [Lesson 2]
+ - [Project 2]
 4. OpenSCAD Lessons
- - Lesson 3
- - Project 1
- - Lesson 4 
- - Project 2
+ - [Lesson 3]
+ - [Project 1]
+ - [Lesson 4]
+ - [Project 2]
 <br><br><br>
 
 ## Helpful Pre-Requisite Knowledge
