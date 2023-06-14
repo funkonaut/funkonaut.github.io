@@ -28,12 +28,12 @@ permalink: /projects
 <br><br>
 
 ### Lesson 3: 2D Design Primitives
-1. [Fix it up.](https://github.com/funkonaut/openSCAD_lessons):  Redesign someone elses design.
-2. [Make it new.](https://github.com/funkonaut/openSCAD_lessons):  Improve on a concept with a new design.
+1. [Fix it up](https://github.com/funkonaut/openSCAD_lessons):  Redesign someone elses design.
+2. [Make it new](https://github.com/funkonaut/openSCAD_lessons):  Improve on a concept with a new design.
 <br><br>
 
 ### Lesson 4: Parameterization, Functions, Loops, and The MCAD Library
-1. [Solve a problem, again.](https://github.com/funkonaut/openSCAD_lessons): Interact with external stake holders, and use your laser cutting or 3D printing and coding skills to solve a problem.
+1. [Solve a problem, again](https://github.com/funkonaut/openSCAD_lessons): Interact with external stake holders, and use your laser cutting or 3D printing and coding skills to solve a problem.
 2. [Screw Loose](https://github.com/funkonaut/openSCAD_lessons): Fasteners are fun!
 <br><br>
 
