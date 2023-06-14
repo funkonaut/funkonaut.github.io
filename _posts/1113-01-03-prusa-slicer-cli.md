@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Fab Lab 3D Printing: Prusa Slicer Setup and Use (For Screen Readers)"
-date:   1113-01-01
+date:   1113-01-03
 last_modified_at: 2023-01-26
 categories: [Fabrication Lab]
 tags: [3D Printing]
@@ -48,7 +48,7 @@ These steps will allow you to run the Prusa Slicer program from anywhere and not
 4. Test and make sure it worked by running powershell and typing `pru` and pressing tab a couple times it should autocomplete to `prusa-slicer-console.exe` after two tabs and then add the help flag the whole command should read `prusa-slicer-console.exe --help` and will output a whole lot of text you can output it to a text file (ie: `prusa-slicer-console.exe --help > prusa-slicer_help.txt` if you are interested in reading it or [visit the slic3r documentation page on using the command line tools](https://manual.slic3r.org/advanced/command-line)
 <br><br>
 
-*Note: The prusa-slicer-console exe is the one you want for command line commands the other slicer exe files are not for command line usage, and will most likely launch the less than accessible GUI program*
+*Note: The prusa-slicer-console.exe file is the one you want for command line commands the other slicer exe files are not for command line usage, and will most likely launch the less than accessible GUI program*
 <br><br><br>
 
 ## Using Prusa Slicer CLI
