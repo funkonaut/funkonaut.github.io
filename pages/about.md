@@ -49,21 +49,27 @@ Depending on if you have a 3D printer or not and if you are accessing OpenSCAD n
 <br><br><br>
 
 ## Course Sequence
-1. Fabrication Lab 3D Printing
+1. Fabrication Lab: 3D Printing
  - Prusa Slicer Setup
  - 3D Printer Orientation 
- - Project 1, Project 2
-2. OpenSCAD Lessons
- - Lesson 1, Project 3
- - Lesson 2, Project 4
-3. Fabrication Lab Laser Cutting
+ - Project 1
+ - Project 2
+2. Fabrication Lab: Laser Cutting
  - Design Resources
  - Using the Glowforge App
  - Laser Cutter Safety
- - Project 5, Project 6
+ - Project 1
+ - Project 2
+3. OpenSCAD Lessons
+ - Lesson 1 
+ - Project 1
+ - Lesson 2 
+ - Project 2
 4. OpenSCAD Lessons
- - Lesson 3, Project 7
- - Lesson 4, Project 8
+ - Lesson 3
+ - Project 1
+ - Lesson 4 
+ - Project 2
 <br><br><br>
 
 ## Contact Me

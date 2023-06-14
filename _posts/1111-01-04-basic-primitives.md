@@ -4,7 +4,7 @@ title:  "OpenSCAD Lesson 1.4: Basic Primitives"
 date:   1111-02-01
 last_modified_at: 2023-01-12
 categories: [OpenSCAD]
-tags: [Lesson 2]
+tags: [Lesson 1]
 ---
 <br>
 
