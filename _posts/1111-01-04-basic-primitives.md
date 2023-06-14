@@ -15,7 +15,7 @@ tags: [Lesson 1]
 <br><br>
 
 ## Learning Objectives
-Before starting this lesson, it is recommended that you review the "terminology.txt" file. In this lesson, we will be creating basic 3D primitives using OpenSCAD. As you might remember from our terminology and previous lessons, primitives are how we build our models in OpenSCAD, the word is synonymous with base shape. 
+Before starting this lesson, it is recommended that you review the [terminology.txt file](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/terminology.txt). In this lesson, we will be creating basic 3D primitives using OpenSCAD. As you might remember from our terminology and previous lessons, primitives are how we build our models in OpenSCAD, the word is synonymous with base shape. 
 <br><br><br>
 
 # Primitive Shape Commands in OpenSCAD
