@@ -19,6 +19,7 @@ By the end of this lesson, students should be able to:
 1. Understand the specific features and components of the Prusa Mini+ 3D printer.
 2. Operate the Prusa Mini+ 3D printer safely and effectively.
 3. Troubleshoot common issues with the Prusa Mini+ 3D printer.
+<br><br><br>
 
 ## Introduction to Prusa Mini+
 The Prusa Mini+ is a compact and affordable 3D printer from Prusa Research. Despite its smaller size compared to other models in the Prusa range, the Mini+ still offers a large print volume, high-quality prints, and a number of advanced features.
