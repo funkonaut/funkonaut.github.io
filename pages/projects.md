@@ -5,7 +5,7 @@ permalink: /projects
 ---
 
 ## Fabrication Lab
-<br><br>
+<br>
 
 ### 3D Printing
 1. [Your first thing](https://github.com/funkonaut/openSCAD_lessons): Using thingiverse and printables to find models.
@@ -18,7 +18,7 @@ permalink: /projects
 <br><br><br>
 
 ## OpenSCAD
-<br><br>
+<br>
 
 ### Lesson 1
 1. [Dice Dice Dice](https://github.com/funkonaut/openSCAD_lessons): Make 3 dice. Put your knowledge of primitives and resolution to use. 
