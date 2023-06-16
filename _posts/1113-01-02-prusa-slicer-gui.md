@@ -100,7 +100,7 @@ The following keyboard shortcut tables are a modified from [Prusa Slicers websit
 <br><br>
 
 #### Main Window / Commands Keyboard Shortcuts
-Keyboard Shortcut Description
+
 | Shortcut            	| Description   	| 
 |---------------------	|---------------	| 
 | control + shift + v 	| view all      	| 
@@ -116,6 +116,7 @@ Keyboard Shortcut Description
 <br><br>
 
 #### Plater Keyboard Shortcuts
+
 | Keyboard Shortcut        	| Description                                   	| 
 |--------------------------	|-----------------------------------------------	| 
 | A                        	| Arrange                                       	| 
@@ -156,6 +157,7 @@ Keyboard Shortcut Description
 <br><br>
 
 #### Preview Keyboard Shortcuts
+
 | Keyboard Shortcut 	| Description                                	| 
 |-------------------	|--------------------------------------------	| 
 | Arrow Up or W     	| Move active end of vertical slider up      	| 
