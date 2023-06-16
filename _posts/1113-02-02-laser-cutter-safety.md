@@ -13,21 +13,6 @@ tags: [Laser Cutting]
 * Table of contents
 {:toc}
 <br><br>
----
-layout: post
-title:  "Safety First: Using Laser Cutters Responsibly"
-date:   2023-06-14
-last_modified_at: 
-categories: [Safety]
-tags: [Lesson, Laser Cutter]
----
-<br>
-
-## Contents
-{:.no_toc}
-* Table of contents
-{:toc}
-<br><br>
 
 ## Learning Objectives
 By the end of this lesson, students should be able to:

@@ -18,10 +18,10 @@ This web page is organized into three sub pages: About, Lessons, and Projects. Y
  - [Project 1: Your First Print](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Projects/project-1-your-first-print.md)
  - [Project 2: Your Second Print and Solving a Problem]()
 2. Fabrication Lab: Laser Cutting
- - [Design Resources]
- - [Using the Glowforge App]
- - [Laser Cutter Safety]
- - [Project 1]
+ - [Design Resources]()
+ - [Using the Glowforge App]()
+ - [Laser Cutter Safety](https://www.accessiblestem.org/fabrication%20lab/laser-cutter-safety.html)
+ - [Project 1]()
  - [Project 2]
 3. OpenSCAD Lessons
  - [Lesson 1]
