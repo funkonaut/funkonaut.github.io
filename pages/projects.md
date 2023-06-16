@@ -12,6 +12,7 @@ permalink: /projects
 
 ### Laser Cutting
 1. [Your first thing](https://github.com/funkonaut/openSCAD_lessons): Make a box.
+2. [Your first thing](https://github.com/funkonaut/openSCAD_lessons): Make a key chain.
 2. [Your second thing that solves a thing](https://github.com/funkonaut/openSCAD_lessons): Solve a problem.
 <br><br><br>
 

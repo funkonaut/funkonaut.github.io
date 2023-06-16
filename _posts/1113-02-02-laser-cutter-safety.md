@@ -53,5 +53,5 @@ In this lesson you learned:
 <br><br><br>
 
 ## Resources
-- [Laser cutter student safety agreement](https://drive.google.com/uc?export=download&id=1Mo8QdgW4c-svh8ZbGELj-woXbcA04NpYRNqT3DQ004E)
-- [Laser cutter staff training](https://drive.google.com/uc?export=download&id=1B9ovW-0xHYcXZ2wOr-QdKr3EzmV33lByIgC8rHd_gS4)
+- [Laser cutter student safety agreement](https://drive.google.com/uc?export=download&id=1hNBPoUt3aymw3Mt5RZgXkpCFyqhFeRLH)
+- [Laser cutter staff training](https://drive.google.com/uc?export=download&id=1JDvcJGkuCT8hwfxh7-gkh4ki7TyblZJA)
