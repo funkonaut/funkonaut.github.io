@@ -2,7 +2,7 @@
 layout: post
 title:  "Fab Lab Laser Cutting: Safety"
 date:   1113-02-02
-last_modified_at: 
+last_modified_at: 2023-06-15
 categories: [Fabrication Lab]
 tags: [Laser Cutting]
 ---
@@ -55,3 +55,4 @@ In this lesson you learned:
 ## Resources
 - [Laser cutter student safety agreement](https://drive.google.com/uc?export=download&id=1hNBPoUt3aymw3Mt5RZgXkpCFyqhFeRLH)
 - [Laser cutter staff training](https://drive.google.com/uc?export=download&id=1JDvcJGkuCT8hwfxh7-gkh4ki7TyblZJA)
+<br><br><br>
