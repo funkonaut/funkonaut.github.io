@@ -49,81 +49,8 @@ In order to use Prusa Slicer to slice a model (prepare it for 3D printing) follo
 
 
 ### Helpful Keyboard Shortcuts for Prusa Slicer
-The following keyboard shortcut tables are a modified from [Prusa Slicers website](https://help.prusa3d.com/article/keyboard-shortcuts_1764). Each subheading is for each Window View available in the Prusa Slicer GUI.
+Keyboard shortcut tables can be found on [Prusa Slicers website](https://help.prusa3d.com/article/keyboard-shortcuts_1764). 
 <br><br>
-
-#### Main Window / Commands Keyboard Shortcuts
-<br>
-
-| Shortcut            	| Description   	|
-|---------------------	|---------------	|
-| control + shift + v 	| view all      	|
-| control + 4         	| top view      	|
-| control + 5         	| bottom view   	|
-| control + 6         	| left view     	|
-| control + 7         	| right view    	|
-| control + 8         	| front view    	|
-| control + 9         	| back view     	|
-| control + 0         	| diagonal view 	|
-| control + [         	| zoom out      	|
-| control + ]         	| zoom in       	|
-<br><br>
-
-#### Plater Keyboard Shortcuts
-<br>
-
-| Keyboard Shortcut        	| Description                                   	| \
-|--------------------------	|-----------------------------------------------	| \
-| A                        	| Arrange                                       	| \
-| Shift + A                	| Partial arrange (arrange selection)           	| \
-| +                        	| Add instance of selected object               	| \
-| -                        	| Remove instance of selected object            	| \
-| M                        	| Move                                          	| \
-| S                        	| Scale                                         	| \
-| R                        	| Rotate                                        	| \
-| C                        	| Cut                                           	| \
-| F                        	| Place on Face                                 	| \
-| L                        	| SLA supports                                  	| \
-| H                        	| SLA hollowing                                 	| \
-| Page Up                  	| Rotate selection by 45 degrees CCW            	| \
-| Page Down                	| Rotate selection by 45 degrees CW             	| \
-| Arrow Left/Right/Up/Down 	| Move by 10mm                                  	| \
-| Shift + Any arrow key    	| Movement step set to 1mm                      	| \
-| Ctrl + Any arrow key     	| Movement in camera space                      	| \
-| Ctrl + Mouse click       	| Add object to current selection               	| \
-| Shift+ Mouse drag        	| Box selection                                 	| \
-| Alt+ Mouse drag          	| Box deselect                                  	| \
-| Shift + Scale tool       	| Snap by 5%                                    	| \
-| Shift + Move tool        	| Snap by 1 mm                                  	| \
-| F+ Scale tool            	| Scale to fit (maximum scale)                  	| \
-| Ctrl+ Scale tool         	| Scale only in one direction                   	| \
-| K                        	| Change camera type (perspective/orthographic) 	| \
-| B                        	| Zoom to bed                                   	| \
-| Z                        	| Zoom to all objects                           	| \
-| Z+ Selected model        	| Zoom to selected model                        	| \
-| I                        	| Zoom in                                       	| \
-| O                        	| Zoom out                                      	| \
-| Shift + Tab              	| Collapse/Expand the sidebar                   	| \
-| Ctrl + M                 	| Show/hide 3D connexion device settings        	| \
-| 0- 6                     	| Camera view                                   	| \
-| E                        	| Show/hide object/instance labels              	| \
-| Shift + ?                	| Show keyboard shortcuts                       	| \
-| Ctrl+ Mouse click        	| Show/hide 3D connection device settings       	| 
-<br><br>
-
-#### Preview Keyboard Shortcuts
-<br>
-
-| Keyboard Shortcut 	| Description                                	|  
-|-------------------	|--------------------------------------------	|  
-| Arrow Up or W     	| Move active end of vertical slider up      	|  
-| Arrow Down        	| Move active end of vertical slider down    	|  
-| Arrow Left        	| Move active end of horizontal slider left  	|  
-| Arrow Right       	| Move active end of horizontal slider right 	|  
-| L                 	| Show hide legend                           	|  
-| Del               	| Delete selected                            	|  
-| Ctrl+Del          	| Delete All                                 	|  
-<br><br><br>
 
 ## Review
 In this lesson you learned:
