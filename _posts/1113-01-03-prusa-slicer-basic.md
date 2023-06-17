@@ -15,7 +15,7 @@ tags: [3D Printing]
 <br><br>
 
 ## Learning Objectives
-In this lesson you will learn how to use some of the basic features of the Prusa Slicer software. The graphical user interface for Prusa Slicer is not fully accessible but has several keyboard shortcuts and features that enables efficient low vision access. 
+In this lesson you will learn how to use some of the basic features of the Prusa Slicer software to make your first 3D print. The graphical user interface for Prusa Slicer is not fully accessible but has several keyboard shortcuts and features that enables efficient low vision access and basic slicing can be achieved for screen reader users. 
 <br><br><br>
 
 ## Pre-Requisites 
@@ -23,8 +23,8 @@ In this lesson you will learn how to use some of the basic features of the Prusa
 - basic folder and file navigation in Windows
 <br><br><br>
 
-## Using Prusa Slicer GUI
-We recommend trying out the Prusa Slicer CLI set up in the advanced tutorial or least learning about how to use the CLI interface as it is a helpful tool and learning experience. If you do not have basic command line shell skills down you can solely use the GUI, most users use the GUI, there is no shame in only using the GUI. Additionally while the GUI is not accessible a screen reader user can use it for very basic slicing using the keyboard shortcuts. The basic workflow is as follows:
+## Steps for Basic Printing
+In order to use Prusa Slicer to slice a model (prepare it for 3D printing) follow these steps:
 <br><br>
 
 1. Import a STL file (ctrl + i)
@@ -41,10 +41,12 @@ We recommend trying out the Prusa Slicer CLI set up in the advanced tutorial or 
   - the scale tool (s) will allow you to scale your model
   - the rotate tool (r) will allow you to rotate your model
   - the place on face tool (f) will allow you to click a face of your model and anchor it to the print bed, its helpful to use in place of rotating if you want your model in a different orientation.
+  - a helpful tip is that you can auto arrange multiple imported models by selecting them all (ctrl+ a) and then hitting the auto-arrange tool hot key (a).
 4. When your model(s) slicer settings are selected and it is positioned and sized correctly on the build plate (plater) you can slice the model by clicking the "slice now" button in the bottom right area of the screen or by pressing ctrl + r
 5. After your model is sliced you will see stats about the print appear in the right sidebar including the estimated filament used (in grams) and the print time. You can click the "Export G-code" button or press ctrl + u which will launch a Windows file dialogue where you can save your G-code file on an external SD card.
 6. You can now print your model by plugging in your SD card into the 3D printer and selecting the file you just uploaded.
 <br><br>
+
 
 ### Helpful Keyboard Shortcuts for Prusa Slicer
 The following keyboard shortcut tables are a modified from [Prusa Slicers website](https://help.prusa3d.com/article/keyboard-shortcuts_1764). Each subheading is for each Window View available in the Prusa Slicer GUI.
@@ -126,6 +128,10 @@ In this lesson you learned:
 - How to install and set up the GUI version of Prusa Slicer for LV access
 - The basic graphical layout of the GUI version of Prusa Slicer
 - How to use the GUI version of Prusa Slicer to slice and 3D print a model
+ - import (ctrl + i)
+ - slice (ctrl + r)
+ - export (ctrl + u)
+ - print (3D printer specific)
 - Helpful keyboard shortcuts for the GUI version of Prusa Slicer
 <br><br><br>
 

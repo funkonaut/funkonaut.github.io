@@ -29,7 +29,7 @@ In this lesson you will learn how to set up the Prusa Slicer software. The graph
 
 1. Alt + n for next page from intro page
 2. Choose installation type we recommend installing for everybody (default). Alt + n for next page.
-3. Choose where to install the program files we recommend the default location, if you choose another location make sure you make note because you will need the path to the CLI .exe file if you want to add the CLI to your PATH environment variable. Alt + n for next page.
+3. Choose where to install the program files we recommend the default location. Alt + n for next page.
 4. Select the features. Tab and you will be in the tree view of check boxes to select. Here you will select your drivers and different utilities that are included with the slicer. We recommend adding the driver for your Prusa printer if you have one, if not the defaults will work. Alt + n for next page.
 5. Create application shortcuts. Go with the defaults to have a shortcut added to your start menu and desktop. Alt + i to install
 6. You may prompted with a "user account control" dialogue you will need to input an administrator user name and password and then a security dialogue will pop up asking if you want to install tab to the install button when the security dialogue is focused or type alt + i.

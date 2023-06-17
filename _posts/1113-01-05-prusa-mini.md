@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab 3D Printing: Using the Prusa Mini+ 3D Printer"
+title:  "Fab Lab 3D Printing: Prusa Mini+ 3D Printer Orientation"
 date:   1113-01-04
 last_modified_at: 2023-06-14
 categories: [Fabrication Lab]
@@ -28,7 +28,7 @@ The Mini+ uses the Fused Deposition Modeling (FDM) 3D printing method. It comes 
 <br><br><br>
 
 ## Using the Prusa Mini+ 3D Printer
-Operating the Prusa Mini+ 3D printer involves several key steps. We recommend you read the whole [Prusa Minii+ manual](https://cdn.prusa3d.com/downloads/manual/prusa3d_manual_mini_en.pdf#_ga=2.202527442.239309772.1686773064-2124047584.1686773063). You will need to at least read enough of it to do the following:
+Operating the Prusa Mini+ 3D printer involves several key steps. We recommend you read the whole [Prusa Mini+ manual](https://cdn.prusa3d.com/downloads/manual/prusa3d_manual_mini_en.pdf#_ga=2.202527442.239309772.1686773064-2124047584.1686773063). You will need to at least read enough of it to do the following:
 - **Understanding the Components** [*Chapter 5*](https://cdn.prusa3d.com/downloads/manual/prusa3d_manual_mini_en.pdf#%5B%7B%22num%22%3A35%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C0%2C418.113%2Cnull%5D): Get familiar with the parts of the printer, including the extruder, print bed, LCD screen, and filament sensor. Understand their roles in the printing process.
 - **Loading the Filament** [*Chapter 5.6*](https://cdn.prusa3d.com/downloads/manual/prusa3d_manual_mini_en.pdf#%5B%7B%22num%22%3A42%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C0%2C384.522%2Cnull%5D): The Prusa Mini+ has an easy-to-use filament sensor and loading system. Learn how to properly insert and remove filament.
 - **Using the LCD Screen** [*Chapter 5*](https://cdn.prusa3d.com/downloads/manual/prusa3d_manual_mini_en.pdf#%5B%7B%22num%22%3A35%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C0%2C545.825%2Cnull%5D) *and* [*Chapter 6.1*](https://cdn.prusa3d.com/downloads/manual/prusa3d_manual_mini_en.pdf#%5B%7B%22num%22%3A55%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C0%2C516.638%2Cnull%5D): Navigate through the menu, start prints, preheat the printer, and change settings using the LCD screen.
