@@ -53,9 +53,9 @@ The following keyboard shortcut tables are a modified from [Prusa Slicers websit
 <br><br>
 
 #### Main Window / Commands Keyboard Shortcuts
-<br>
+  
 | Shortcut            	| Description   	| 
-|---------------------	|---------------	| 
+|---------------------|---------------| 
 | control + shift + v 	| view all      	| 
 | control + 4         	| top view      	| 
 | control + 5         	| bottom view   	| 
