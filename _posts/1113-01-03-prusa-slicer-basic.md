@@ -54,7 +54,6 @@ The following keyboard shortcut tables are a modified from [Prusa Slicers websit
 
 #### Main Window / Commands Keyboard Shortcuts
 <br>
-
 | Shortcut            	| Description   	| 
 |---------------------	|---------------	| 
 | control + shift + v 	| view all      	| 
@@ -70,7 +69,7 @@ The following keyboard shortcut tables are a modified from [Prusa Slicers websit
 <br><br>
 
 #### Plater Keyboard Shortcuts
-
+<br>
 | Keyboard Shortcut        	| Description                                   	| 
 |--------------------------	|-----------------------------------------------	| 
 | A                        	| Arrange                                       	| 
@@ -111,7 +110,7 @@ The following keyboard shortcut tables are a modified from [Prusa Slicers websit
 <br><br>
 
 #### Preview Keyboard Shortcuts
-
+<br>
 | Keyboard Shortcut 	| Description                                	| 
 |-------------------	|--------------------------------------------	| 
 | Arrow Up or W     	| Move active end of vertical slider up      	| 
