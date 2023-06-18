@@ -87,4 +87,4 @@ In this lesson, you learned:
 
 ## Resources
 - [Follow along code](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%201/1_2_shape_mods.scad)
-- [OpenSCAD User Manual: Transformations](https://en.wikibooks.org/wiki/Open
+- [OpenSCAD User Manual: Transformations](https://en.wikibooks.org/wiki/Open)
