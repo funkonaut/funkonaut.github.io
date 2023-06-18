@@ -82,6 +82,7 @@ In this lesson you learned:
 <br><br><br>
 
 ## Resources
+- [Follow along code](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%202/2_2_bool_diff_student.scad)
 - [OpenSCAD User Manual: Boolean operations](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Boolean_Operations)
-- [Follow Along code]()
+
 <br><br><br>

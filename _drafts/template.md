@@ -34,6 +34,7 @@ In this lesson you learned:
 <br><br><br>
 
 ## Resources
+- [Follow along code](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%202/2_2_bool_diff_student.scad)
 - []()
 <br><br><br>
 
@@ -41,25 +42,4 @@ In this lesson you learned:
 
 
 # PROMPT 
-Use the following quote template and information in parenthesis to make a lesson plan for blind and visually impaired (low vision) highschoolers who are learning coding through OpenSCAD 3D modeling and 3D printing:  "## Learning Objectives
-
-## Section Title Case 
-PARAGRAPH
-<br><br>
-PARAGRAPH
-<br><br><br>
-
-## Section
-TEXT:
-- BULLET OR NUMBERED LIST
-<br><br><br>
-
-
-## Review
-In this lesson you learned:
-- 
-<br><br><br>
-
-## Resources
-- []()
-<br><br><br>"  (LESSON PLAN)
+Use the following quote template and information in parenthesis to make a lesson plan for blind and visually impaired (low vision) highschoolers who are learning coding through OpenSCAD 3D modeling and 3D printing:  "TEMPLATE" (LESSON PLAN CODE)

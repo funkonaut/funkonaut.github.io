@@ -145,7 +145,7 @@ In this lesson you learned:
 <br><br><br>
 
 ## Resources
-- [OpenSCAD terminology]()
-- [Your first cube exercises]()
+- [OpenSCAD terminology](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/terminology.txt)
+- [Your first cube exercises](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%101/1_0_intro_to_openscad_student.scad)
 
 <br><br><br>
