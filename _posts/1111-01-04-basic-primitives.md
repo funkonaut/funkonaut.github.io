@@ -107,4 +107,9 @@ After going through this lesson, reflect on the following questions:
 Remember, these are conceptual questions meant to reinforce your understanding of OpenSCAD commands. They do not require actual coding. Answer them to the best of your understanding.
 <br>
 
-End of Lesson 1.4. Happy coding!
+## Resources
+- [Follow along code](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%201/1_1_basic_shapes_student.scad)
+- [OpenSCAD terminology](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/terminology.txt)
+
+
+Happy coding!
