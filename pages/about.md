@@ -13,9 +13,10 @@ This web page is organized into three sub pages: About, Lessons, and Projects. Y
 
 ## Recommended Sequencing
 1. Fabrication Lab: 3D Printing
- - [Prusa Slicer Setup](https://www.accessiblestem.org/fabrication%20lab/prusaslicer-gui.html)
- - [3D Printer Orientation](https://www.accessiblestem.org/fabrication%20lab/prusa-mini.html)
- - [Project 1: Your First Print](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Projects/project-1-your-first-print.md)
+ - [3D Printer Orientation](https://www.accessiblestem.org/fabrication%20lab/3D-printers.html)
+  - [Prusa Slicer Setup](https://www.accessiblestem.org/fabrication%20lab/prusa-slicer-setup.html)
+  - [Prusa Slicer Basic Use](https://www.accessiblestem.org/fabrication%20lab/prusa-slicer-basic.html)
+ - [Project 1: Your First Print](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Projects/project-1-1-your-first-print.md)
  - [Project 2: Your Second Print and Solving a Problem]()
 2. Fabrication Lab: Laser Cutting
  - [Design Resources](https://www.accessiblestem.org/fabrication%20lab/laser-cutter-design.html)
