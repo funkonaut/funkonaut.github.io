@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Thingiverse](https://thingiverse.com/)"
+title:  "Thingiverse"
 date:   1113-01-04
 last_modified_at: 2023-06-28
 categories: [Fabrication Lab]
