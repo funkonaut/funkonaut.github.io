@@ -25,7 +25,7 @@ In order to understand how commands work in OpenSCAD lets take a look at our fir
 A shape command is made up of multiple parts:
 <br>
 1. The name of the shape command: "cube"
-2. The parameters that defines the shape "1" 
+2. The parameter or parameters that defines the shape "1" 
 3. The semi-colon at the end of the shape command. 
 <br><br>
 
@@ -37,20 +37,32 @@ There are three different primitive shapes in OpenSCAD we will learn about and p
 <br><br>
 
 ### Cube
-Lets review what we learend about the cube command. To create a cube, we use the cube command. Here is an example:
+Lets review what we learned about the cube command. To create a cube, we use the cube command and give it a parameter for the side lengths. However unlike in geometry class a cube in OpenSCAD can be used to make a rectangular prism. Here is an example:
 <br>
 
 `cube([5,10,20]);`
 <br>
 
-In this case, we're passing a vector, designated by the square brackets [], which indicates the dimensions of the cube along the X, Y, and Z axes. By default, one corner of the cube is positioned at the origin, (0,0,0).
+In this case instead of a side length, we're passing 3 in a vector parameter. A vector parameter in OpenSCAD is designated by the square brackets [], which indicates the dimensions of the cube along the X, Y, and Z axes. By default, one corner of the cube is positioned at the origin, (0,0,0).
+<br><br>
+
+#### Understanding Vectors
+Imagine you're in a large room, like a gymnasium, and it's completely dark. Now, you're trying to direct a friend to a specific location in that room. Let's say you know the room is 100 steps long, 50 steps wide, and 20 steps high. You can tell your friend to walk forward a certain number of steps, then sideways, and finally climb up a ladder to reach a specific location in the room. This is very similar to how vectors work in OpenSCAD.
+<br>
+When we talk about a vector in OpenSCAD, like `[20, 10, 10]`, these numbers represent the steps your friend would take in the dark room. The first number, 20, tells them to walk forward 20 steps from where they started (the "origin" point). The second number, 10, means to sidestep 10 steps to the right. The third number, another 10, means to climb a ladder 10 steps upward. 
+<br>
+So when you're creating a cube in OpenSCAD and write `cube([20, 10, 10]);`, the vector [20, 10, 10] is like instructions for creating a box. It's as if you're saying "make a box that is 20 steps long, 10 steps wide, and 10 steps high".
+<br>
+In this way, vectors are like instructions for navigating a 3D space, helping the computer to understand where to place things and how big they should be. It's an essential part of building your 3D models.
 <br>
 
-Now, let's center the cube on the origin. We'll do this using a flag named 'center'. A flag is a parameter that can be true or false.
+#### The Center Parameter 
+Now, let's center the cube on the origin. We'll do this using a parameter named 'center'. Remember how we said shape commands in OpenSCAD require a parameter or parameters? We can have multiple parameters and separate them the same way we separate numbers in a vector with a comma `,`. The center parameter is a boolean type parameter. A boolean is a parameter that can be true or false. Try it:
+`cube([10,10,20], center=true);`
 <br><br>
 
 ### Sphere 
-To create a sphere, we use the sphere command. It takes one measurement, the radius, and places the sphere centered around the origin. Here is an example:
+To create a sphere, we use the sphere command. It takes one measurement, the radius, and places the sphere centered around the origin so it does not need a center  boolean parameter. Here is an example:
 <br>
 
 `$fn = 40; 

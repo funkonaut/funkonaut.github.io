@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "OpenSCAD Lesson 1.2: Recommended Set Up for BVI Programmers"
-date:   1111-01-02
+date:   1111-01-03
 last_modified_at: 2023-01-10
 categories: [OpenSCAD]
 tags: [Lesson 1]
@@ -26,19 +26,17 @@ In this lesson we will go over our recommended OpenSCAD settings for blind or vi
 
 ## All Users
 We recommend the following settings for all learners new to OpenSCAD:
-1. *In the Preferences sub menu (alt > e > p > p > enter)*
-  - 3D View - uncheck "Show Warnings and Errors in 3D View" ???SHOULD WE DO THIS???
+1. *OPTIONAL: In the Preferences sub menu (alt > e > p > p > enter)*
   - Editor - check "Auto-Indent" and uncheck "Enable Auto-Completion"*
-  - Advanced - uncheck "Show Welcome Screen"
 2. *In the Window Menu (alt > w)*
   - Click "Hide Customizer"
   - click "Hide Console"
 <br><br>
-**Note: Auto completion is a great addition to an editor but as you are learning it will help commit the syntax to memory to disable the feature*
+**Note: Auto completion is a great addition to an editor but as you are learning it will help you commit the syntax to memory to disable the feature. That said keep it on if you want.*
 <br><br><br>
 
 ## Blind Users
-We recommend the following settings for screen readers, we do not have any OpenSCAD application recommendation aside from the recommendation for all for blind learners new to OpenSCAD:
+We recommend the following settings for screen readers, we do not have any additional OpenSCAD application recommendation just make sure your screen reader is announcing all of the punctuation online and in OpenSCAD. 
 <br><br>
 
 1. [Turn on high verbosity for web](https://www.freedomscientific.com/SurfsUp/Web_Verbosity.htm) this will make sure all code is read correctly in your tutorials. If you are on NVDA us NVDA + p to change the symbol level (punctuation level) to all.
@@ -48,7 +46,7 @@ We recommend the following settings for screen readers, we do not have any OpenS
 ## Low Vision Users
 We recommend the following settings for low vision learners new to OpenSCAD:
 1. *In the Preferences sub menu (alt > e > p > p > enter)* 
-  - 3D View - experiment with different "Color Scheme:" options to find what you like the best, "Starnight" is a good starting point (for white shape preview on a black background with higher contrast )
+  - 3D View - experiment with different "Color Scheme:" options to find what you like the best, "Starnight" is a good starting point (for white shape preview on a black background with higher contrast)
   - Editor - "Color syntax highlighting" experiment with different options to find what you like the best, "For Dark Background" is a good starting point.
 2. Change the font size - control + + (hold control shift and =) or hold control and use the mouse scroll wheel
 3. *In the View Menu (alt > v)*

@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "OpenSCAD Lesson 1.3: Hello Cube"
-date:   1111-01-03
+date:   1111-01-02
 last_modified_at: 2023-01-12
 categories: [OpenSCAD]
 tags: [Lesson 1]
@@ -146,6 +146,5 @@ In this lesson you learned:
 
 ## Resources
 - [OpenSCAD terminology](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/terminology.txt)
-- [Your first cube exercises](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%101/1_0_intro_to_openscad_student.scad)
-
+- [Your first cube exercises](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%201/1_0_intro_to_openscad_student.scad)
 <br><br><br>

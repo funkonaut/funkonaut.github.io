@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Fab Lab 3D Printing: Prusa Slicer Setup"
-date:   1113-01-02
+title:  "Prusa Slicer Setup"
+date:   1113-01-03
 last_modified_at: 2023-06-16
 categories: [Fabrication Lab]
 tags: [3D Printing]
@@ -37,19 +37,14 @@ In this lesson you will learn how to set up the Prusa Slicer software. The graph
 <br><br>
 
 ### Running Prusa Slicer the First Time
-When you first run Prusa Slicer the configuration wizard will run. Here we will configure our slicer GUI and will download configuration profiles for different printers and materials. We recommend sticking to only a couple profiles to not overwhelm you with options. You can always relaunch the configuration wizard in the help menu (alt > c > w). 
+When you first run Prusa Slicer the configuration wizard will run. Here we will configure our slicer GUI and will download configuration profiles for different printers and materials. If you need to, you can relaunch the configuration wizard in the help menu (alt > c > w). 
 <br><br>
 
-1. Alt + N to move past the welcome menu
-2. Prusa FFF: Select your FFF Prusa 3D printer if you have one and nozzle size (.4mm is the default) 
-3. Prusa MSLA: Select your MSLA Prusa printer (odds are you probably don't have one of these, it is also known as a resin printer)
-4. Other Vendors: If you have another vender (Creality is a popular one...) you can select it from the check list and it will prompt you for the printer in the next window (alt + n)
-5. Custom Printer: You can define a custom printer profile you probably just want to skip this...
-6. Filaments: Now we will add filament profiles. We recommend starting with the "Generic PLA" Profile option (make sure to click None first to uncheck the default options). If you know the brand of filament that you have purchased you can look add their filament profile if it is in the list, typically with PLA the Generic option works great, and you can always tweak the settings if things are not coming out correctly.
-7. Updates: Defaults will suffice. Alt + n.
-8. Reload from disk: Defaults will suffice. Alt + n.
-9. Files Association: We recommend checking both boxes so Windows will launch Prusa Slicer if you open a STL or .3mf (Prusa project) file. Alt + n.
-10. View Mode: Defaults will suffice. Alt + f.
+1. Alt + n to move past the welcome menu.
+2. Activate the select all standard printers button.
+3. Select your view mode we recommend starting with simple mode.
+4. Alt + f to finish the installation
+<br><br>
 
 ### Setting up Preferences for Low Vision
 We recommend setting up some of the following slicer preferences to enable more efficient low vision access.

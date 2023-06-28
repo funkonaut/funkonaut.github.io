@@ -51,6 +51,9 @@ To install OpenSCAD:
 **Note: You may need admin privileges to install OpenSCAD on your computer.*
 <br><br><br>
 
+## Opening OpenSCAD
+Now to finish things off launch OpenSCAD. Make sure the "Don't Show Again" checkbox is checked and then activate the "New" button or press "control + n". You will now have an "Untitled.scad" file ready to start coding in.
+<br><br><br>
 
 ## Review
 In this lesson you learned:

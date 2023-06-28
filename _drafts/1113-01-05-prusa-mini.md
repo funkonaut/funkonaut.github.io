@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: draft
 title:  "Fab Lab 3D Printing: Prusa Mini+ 3D Printer Orientation"
 date:   1113-01-04
 last_modified_at: 2023-06-14
