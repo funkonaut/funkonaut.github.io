@@ -16,9 +16,9 @@ tags: [3D Printing]
 
 ## Learning Objectives
 At the end of this lesson, you will be able to:
-1. Understand the physical structure of the Prusa Mini+.
-2. Identify and locate important components of the Prusa Mini+.
-3. Interact effectively with the control interface of the Prusa Mini+.
+1. Understand the physical structure of the Prusa Mini+ 3D printer
+2. Identify and locate important components of the Prusa Mini+ 3D printer
+3. Interact effectively with the control interface of the Prusa Mini+ 3D printer
 4. *Optional: Safely handle and change the printer filament.*
 <br><br><br>
 
