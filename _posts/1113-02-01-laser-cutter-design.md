@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab Laser Cutting: Design Resources for BVI Makers"
+title:  "Design Resources for BVI Makers"
 date:   1113-02-01
 last_modified_at: 2023-01-24
 categories: [Fabrication Lab]

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab 3D Printing: Prusa Slicer Advanced Use (CLI)"
+title:  "Prusa Slicer Advanced Use (CLI)"
 date:   1113-01-05
 last_modified_at: 2023-06-16
 categories: [Fabrication Lab]

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab 3D Printing: Prusa Slicer Basic Use (GUI)"
+title:  "Prusa Slicer Basic Use (GUI)"
 date:   1113-01-05
 last_modified_at: 2023-06-16
 categories: [Fabrication Lab]

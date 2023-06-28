@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Fab Lab Laser Cutting: Safety"
+title:  "Safety"
 date:   1113-02-02
 last_modified_at: 2023-06-15
 categories: [Fabrication Lab]
