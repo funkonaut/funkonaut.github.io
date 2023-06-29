@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "OpenSCAD Lesson 1.4: Basic Primitives"
+title:  "Basic 3D Primitives"
 date:   1111-01-04
 last_modified_at: 2023-01-12
 categories: [OpenSCAD]

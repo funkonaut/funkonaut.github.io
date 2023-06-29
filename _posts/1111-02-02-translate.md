@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "OpenSCAD Lesson 1.6: Translate"
-date:   1111-01-06
+date:   1111-02-02
 last_modified_at: 2023-06-17
 categories: [OpenSCAD]
 tags: [Lesson 1]
@@ -87,4 +87,4 @@ In this lesson, you learned:
 
 ## Resources
 - [Follow along code](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%201/1_2_shape_mods.scad)
-- [OpenSCAD User Manual: Transformations](https://en.wikibooks.org/wiki/Open)
+- [OpenSCAD User Manual: Transformations](https://en.wikibooks.org/wiki/Open)   

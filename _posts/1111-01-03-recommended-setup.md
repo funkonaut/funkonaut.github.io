@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "OpenSCAD Lesson 1.2: Recommended Set Up for BVI Programmers"
+title:  "Recommended Set Up for BVI Programmers"
 date:   1111-01-03
 last_modified_at: 2023-01-10
 categories: [OpenSCAD]
@@ -62,3 +62,7 @@ In this lesson you learned:
 - How to set up OpenSCAD's preferences according to our recommendations 
 <br><br><br>
 
+## Resources 
+- [OpenSCAD's website](https://openscad.org/)  
+- [OpenSCAD's documentation](https://openscad.org/documentation.html)
+<br><br><br>

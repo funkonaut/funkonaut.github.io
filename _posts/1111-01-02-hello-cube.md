@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "OpenSCAD Lesson 1.3: Hello Cube"
+title:  "Hello Cube"
 date:   1111-01-02
 last_modified_at: 2023-01-12
 categories: [OpenSCAD]

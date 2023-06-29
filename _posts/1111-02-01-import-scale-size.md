@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "OpenSCAD Lesson 1.5: Using import, scale and size commands in OpenSCAD"
-date:   1111-01-05
+date:   1111-02-01
 last_modified_at: 2023-06-16
 categories: [OpenSCAD]
 tags: [Lesson 1]
