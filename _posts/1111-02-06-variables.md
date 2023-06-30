@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "OpenSCAD Lesson 2.3: Variables and Parametric Programming"
+title:  "Variables and Parametric Programming"
 date: 1111-02-03
 last_modified_at: 2023-06-17
 categories: [OpenSCAD]

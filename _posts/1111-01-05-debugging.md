@@ -1,22 +1,15 @@
 ---
 layout: post
-title:  "OpenSCAD Debugging: Fixing Syntax Errors"
+title:  "Debugging: Fixing Syntax Errors"
 date:   1111-01-05
 last_modified_at: 2023-06-28
-categories: [Fabrication Lab]
-tags: [3D Printing]
+categories: [OpenSCAD]
+tags: [Lesson 1]
 ---
 <br>
 
 ## Contents
 {:.no_toc}
-1. Learning Objectives
-2. Understanding Debugging
-3. Different Windows in OpenSCAD
-4. Finding and Fixing Errors
-5. Practice
-6. Review
-7. Resources
 {:toc}
 <br><br>
 

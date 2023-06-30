@@ -10,6 +10,7 @@ tags: [Lesson 3]
 
 ## Contents
 {:.no_toc}
+* Table of contents
 {:toc}
 <br><br>
 
