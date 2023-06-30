@@ -47,15 +47,37 @@ Follow these steps to find and fix errors in your OpenSCAD code:
 Remember to ensure punctuation is being read aloud by your screen reader.
 <br><br><br>
 
-## Practice
+## Practice Problems
 Try to fix the following lines of code and then comment them out:
-1. `cylinder(4,4,4);`
-2. `sphere(r=1);`
+1.
+```c
+cyliner(4,4,4)
+```
+2.
+```c
+sphere[r=1
+```
+3.
+```c
+tranlate[0,0,1]
+sphere(1);
+```
+<br><br>
+
+### Practice Solutions
+1. 
+```c
+cylinder(4,4,4);
+```
+2. 
+```c
+sphere(r=1);
+```
 3. 
-   ```
-   translate([0,0,1])
-   sphere(1);
-   ```
+```c
+translate([0,0,1])
+sphere(1);
+```
 <br><br><br>
 
 ## Review

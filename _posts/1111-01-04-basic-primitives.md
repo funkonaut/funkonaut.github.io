@@ -57,7 +57,11 @@ There are three different primitive shapes in OpenSCAD we will learn about and p
 Lets review what we learned about the cube command. To create a cube, we use the cube command and give it a parameter for the side lengths. However unlike in geometry class a cube in OpenSCAD can be used to make a rectangular prism. Here is an example:
 <br>
 
-`cube([5,10,20]);`
+
+```c
+cube([5,10,20]);
+```
+
 <br>
 
 In this case instead of a side length, we're passing 3 in a vector parameter. A vector parameter in OpenSCAD is designated by the square brackets [], which indicates the dimensions of the cube along the X, Y, and Z axes. By default, one corner of the cube is positioned at the origin, (0,0,0).
@@ -66,35 +70,60 @@ In this case instead of a side length, we're passing 3 in a vector parameter. A 
 #### Understanding Vectors
 Imagine you're in a large room, like a gymnasium, and it's completely dark. Now, you're trying to direct a friend to a specific location in that room. Let's say you know the room is 100 steps long, 50 steps wide, and 20 steps high. You can tell your friend to walk forward a certain number of steps, then sideways, and finally climb up a ladder to reach a specific location in the room. This is very similar to how vectors work in OpenSCAD.
 <br>
-When we talk about a vector in OpenSCAD, like `[20, 10, 10]`, these numbers represent the steps your friend would take in the dark room. The first number, 20, tells them to walk forward 20 steps from where they started (the "origin" point). The second number, 10, means to sidestep 10 steps to the right. The third number, another 10, means to climb a ladder 10 steps upward. 
+When we talk about a vector in OpenSCAD, like 
+
+```c
+[20, 10, 10]
+```
+, these numbers represent the steps your friend would take in the dark room. The first number, 20, tells them to walk forward 20 steps from where they started (the "origin" point). The second number, 10, means to sidestep 10 steps to the right. The third number, another 10, means to climb a ladder 10 steps upward. 
 <br>
-So when you're creating a cube in OpenSCAD and write `cube([20, 10, 10]);`, the vector [20, 10, 10] is like instructions for creating a box. It's as if you're saying "make a box that is 20 steps long, 10 steps wide, and 10 steps high".
+So when you're creating a cube in OpenSCAD and write 
+
+```c
+cube([20, 10, 10]);
+```
+, the vector [20, 10, 10] is like instructions for creating a box. It's as if you're saying "make a box that is 20 steps long, 10 steps wide, and 10 steps high".
 <br>
+
 In this way, vectors are like instructions for navigating a 3D space, helping the computer to understand where to place things and how big they should be. It's an essential part of building your 3D models.
 <br>
 
 #### The Center Parameter 
-Now, let's center the cube on the origin. We'll do this using a parameter named 'center'. Remember how we said shape commands in OpenSCAD require a parameter or parameters? We can have multiple parameters and separate them the same way we separate numbers in a vector with a comma `,`. The center parameter is a boolean type parameter. In this context a boolean is a type of parameter that can be true or false. Try it:
-`cube([10,10,20], center=true);`
+Now, let's center the cube on the origin. We'll do this using a parameter named 'center'. Remember how we said shape commands in OpenSCAD require a parameter or parameters? We can have multiple parameters and separate them the same way we separate numbers in a vector with a comma. The center parameter is a boolean type parameter. In this context a boolean is a type of parameter that can be true or false. Try it:
+
+```c
+cube([10,10,20], center=true);
+```
+
 <br><br>
 
 ### Sphere 
 To create a sphere, we use the sphere command. It takes one measurement, the radius, and places the sphere centered around the origin so it does not need a center  boolean parameter. Here is an example:
 <br>
 
-`$fn = 40; 
-sphere(r=10);`
+```c
+$fn = 40; 
+sphere(r=10);
+```
 <br>
 
 #### Resolution $fn
-You may have noticed we started our code with an odd line of text `$fn=40`. The $fn is a global variable (more on that later, but you can think of it as a parameter for your entire code not just one shape) that controls the number of fragments used to render a circle or sphere - 40 is generally a good choice for this. More fragments yield smoother shapes, but at the cost of more processing time. Try changing the number to 5. 
+You may have noticed we started our code with an odd line of text
+```c
+$fn=40
+```
+The $fn is a global variable (more on that later, but you can think of it as a parameter for your entire code not just one shape) that controls the number of fragments used to render a circle or sphere - 40 is generally a good choice for this. More fragments yield smoother shapes, but at the cost of more processing time. Try changing the number to 5. 
 <br><br>
 
 ### Cylinder
 Next, let's create a cylinder. We use the cylinder command and we can label parameters like the height (h), the radius at the bottom (r1), and the radius at the top (r2).
 <br>
 
-`cylinder(h=20, r1=5, r2=5);`
+
+```c
+cylinder(h=20, r1=5, r2=5);
+```
+
 <br>
 
 Note that cylinders are centered around the Z-axis, and touch the XY plane.
