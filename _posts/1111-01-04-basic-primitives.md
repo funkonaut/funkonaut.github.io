@@ -125,5 +125,7 @@ Remember, these are conceptual questions meant to reinforce your understanding o
 - [Follow along code](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/Lesson%201/1_1_basic_shapes_student.scad)
 - [OpenSCAD terminology](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Lessons/terminology.txt)
 
-
+<br><br>
 Happy coding!
+
+<br><br><br>
