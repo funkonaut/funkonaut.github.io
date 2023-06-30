@@ -101,10 +101,12 @@ cylinder(r=.3,h=6);`
 2. Make a stair step: We'll use cubes to make a stair step. Each cube is one step of the staircase. Notice how the X dimension decreases by 1 and the Z dimension increases by 1 for each subsequent cube. This forms the steps of the staircase.
 <br>
 
-`cube([4,5,1]);
+```c
+cube([4,5,1]);
 cube([3,5,2]);
 cube([2,5,3]);
-cube([1,5,4]);`
+cube([1,5,4]);
+```
 <br><br><br>
 
 ## Check for Understanding
