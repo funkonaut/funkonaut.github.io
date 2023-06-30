@@ -31,7 +31,7 @@ disqus: # disqus account
 mathjax: true # Math support
 diagram: true # Diagrams support
 
-paginate: 50
+paginate: 500 # Made this huge so there are never pages... 
 paginate_path: '/page:num/'
 
 permalink: none #/:categories/:title:output_ext
