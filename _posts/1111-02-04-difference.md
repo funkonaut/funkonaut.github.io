@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Boolean Operations: Difference"
-date:   1111-02-01
+date:   1111-02-04
 last_modified_at: 2023-06-29
 categories: [OpenSCAD]
 tags: [Lesson 2]

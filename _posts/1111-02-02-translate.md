@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Moving Shapes with Translate"
+title:  "Transformations: Moving Shapes with Translate"
 date:   1111-02-02
 last_modified_at: 2023-06-17
 categories: [OpenSCAD]
