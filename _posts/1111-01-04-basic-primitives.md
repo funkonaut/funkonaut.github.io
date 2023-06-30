@@ -19,7 +19,10 @@ Before starting this lesson, it is recommended that you review the [terminology.
 <br><br><br>
 
 # Primitive Shape Commands in OpenSCAD
-In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape `cube(1);` Go ahead and write the code for a cube and preview it (remember to preview the shape, hit f5.)
+In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape ```c
+ cube(1);
+ ``` 
+ Go ahead and write the code for a cube and preview it (remember to preview the shape, hit f5.)
 <br><br>
 
 A shape command is made up of multiple parts:
@@ -29,7 +32,11 @@ A shape command is made up of multiple parts:
 3. The semi-colon at the end of the shape command. 
 <br><br>
 
-Since shape commands in OpenSCAD end with a semi-colon, the number of spaces in the code does not matter, as long as it does not change the name or value of a command or parameter. For example `cube(1 );` is the same as `cube (1);` but `cub e(1);` will not work as it changes our command name. 
+Since shape commands in OpenSCAD end with a semi-colon, the number of spaces in the code does not matter, as long as it does not change the name or value of a command or parameter. For example 
+```c
+ cube(1 );
+```
+ is the same as `cube (1);` but `cub e(1);` will not work as it changes our command name. 
 <br><br><br>
 
 ## Primitives
@@ -87,7 +94,9 @@ Note that cylinders are centered around the Z-axis, and touch the XY plane.
 A cone is essentially a cylinder but with different radii at the bottom and top. A pointed cone can be achieved by making r2 equal to 0.
 <br>
 
-`cylinder(h=20, r1=5, r2=0);`
+```c
+cylinder(h=20, r1=5, r2=0);
+```
 <br><br><br>
 
 ## Practice Solutions
@@ -95,8 +104,8 @@ A cone is essentially a cylinder but with different radii at the bottom and top.
 <br>
 
 ```c
-cylinder(r1=.3,r2=5,h=4,center=true);
-cylinder(r=.3,h=6);
+cylinder(r1=.3,r2=5,h=4,center=true); 
+cylinder(r=.3,h=6); 
 ```
 <br><br>
 
