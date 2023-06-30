@@ -31,7 +31,7 @@ disqus: # disqus account
 mathjax: true # Math support
 diagram: true # Diagrams support
 
-paginate: 25
+paginate: 50
 paginate_path: '/page:num/'
 
 permalink: none #/:categories/:title:output_ext
