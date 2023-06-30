@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Variables and Parametric Programming"
-date: 1111-02-03
+title:  "Coding Fundamentals: Variables and Parametric Programming"
+date: 1111-02-06
 last_modified_at: 2023-06-17
 categories: [OpenSCAD]
 tags: [Lesson 2]

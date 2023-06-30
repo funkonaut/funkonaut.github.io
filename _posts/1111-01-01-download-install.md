@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "What, Why, and How (to Install)?"
+title:  "Setup: What, Why, and How (to Install)?"
 date:   1111-01-01
 last_modified_at: 2023-01-10
 categories: [OpenSCAD]  

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "External Libraries in OpenSCAD"
+title:  "Libraries: External Libraries in OpenSCAD"
 date:   1111-04-01
 last_modified_at: 2023-06-29
 categories: [OpenSCAD]

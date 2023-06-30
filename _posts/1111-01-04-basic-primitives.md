@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Basic 3D Primitives"
+title:  "Primitives: Basic 3D Shapes"
 date:   1111-01-04
 last_modified_at: 2023-01-12
 categories: [OpenSCAD]
@@ -57,7 +57,7 @@ In this way, vectors are like instructions for navigating a 3D space, helping th
 <br>
 
 #### The Center Parameter 
-Now, let's center the cube on the origin. We'll do this using a parameter named 'center'. Remember how we said shape commands in OpenSCAD require a parameter or parameters? We can have multiple parameters and separate them the same way we separate numbers in a vector with a comma `,`. The center parameter is a boolean type parameter. A boolean is a parameter that can be true or false. Try it:
+Now, let's center the cube on the origin. We'll do this using a parameter named 'center'. Remember how we said shape commands in OpenSCAD require a parameter or parameters? We can have multiple parameters and separate them the same way we separate numbers in a vector with a comma `,`. The center parameter is a boolean type parameter. In this context a boolean is a type of parameter that can be true or false. Try it:
 `cube([10,10,20], center=true);`
 <br><br>
 

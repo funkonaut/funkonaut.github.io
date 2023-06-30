@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Recommended Set Up for BVI Programmers"
+title:  "Setup: Recommended Set Up for BVI Programmers"
 date:   1111-01-03
 last_modified_at: 2023-01-10
 categories: [OpenSCAD]

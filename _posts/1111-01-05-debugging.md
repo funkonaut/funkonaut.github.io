@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Debugging: Fixing Syntax Errors"
+title:  "Coding Fundamentals: Debugging and Fixing Syntax Errors"
 date:   1111-01-05
 last_modified_at: 2023-06-28
 categories: [OpenSCAD]
