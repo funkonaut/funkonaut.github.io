@@ -43,3 +43,9 @@ In this lesson you learned:
 
 # PROMPT 
 Use the following quote template and information in parenthesis to make a lesson plan for blind and visually impaired (low vision) highschoolers who are learning coding through OpenSCAD 3D modeling and 3D printing:  "TEMPLATE" (LESSON PLAN CODE)
+
+
+
+
+### REGEX EDITS
+Replace code with syntax highlighted version `([^`]+)` to \n```c\n$1\n```\n

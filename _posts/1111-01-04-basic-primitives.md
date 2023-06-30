@@ -20,9 +20,9 @@ Before starting this lesson, it is recommended that you review the [terminology.
 
 # Primitive Shape Commands in OpenSCAD
 In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape ```c
- cube(1);
+cube(1);
  ``` 
- Go ahead and write the code for a cube and preview it (remember to preview the shape, hit f5.)
+Go ahead and write the code for a cube and preview it (remember to preview the shape, hit f5.)
 <br><br>
 
 A shape command is made up of multiple parts:
