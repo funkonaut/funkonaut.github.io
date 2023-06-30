@@ -19,14 +19,16 @@ Before starting this lesson, it is recommended that you review the [terminology.
 <br><br><br>
 
 # Primitive Shape Commands in OpenSCAD
-In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape ```c
+In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape 
+```c
 cube(1);
- ``` 
+``` 
 Go ahead and write the code for a cube and preview it (remember to preview the shape, hit f5.)
 <br><br>
 
 A shape command is made up of multiple parts:
 <br>
+
 1. The name of the shape command: "cube"
 2. The parameter or parameters that defines the shape "1" 
 3. The semi-colon at the end of the shape command. 
@@ -34,9 +36,9 @@ A shape command is made up of multiple parts:
 
 Since shape commands in OpenSCAD end with a semi-colon, the number of spaces in the code does not matter, as long as it does not change the name or value of a command or parameter. For example 
 ```c
- cube(1 );
+cube(1 );
 ```
- is the same as `cube (1);` but `cub e(1);` will not work as it changes our command name. 
+is the same as `cube (1);` but `cub e(1);` will not work as it changes our command name. 
 <br><br><br>
 
 ## Primitives
