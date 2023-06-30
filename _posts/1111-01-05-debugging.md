@@ -49,15 +49,17 @@ Remember to ensure punctuation is being read aloud by your screen reader.
 
 ## Practice Problems
 Try to fix the following lines of code and then comment them out:
-1.
+<br>
+
+1. 
 ```c
 cyliner(4,4,4)
 ```
-2.
+2. 
 ```c
 sphere[r=1
 ```
-3.
+3. 
 ```c
 tranlate[0,0,1]
 sphere(1);
@@ -65,6 +67,8 @@ sphere(1);
 <br><br>
 
 ### Practice Solutions
+<br>
+
 1. 
 ```c
 cylinder(4,4,4);
