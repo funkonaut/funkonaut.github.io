@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "3D Primitives: Hello Cube"
+title:  "Primitives: Hello Cube"
 date:   1111-01-02
 last_modified_at: 2023-01-12
 categories: [OpenSCAD]
