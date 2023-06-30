@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "2D to 3D Design in OpenSCAD Using Linear Extrusions"
+title:  "Extrusions: 2D to 3D Design in OpenSCAD Using Linear Extrusions"
 date:   1111-03-04
 last_modified_at: 2023-06-30
 categories: [OpenSCAD]

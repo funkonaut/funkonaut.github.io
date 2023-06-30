@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Rotational Extrusions"
+title:  "Extrusions: Rotational Extrusions"
 date:   1111-03-06
 last_modified_at: 2023-06-29
 categories: [OpenSCAD]
