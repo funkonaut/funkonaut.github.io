@@ -91,14 +91,16 @@ A cone is essentially a cylinder but with different radii at the bottom and top.
 <br><br><br>
 
 ## Practice Solutions
-1. Make a top: We'll use two cylinders to make a spinning top. The first cylinder forms the body of the top, while the second cylinder forms the handle.
+- Make a top: We'll use two cylinders to make a spinning top. The first cylinder forms the body of the top, while the second cylinder forms the handle.
 <br>
 
-`cylinder(r1=.3,r2=5,h=4,center=true);
-cylinder(r=.3,h=6);`
+```c
+cylinder(r1=.3,r2=5,h=4,center=true);
+cylinder(r=.3,h=6);
+```
 <br><br>
 
-2. Make a stair step: We'll use cubes to make a stair step. Each cube is one step of the staircase. Notice how the X dimension decreases by 1 and the Z dimension increases by 1 for each subsequent cube. This forms the steps of the staircase.
+- Make a stair step: We'll use cubes to make a stair step. Each cube is one step of the staircase. Notice how the X dimension decreases by 1 and the Z dimension increases by 1 for each subsequent cube. This forms the steps of the staircase.
 <br>
 
 ```c
