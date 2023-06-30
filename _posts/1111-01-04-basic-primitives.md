@@ -19,10 +19,10 @@ Before starting this lesson, it is recommended that you review the [terminology.
 <br><br><br>
 
 # Primitive Shape Commands in OpenSCAD
-In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape 
+In order to understand how commands work in OpenSCAD lets take a look at our first OpenSCAD shape
 ```c
 cube(1);
-``` 
+```
 Go ahead and write the code for a cube and preview it (remember to preview the shape, hit f5.)
 <br><br>
 
@@ -38,7 +38,15 @@ Since shape commands in OpenSCAD end with a semi-colon, the number of spaces in 
 ```c
 cube(1 );
 ```
-is the same as `cube (1);` but `cub e(1);` will not work as it changes our command name. 
+is the same as 
+```c
+cube (1);
+```
+ but 
+```c
+cub e(1);
+```
+ will not work as it changes our command name. 
 <br><br><br>
 
 ## Primitives
