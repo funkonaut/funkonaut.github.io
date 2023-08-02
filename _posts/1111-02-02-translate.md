@@ -4,7 +4,7 @@ title:  "Transformations: Moving Shapes with Translate"
 date:   1111-02-02
 last_modified_at: 2023-06-17
 categories: [OpenSCAD]
-tags: [Lesson 1]
+tags: [Lesson 2]
 ---
 <br>
 

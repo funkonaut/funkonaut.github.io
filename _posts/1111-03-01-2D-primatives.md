@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "2D Design in OpenSCAD: Working with Primitives, Booleans, and Transformations"
+title:  "2D Design: Working with Primitives, Booleans, and Transformations"
 date:   1111-03-01
 last_modified_at: 2023-06-28
 categories: [OpenSCAD]

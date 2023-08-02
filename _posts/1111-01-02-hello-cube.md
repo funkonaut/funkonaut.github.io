@@ -32,7 +32,11 @@ The editor window is where you write your code. Whenever you open a OpenSCAD fil
 While you are in the editor window lets go ahead and type our first line of code:
 <br>
 
-`cube(1);`
+
+```c
+cube(1);
+```
+
 <br>
 
 Make sure to type it in exactly as how it appears above or will get an error or warning. Now press f5 to preview your code, if you did not hear anything a 1 by 1 by 1 cube should have shown up in the preview window.*
@@ -52,7 +56,11 @@ We can navigate the preview window without the use of a mouse with several keybo
 Lets practice changing size of our cube and explore some preview keyboard shortcuts to change the view of our preview window:
 <br><br>
 
-Change your cube code to `cube(10);` 
+Change your cube code to 
+```c
+cube(10);
+```
+ 
 <br><br>
 
 We now have a larger cube in the preview window (apologies but, take my word for all of this if you can not see the preview window). We just changed the side length for our cube. What happens if we change it to something even larger say 1000? You may notice that only a portion of our cube is displayed in the preview window. This is because while our cube changed our view did not. 
@@ -87,7 +95,11 @@ Try out the following helpful View keyboard shortcuts with your large cube!
 Now lets see what happens when you get something wrong. Change your code to read an incorrect command say:
 <br>
 
-`cue(500);`
+
+```c
+cue(500);
+```
+
 <br>
 
 Notice you will either not see your design change in the preview window, or if you are using a screen reader you will here "error-log window table warning...". The error-log is a window (default position is in the lower right portion of the screen) that will have a table with the errors or warnings that show up when you try to preview or render your code. You can navigate to the window to here what the warning or error is by navigating to the "Window" menu and then navigating to error-log (alt > w > l).
@@ -102,13 +114,45 @@ Warnings will preview but incorrectly and errors will cause OpenSCAD to not prev
 <br><br><br>
 
 ## Comments: Single Line and Multiline
-Now we will learn about a very important concept in coding, the comment. A comment is a command that lets the computer know to ignore code that follows. Comments in OpenSCAD can be either a single line comment or  a comment block. A single line comment will begin with `//` everything on the same line that follows the `//` will be ignored by the computer. A multiline comment block will begin with `/*` and end with `*/` everything in between the `/*` and `*/` will be ignored by the computer 
+Now we will learn about a very important concept in coding, the comment. A comment is a command that lets the computer know to ignore code that follows. Comments in OpenSCAD can be either a single line comment or  a comment block. A single line comment will begin with 
+```c
+//
+```
+ everything on the same line that follows the 
+```c
+//
+```
+ will be ignored by the computer. A multiline comment block will begin with 
+```c
+/*
+```
+ and end with 
+```c
+*/
+```
+ everything in between the 
+```c
+/*
+```
+ and 
+```c
+*/
+```
+ will be ignored by the computer 
 <br><br>
 
-Comments are important to add notes or directions to your code. It is always important to add notes or document your code so future you or someone else who is reading your code will better understand (or remember!) how your code works. Try adding a single line comment in front of your cube code: `//cube(1);` and preview it (f5) notice how nothing was shown, that is because the computer is now ignoring your cube command.
+Comments are important to add notes or directions to your code. It is always important to add notes or document your code so future you or someone else who is reading your code will better understand (or remember!) how your code works. Try adding a single line comment in front of your cube code: 
+```c
+//cube(1);
+```
+ and preview it (f5) notice how nothing was shown, that is because the computer is now ignoring your cube command.
 <br><br>
 
-If you want to comment out multiple lines but don't want to type `//` infront of every line you can use a comment block. Try deleting your single line comment and surround your cube code with a multiline comment symbols:
+If you want to comment out multiple lines but don't want to type 
+```c
+//
+```
+ infront of every line you can use a comment block. Try deleting your single line comment and surround your cube code with a multiline comment symbols:
 <br>
 ```c
 /*
@@ -130,7 +174,11 @@ Exporting your code will bring up a file dialogue so you can determine where you
 When you preview your model you are using OpenSCAD's program to show the image of your model very quickly, this is fine for working in OpenSCAD and developing your code, but previewed models can not be used in other programs. For that you have to render and export. Rendering and Exporting are two different steps and keyboard shortcuts in OpenSCAD even though the process is usually done together, that is because sometimes you will find issues with your code that happen in the rendering phase but not the preview phase. 
 <br><br>
 
-For instance type the code that gave us a warning: `cue(500);` When we press f6 we get an additionally warning to the one we got when we previewed the code. Try it out, you should here a bling, unfortunately there will not be an auditory cue that the second warning showed up but the second entry in the error-log read something like "No top level geometry rendered." This warning is the typically what you would run into and means that there is no model in OpenSCAD's render so you would just be exporting an empty file. This is why it is important to check you error-log after rendering but before exporting to make sure there are no warnings as warnings will still allow your code to render, but incorrectly.
+For instance type the code that gave us a warning: 
+```c
+cue(500);
+```
+ When we press f6 we get an additionally warning to the one we got when we previewed the code. Try it out, you should here a bling, unfortunately there will not be an auditory cue that the second warning showed up but the second entry in the error-log read something like "No top level geometry rendered." This warning is the typically what you would run into and means that there is no model in OpenSCAD's render so you would just be exporting an empty file. This is why it is important to check you error-log after rendering but before exporting to make sure there are no warnings as warnings will still allow your code to render, but incorrectly.
 <br><br><br>
 
 ## Next Steps
