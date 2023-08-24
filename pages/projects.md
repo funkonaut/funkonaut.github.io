@@ -18,7 +18,7 @@ permalink: /projects
 
 ## OpenSCAD
 ### Lesson 1: Primitives and Debugging
-1. [Dice Dice Dice](https://github.com/funkonaut/openSCAD_lessons): Make 3 dice. Put your knowledge of primitives and resolution to use. 
+1. [Dice Dice Dice](https://raw.githubusercontent.com/funkonaut/openSCAD_lessons/main/Projects/project-1-1-dice-dice-dice.md): Make 3 dice. Put your knowledge of primitives and resolution to use. 
 2. [Fidget Squish Toy Slicing](https://github.com/funkonaut/openSCAD_lessons): Make a fidget squish toy. Learn about all of the different settings (slicer settings!) to prepare your 3D models for printing.
 <br><br>
 
