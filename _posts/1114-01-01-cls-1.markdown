@@ -89,9 +89,9 @@ You may notice that we typed a forward slash to separate the folders and the pat
 <br><br>
 
 ## Current Directory and Previous Directory Shortcuts
-A final note on paths `./` is a shortcut to the current path and `../` is a shortcut to the path above the current path. Try typing 
+A final note on paths `./` is a shortcut to the current path and `../` is a shortcut to the path above the current path. The folders above your current folder are called the parent folders. Try typing 
 `./` and tab a couple times to listen to the files and folders in your current path
-`../` and tab a couple times to listen to the files and folders in the folder above your current path
+`../` and tab a couple times to listen to the files and folders in the folder above your current path. 
 <br><br>
 
 You may have noticed some files and directories begin with a "." this means they are hidden and thusly GUI users most likely won't use them or know about them. 
@@ -106,7 +106,7 @@ Relative paths are paths that are relative to where you are currently located in
 <br><br>
 
 ### Why We use Paths... to Navigating with PowerShell
-You can navigate using the `cd` command, which stands for "change directory." Use `.` and `..` as shortcuts to represent the current and parent directories, respectively. Follow along with this example code:
+You can navigate using the `cd` command, which stands for "change directory." The `cd` command takes an argument which is the path that you want to change to. For instance `cd C:/` will change to your C drive root directory. Use `.` and `..` as shortcuts to represent the current and parent directories, respectively. Follow along with this example code:
 1. Let's start in the user's home directory
 cd ~
 
@@ -134,4 +134,26 @@ ls -n ~/Downloads
 ls -n ~/Desktop
 3. List all of the users on the computer
 ls -n C:/Users
+<br><br><br>
 
+## Checks for Understanding
+1. What is a path and what is its structure?
+2. What is another name for a folder?
+3. What is the structure of a powershell command?
+4. Change into your home directory.
+5. Change into your root directory.
+6. Change into your downloads and list the file and folder names.
+7. Change into your documents and list the file and folder names.
+<br><br><br>
+
+## Additional Resources
+For more in-depth learning and advanced usage of PowerShell, consider exploring the following helpful resources:
+
+- [Accessibility in PowerShell ISE by Microsoft](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/ise/accessibility-in-windows-powershell-ise?view=powershell-7.3)
+- [Learn PowerShell by Microsoft](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.3)
+- [Setting the PATH Variable in PowerShell](https://poshcode.gitbook.io/powershell-faq/src/getting-started/environment-variables)
+- [PowerShell Aliases](https://learn.microsoft.com/en-us/powershell/scripting/learn/shell/using-aliases?view=powershell-7.3)
+- [Linux Commands Cheat Sheet](https://www.guru99.com/linux-commands-cheat-sheet.html)
+- [PowerShell Cheat Sheet](https://www.theochem.ru.nl/~pwormer/teachmat/PS_cheat_sheet.html)
+- [Learn PowerShell on GitHub](https://github.com/PowerShell/PowerShell/tree/master/docs/learning-powershell)
+- [PowerShell Tutorial on Guru99](https://www.guru99.com/powershell-tutorial.html)
