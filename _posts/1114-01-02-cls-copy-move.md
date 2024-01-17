@@ -33,18 +33,41 @@ Now that you under stand some basic navigational concepts in the powershell we w
 Use commands like `mv`, `cp`, `mkdir`, `rm`, and `rmdir` to manipulate files and folders. Be cautious when using these commands, as they can delete data permanently. For instance try out the following:
 <br><br>
 
+#### Making Directories
 Let's start in the user's home directory and change into the "Documents" folder.
 `cd ~` 
 `cd Documents`
 <br><br>
 
-To create a new directory use the `mkdir` command it stands for make directory. This command takes an argument of a folder name or a path to a folder name. Now that you are in your documents you can make a directory called "SampleFolder"
-mkdir SampleFolder
+To create a new directory use the `mkdir` command it stands for make directory. This command takes an argument of a folder name or a path to a folder name. Now that you are in your documents you can make a directory called "sample_folder"
+`mkdir sample_folder`
+<br><br>
 
-# List the contents of "SampleFolder" it will be empty
-ls .\SampleFolder
+When you create a directory the contents of the directory will be empty type:
+`ls .\sample_folder`
+<br><br>
 
-# Copy a file from downloads
+##### Quick Quiz!
+Can you navigate into the sample folder and list the files and subfolders (there should be none) inside it?
+<br><br>
+
+You can also give the `mkdir` command a path. For instance change back to your home directory and then make a directory in your documents folder called another_folder that way you don't have to change into your documents directory saves you a command. Remember you can do auto complete by hitting tab when typing in paths, type the first few letters of the path for instance `~/doc` and hit tab and let the computer do the work for you! 
+`cd ~/`
+`mkdir ~/Document/another_folder`
+<br><br>
+
+*Also notice you can do `cd ~/` or `cd ~` the slash separates sub-directories or files in your path and if there is nothing following it the computer will just ignore it.*
+<br><br>
+
+#### Copying Files and Directories
+To copy a directory we use the `cp` command, which stands for... you guessed it copy! `cp` takes an argument of two paths. First comes the path of the file or folder you want to copy and then the path of where you want to copy it to. 
+<br><br>
+
+##### Copy a file from downloads
+If you have a file in downloads you can use it or you can [click here to download this blank_file.txt file]({{ site.url }}/downloads/blank_file.txt) one and Windows should put it in your downloads folder.
+<br><br>
+
+##### Copy a directory using the -r option
 
 # Move "File1.txt" to a new location "SampleFolder\SubFolder1"
 mv .\SampleFolder\File1.txt .\SampleFolder\SubFolder1\File1.txt
