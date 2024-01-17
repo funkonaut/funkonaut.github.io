@@ -64,7 +64,7 @@ To copy a directory we use the `cp` command, which stands for... you guessed it 
 <br><br>
 
 ##### Copy a file from downloads
-If you have a file in downloads you can use it or you can [click here to download this blank_file.txt file]({{ site.url }}/downloads/blank_file.txt) one and Windows should put it in your downloads folder.
+If you have a file in downloads you can use it or you can []<a href="{{ site.url }}/downloads/blank_file.txt" target="_blank">click here to download this blank_file.txt file</a> one and Windows should put it in your downloads folder.
 <br><br>
 
 ##### Copy a directory using the -r option
