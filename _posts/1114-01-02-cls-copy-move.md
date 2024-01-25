@@ -27,7 +27,7 @@ tags: [Intro]
 <br><br><br>
 
 ## Lesson Overview
-Now that you under stand some basic navigational concepts in the powershell we will now cover the basics of data manipulation using powershell commands, namely making folders, moving files and folders, renaming files and folders, copying files and folders, and deleting files and folders.
+Now that you under stand some basic navigational concepts in the powershell we will now cover the basics of data manipulation using powershell commands, namely making folders, moving files and folders, renaming files and folders, copying files and folders, and deleting files and folders. Just a reminder any time you see a command you should have a Power Shell open and should be typing it into the Power Shell!
 
 ### Copying, Moving, Creating, and Removing Files and Folders
 Use commands like `mv`, `cp`, `mkdir`, `rm`, and `rmdir` to manipulate files and folders. Be cautious when using these commands, as they can delete data permanently. For instance try out the following:
@@ -116,6 +116,48 @@ Using relative paths:
 `mv ./blank_file.txt ./empty_file.txt`
 Using absolute paths:
 `mv ~/Documents/sample_folder/blank_file.txt ~/Documents/sample_folder/empty_file.txt`
+<br><br>
+
+You can also copy files and rename them at the same time too! In order to do that include an new file name at the end of your destination path. For instance...
+Rename a copy of empty_file.txt to null_file.txt:
+`cp ./empty_file.txt ./null_file.txt`
+<br><br><br>
+
+#### Deleting files with the rm command
+In order to delete folders or files with the Power Shell you can use the rm command the rm command takes an argument that is the path to the file or folder you want to delete. If you want to delete a file in your current directory, type `rm file_name` where file_name is the file you want to delete. If you want to delete a file in another directory we type the path to the file you are deleting. If you want to delete a folder the command is the same and the argument is the path to the folder you want to delete, but you also must use the recursive option for instance: `rm -r folder_name`
+<br><br>
+
+**Important Note**
+Deleting files is a permanent operation it is not like deleting a file in the GUI where it goes to your recycling bin it is not possible (or rather very, very difficult) to recover a file or folder that you've deleted with the rm command. For this reason make sure that you have typed the right command! You would not want to accidentally delete all the files on your computer. That said don't let this intimidate you or scare you away from using the rm command or other Power Shell commands. As Spiderman's uncle once said, "With great power comes great responsibility." So just be mindful and knowledgeable of what your commands are doing before you hit enter!
+<br><br><br>
+
+### Autocompletion and Glob Patterns (wildcards)
+As we learning in the getting started lesson power shell supporting autocompletion using the tab key. Pressing tab will cycle through the files in the directory you are located in based upon what you type. It will also add quotes around paths to files that have spaces. You can also use a wildcard symbol like `*` (matching zero or more characters) for pattern-based searching. These symbols are known as glob patterns there are more of them you can reads about online, but the one that is most often used is the `*` or asterisks symbol. It is very powerful, using the `*` we can list all of a specific file type in a directory for instance `ls -n *.jpg` will list all jpg files (a type of image file) in you current directory or you could list all folders or files that start with the prefix "computer" For instance if you typed `ls -n computer*` anything that started with computer would be output to the terminal. You can also use the `*` with other commands for instance deleting all files in directory would be `rm *.*` translating that into plain language would be something like: remove anything that starts with zero or more of any character then has a period in it and then ends with zero or more of any character. Things like wildcards are where one starts to really see the power of the command line shell.
+<br><br><br>
+
+## Checks for Understanding
+1. Create a new folder in your documents.
+2. Rename that folder and move it up into your home directory in one command.
+3. Copy that folder from your home directory into your Downloads.
+4. Delete the folder you copied into Downloads in one command (no cd allowed!).
+5. Copy a file from you downloads folder and rename it and put it into your documents all in one command.
+6. Delete the file you just copied without changing directories to it.
+7. Make two folders in your Desktop folder name them this_folder_1 and that_folder_2 .
+8. Delete both of the folders using one rm command with one argument that uses the * wildcard.
+
+## NEXT STEPS
+creating, reading, manipulating files and routing file output, processes command line interfaces/ apps and environment variables, using powershell on the internet, git, ssh
+- echo
+- cat
+- processes running programs
+- ps
+- kill
+- environment variables
+- control + c, control + z 
+- clear
+- man
+- history
+- wget
 
 ## Additional Resources
 For more in-depth learning and advanced usage of PowerShell, consider exploring the following helpful resources:
