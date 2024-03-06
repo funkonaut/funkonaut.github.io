@@ -101,8 +101,8 @@ You may have noticed some files and directories begin with a "." this means they
 Quotes surround paths with spaces. Either single, ', or double quotes, ", will do, but the powershell will autocomplete to single quotes if you hit tab on a folder or file with spaces in it. Since we use spaces to separate the information (command name, options, and arguments) in commands the computer will get confused and think that we are using multiple of one of the aforementioned elements if we do not include quotes around paths
 <br><br>
 
-#### **Realtive paths** vs **full paths** 
-Relative paths are paths that are relative to where you are currently located in the computer. They start with ./ (current directory) and are usually quicker with the screen reader because full paths are usually pretty long. Full paths include not only your current directory but all of the parent directories above where you are at too. 
+#### **Relative paths** vs **absolute paths** 
+Relative paths are paths that are relative to where you are currently located in the computer. They start with ./ (current directory) and are usually quicker with the screen reader because absolute paths are usually pretty long (unless you are using a shortcut like ~). Absolute paths usually include not only your current directory but all of the parent directories above where you are at too. If you use an absolute path it will always be the path to the same place, if you use a relative path it will change depending on what your current directory is. 
 <br><br>
 
 ### Why We use Paths... to Navigating with PowerShell

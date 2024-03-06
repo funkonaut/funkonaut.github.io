@@ -28,6 +28,7 @@ tags: [Intro]
 
 ## Lesson Overview
 Now that you under stand some basic navigational concepts in the powershell we will now cover the basics of data manipulation using powershell commands, namely making folders, moving files and folders, renaming files and folders, copying files and folders, and deleting files and folders. Just a reminder any time you see a command you should have a Power Shell open and should be typing it into the Power Shell!
+<br><br>
 
 ### Copying, Moving, Creating, and Removing Files and Folders
 Use commands like `mv`, `cp`, `mkdir`, `rm`, and `rmdir` to manipulate files and folders. Be cautious when using these commands, as they can delete data permanently. For instance try out the following:
@@ -146,18 +147,11 @@ As we learning in the getting started lesson power shell supporting autocompleti
 8. Delete both of the folders using one rm command with one argument that uses the * wildcard.
 
 ## NEXT STEPS
-creating, reading, manipulating files and routing file output, processes command line interfaces/ apps and environment variables, using powershell on the internet, git, ssh
-- echo
 - cat
-- processes running programs
-- ps
-- kill
-- environment variables
-- control + c, control + z 
-- clear
-- man
-- history
-- wget
+- echo
+- > and >> (redirection and append operator)
+- | piping (command chaining)
+- running other applications from powershell
 
 ## Additional Resources
 For more in-depth learning and advanced usage of PowerShell, consider exploring the following helpful resources:
