@@ -32,13 +32,26 @@ In this lesson we will cover some more advanced file and folder operations, as w
 <br><br><br>
 
 ## The Echo Command
+The echo command will parrot, or rather echo what ever you type as an argument. It will output each argument on a new line that follows your command prompt. For example type the command `echo "hello world"` this will output the phrase hello world to the powershell. You typically want to type your argument surrounded by quotes. When an argument is surrounded by quotes it is known as a **string**. If you do not include quotes in your argument then powershell will output two lines for each word. This is because powershell is interpreting each word as a separate argument. Just like with paths with spaces in it as powershell separates arguments with spaces you must include quotes around arguments with spaces if you want powershell to interpret it as one argument, as in outputting it as one line and not multiple.
+<br><br>
+
+We will see soon why the echo command is useful. As well when you learn how to write code using the command line shell (also known as bash scripting) the echo command is useful for directing or displaying information to your user.
 <br><br><br>
 
-## The Redirect Symbol
--std err?
+## The Redirect Symbol >
+By default information that is outputted from commands is output directly to the powershell, but there a re a plenty of cases when you want to redirect the output of a command to a file or another place on your computer. For instance if your command outputs a lot of information and you want to save it you can redirect the commands output using the redirect symbol to a file. In order to do this for instance to save the list of files in a folder you could type:
+`ls ./ > files_here.txt` 
+<br><br>
+
+Nothing would appear in the powershell after you entered this command, but there would now be a file named "files_here.txt" in your present (current) working directory that has what would have been outputted to the powershell.  
 <br><br><br>
 
-## The Append Operator
+### Creating New Files with the Redirect Symbol
+- std err?
+
+<br><br><br>
+
+## The Append Operator >>
 <br><br><br>
 
 ## Launching Programs
@@ -61,12 +74,12 @@ In this lesson we will cover some more advanced file and folder operations, as w
 <br><br><br>
 
 ## NEXT STEPS
-- processes ps
-- kill
-- control + c, control + z 
 - clear
 - history
 - man
+- processes ps
+- kill
+- control + c, control + z 
 - extracting files and folder 
 - environment variables
 - ssh
