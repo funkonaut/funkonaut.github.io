@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Command Line Shell Intro: Advanced File and Folder Operations"
+title:  "Advanced File and Folder Operations"
 date:   1114-01-01
 last_modified_at: 2024-1-25
 categories: [Command Line Shell]
@@ -19,7 +19,7 @@ tags: [Intro]
 - Text editing skills
 - Basic Windows Navigation skills
 - Basic screen reading skills
-- Basic knowledge of what a computer **operating system** is and its features (ie file/folders/applications/shortcuts/file extenstions/etc.)
+- Basic knowledge of what a computer **operating system** is and its features (ie file/folders/applications/shortcuts/file extentions/etc.)
 - Basic knowledge of computer hardware (hard drive/usb and other peripheral ports/cloud vs local storage)
 - Basic understanding of variables and parameters
 - Basic internet navigation skills and (URL structure)

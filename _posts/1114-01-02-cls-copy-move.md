@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Command Line Shell Intro: Copying, Moving, Creating and Removing Files and Folders"
+title:  "Copying, Moving, Creating and Removing Files and Folders"
 date:   1114-01-01
 last_modified_at: 2024-1-25
 categories: [Command Line Shell]
