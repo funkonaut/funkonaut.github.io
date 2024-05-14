@@ -29,25 +29,25 @@ tags: [Intro]
 Windows **PowerShell** is "a cross-platform task automation solution made up of a **command-line shell**, a scripting language, and a configuration management framework. PowerShell runs on Windows, Linux, and macOS," but what the heck does that mean? 
 <br><br>
 
-Well essentially PowerShell is a way to access your computer through text instead of through a graphical user interface (**GUI**). Most computer users are sighted therefore most computer programs and operating systems have a GUI where users interact with the computer primarily by using a mouse to navigate to and click on elements. PowerShell is, primarily for our purposes, a command-line shell this means we can control the computer with a keyboard and text instead of through GUI with a mouse! PowerShell also has a scripting language and a configuration management framework, but we don't really need to worry about that (if are interested check out the links under the Helpful Resources heading), for now if you understand what a command line-shell is then we are good to move on. 
+Well essentially PowerShell is a way to access your computer folders, files, and applications through text instead of through a graphical user interface (**GUI**). Most computer users are sighted therefore most computer programs and operating systems have a GUI where users interact with the computer primarily by using a mouse to navigate to and click on elements. PowerShell is, primarily for our purposes, a command-line shell this means we can control the computer with a keyboard and text instead of through GUI with a mouse! PowerShell also has a scripting language and a configuration management framework, but we don't really need to worry about that (if are interested check out the links under the Helpful Resources heading), for now if you understand what a command line-shell is then we are good to move on. 
 <br><br>
 
 ## What will we do with it and why should we use it?
-We will use PowerShell to run several different programs from their command-line interface (**CLI**). If you remember what our command-line shell is then you should be able to infer that a command line interface is, a text based interface for interacting with an application, don't worry if you are confused it will make more sense when we start to practice. We will also use PowerShell to navigate and move files and folders on our computer, the PowerShell allows us to navigate our computer much like the file explorer, but with text, i.e. without having to tab around or use keyboard shortcuts. As you might have guessed, the powershell is pretty useful if you are navigating your computer auditorily as all commands are a single line, and the output of commands are all text. At the end of this lesson you will understand how the command line shell can be super powerful. 
+We will use PowerShell to run several different programs from their command-line interface (**CLI**) and to navigate around and manipulate the computer's folders and files instead of using the graphical user interface for doing such, also known as the file explorer on Windows. If you remember what our command-line shell is then you should be able to infer that a command line interface is, a text based interface for interacting with an application, don't worry if you are confused it will make more sense when we start to practice. We will also use PowerShell to navigate and move files and folders on our computer, the PowerShell allows us to navigate and manipulate our computer's files and folders much like the file explorer, but with text, i.e. without having to tab around or use keyboard shortcuts. As you might have guessed, the powershell is pretty useful if you are navigating your computer auditorily as all commands are a single line, and the output of commands are all text. At the end of this lesson you will understand how the command line shell can be super powerful. 
 <br><br><br>
 
 ### Important Note on Vocabulary and Concepts
-The words command line shell, terminal, and powershell will all be used interchangably in this tutorial. Technically all of these things are kind of different and we are technically going to learn and work on linux command line shell commands using the PowerShell, and not actual Microsoft Powershell commands, but for the sake of simplifiying a very complex subject and using vocabulary and concepts consistent with what programs you  will be using we are going to say that we are learning powershell commands when in fact we are learning linux commands that have a shortcut (also known as an alias) built in to powershell by Microsoft. This is all probably pretty confusing and overwhelming, but don't worry things will make more sense when you start messing around in the tutorial below!
+The words command line shell, terminal, and powershell will all be used interchangeably in this tutorial. Technically all of these things are kind of different and we are technically going to learn and work on linux command line shell commands using the PowerShell, and not actual Microsoft Powershell commands, but for the sake of simplifying a very complex subject and using vocabulary and concepts consistent with what programs you  will be using we are going to say that we are learning powershell commands when in fact we are learning linux commands that have a shortcut (also known as an alias) built in to powershell by Microsoft. This is all probably pretty confusing and overwhelming, but don't worry things will make more sense when you start messing around in the tutorial below!
 <br><br><br>
 
 ## Tutorial
 The best way to learn (in my opinion) is by doing. So lets launch a PowerShell and see what this thing can do, but quick real fast we need to make sure some settings our set on our screenreader if we are using one.
 
 ### Screen Reader Settings
-If you are using NVDA atleast of this articles last update, you will need to make sure "Report Dynamic Contentn Changes," "Carot moves review cursor," and "Focus Moves Navigator object" are all on. You cna do this by pressing NVDA+5, NVDA+6, NVDA+7 to toggle each and make sure they are announced as on. One can read more about this (and way more) in the [NVDA user manual](https://www.nvaccess.org/files/nvda/documentation/userGuide.html), but this will enable NVDA to announce everything that the powershell spits out. These settings should be preserved if you restart NVDA. JAWS users should atleast as of this tutorial be fine without changing any settings at this moment.
+JAWS users should at least as of this tutorial be fine without changing any settings at this moment. If you are using NVDA at least of this articles last update, you will need to make sure "Report Dynamic Content Changes," "Carot moves review cursor," and "Focus Moves Navigator object" are all on. You cna do this by pressing NVDA+5, NVDA+6, NVDA+7 to toggle each and make sure they are announced as on. One can read more about this (and way more) in the [NVDA user manual](https://www.nvaccess.org/files/nvda/documentation/userGuide.html), but this will enable NVDA to announce everything that the powershell spits out. These settings should be preserved if you restart NVDA. As well a helpful hint, if you haven't figure it out already, this content is very dense and concepts build on eachother, so slowing it down and reading it by sentence instead of paragraph is a good way to make sure you understand everything and can apply it in the checks for understanding and practice problems sections.
 
 ### Launching Powershell
- The keyboard shortcut windows key + X will pull up a list of options where you can select PowerShell you can also use the Windows key to search for Power Shell.             
+ The keyboard shortcut windows key + X will pull up a list of options where you can select PowerShell (quick key navigation option is the letter i) you can also use the Windows key to search for Power Shell.             
 <br><br>
 
 Upon launch it will read you a header that has some copyright information and a warning that it detected a screen reader (if you are using a screen reader), it will then read you where you are currently at in the computer. You are now in a command-line shell. 
@@ -56,20 +56,31 @@ Upon launch it will read you a header that has some copyright information and a 
 ### Power Shell Structure
 The Power Shell is a window with text. It will default your focus to the start of a line where you can begin typing a **command**, we will call this line the **command line prompt**. Before where you start typing is a line of text that tells you where you are located in the computer (more on that soon). 
 
+#### File and Folder Structure
+Also known as 
+
+
+#### The Computer Path
+We call where things are located in the computer a **path**, or an address to a folder or file. Its kind of like a URL for where files and folders are on your computer. A path will read something like `C:\Users\name\`. When you launch PowerShell it should default you to your **home directory**. Directory is just another name for a folder they can be used interchangeably. The home directory has a path shortcut it is `~/` this will be useful so you don't have to type `C:\Users\name\` every time you want to use the home folder path. We use paths to navigate and work with information on the computer using the power shell, so its important to understand how they work, the vocabulary surrounding them, and their structure.
+<br><br>
+
 #### What are commands?
 Commands are how you interact and tell the powershell what to do> When you type a command and press enter the powershell will either do something and output text information, do something and output nothing, or do nothing and output an error message, depending on if you typed a correct command, a command with no command line shell output, or an incorrect command. The only exception to this is if you do something silly that does nothing and outputs nothing, which you can do several ways if you really care to, but the easiest way is just pressing enter and not having a command. After you input a command (or not) and press enter in all cases the command line prompt will appear again and you can type another command. The command line prompt will only show up once the command is done running. Some commands can take a long time to run and we will talk later on how to cancel commands but for the most part the commands you run should pretty much happen instantaneously.
 <br><br>
 
 #### Power Shell Command Structure
-A powershell **command's structure** consists of a command name, options, and arguments, usually in that order. These are all seperated by spaces. Command names tell the power shell what to do, options tell the powershell how we want to do it and usually start with a dash, -, and arguments tell the powershell what information we want to the command to or use it with. More on commands when we start using them but we wanted to get that vocabulary out of the way to start, that the command is structured such that command names (what), options (how), and arguments (what info we are acting on or with) and that they are seperated by spaces. 
-
-### Power Shell Features
-The power shell has some features which are helpful and most command line shells (like Linux, or terminal on Mac) have them. If you press up and down arrow when you are on a command prompt it will cycle through  your previous commands. If you press tab while typing something powershell will try to guess what you are typing and cycle through information that begins with what you typed. We will use these features soon but just wanted to highlight them here. 
+A powershell **command's structure** consists of a command name, options, and arguments, usually in that order. These are all separated by spaces. Command names tell the power shell what to do, options tell the powershell how we want to do it and usually start with a dash, -, and arguments tell the powershell what information we want to the command to or use it with. More on commands when we start using them but we wanted to get that vocabulary out of the way to start, that the command is structured such that command names (what), options (how), and arguments (what info we are acting on or with) and that they are separated by spaces. 
 <br><br>
 
-### The Computer Path
-We call where things are located in the computer a **path**, or an address to a folder or file. Its kind of like a URL for where files and folders are on your computer. A path will read something like `C:\Users\name\`. When you launch PowerShell it should default you to your **home directory**. Directory is just another name for a folder they can be used interchangeably. The home directory has a path shortcut it is `~/` this will be useful so you don't have to type `C:\Users\name\` every time you want to use the home folder path. We use paths to navigate and work with information on the computer using the power shell, so its important to understand how they work, the vocabulary surrounding them, and their structure.
+##### Your first command: Listing Files and Folders
+The `ls` command stands for "list" and shows the files and folders in the current directory. By default, it displays a table with attributes, last write time, file size, and names, this is useful information but takes a long time to read. Because of that we can use the `-n` option to filter and display only names of are files and/or directories. Try listing the files in the folder you are currently in. Type `ls`. You get a lot of information, now try entering `ls -n` now you only get the name information!
 <br><br>
+
+### Power Shell Features and a Note Concerning Screen Readers 
+<br><br>
+The power shell has some features which are helpful and most command line shells (like Linux, or terminal on Mac) have them. If you press up and down arrow when you are on a command prompt it will cycle through  your previous commands, it will not read what the command output again unless you use the NVDA key in combination with the arrow key. If you press tab while typing something powershell will try to guess what you are typing depending on what directory you are in and what characters you have typed and cycle through information that begins with what you typed, you can also press shift + tab to go backwards through this autocompletion list. We will use these features very often to improve our efficiency. 
+<br>
+<br>
 
 ### **Parent Directory** 
 Paths are structured by separating folder and file names with either a forward or backslash. Each separation is a level. The **root directory** is the lowest level directory it will typically be `C:\` and is associated with the C drive, a shortcut for it is `/`. For instance `C:\Users` is the path to the folder that has all of the sub folders containing all of the Users on the C: drive. A path will typically be made up of folders and **subfolders** and will end in a file name. You would not see something like
@@ -122,11 +133,9 @@ cd ./Downloads
 5. Now let's go back to the home directory using the shortcut (i.e., "~")
 cd ~
 
-
-### Listing Files and Folders
-The `ls` command stands for "list" and shows the files and folders in the current directory. By default, it displays a table with attributes, last write time, file size, and names, this is useful information but takes a long time to read. Because of that we can use the `-n` option to filter and display only names of are files and/or directories. Try listing the files in the folder you are currently in. Type `ls`. You get a lot of information, now try entering `ls -n` now you only get the name information!
 <br><br>
 
+## Command Practice
 Now try the following:
 1. List all your donwloads
 ls -n ~/Downloads
