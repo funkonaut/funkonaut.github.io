@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Olympics Scoreboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        caption {
+            font-weight: bold;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let scores = [
+                { name: "Matthew", score: 0 },
+                { name: "William", score: 0},
+                { name: "Willie", score: 0 },
+                { name: "Lucky", score: 0 },
+                { name: "Jackson", score: 0 }
+            ];
+            
+            function updateScoreboard() {
+                scores.sort((a, b) => b.score - a.score);
+                let tbody = document.querySelector("tbody");
+                tbody.innerHTML = "";
+                scores.forEach(player => {
+                    let row = `<tr><td>${player.name}</td><td>${player.score}</td></tr>`;
+                    tbody.innerHTML += row;
+                });
+            }
+            
+            updateScoreboard();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Computer Olympics Scoreboard 🏆</h1>
+        <h2>🚀 This Week's Event: Typing Marathon ⌨️🔥</h2>
+        <table aria-describedby="scoreboard-summary">
+            <caption>Current standings for the Typing Marathon event</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <p id="scoreboard-summary">This table lists the participants and their current scores for the Typing Marathon event in the Computer Olympics.</p>
+    </div>
+</body>
+</html>
