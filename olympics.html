@@ -35,6 +35,19 @@
             font-weight: bold;
             padding: 10px;
         }
+        .share-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .share-button:hover {
+            background-color: #218838;
+        }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -56,6 +69,13 @@
                 });
             }
             
+            function shareScoreboard() {
+                let subject = encodeURIComponent("Check out the Computer Olympics Scoreboard!");
+                let body = encodeURIComponent("See the latest scores here: https://www.accessiblestem.org/olympics.html");
+                window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            }
+            
+            document.getElementById("share-button").addEventListener("click", shareScoreboard);
             updateScoreboard();
         });
     </script>
@@ -77,6 +97,7 @@
             </tbody>
         </table>
         <p id="scoreboard-summary">This table lists the participants and their current scores for the Typing Marathon event in the Computer Olympics.</p>
+        <button id="share-button" class="share-button">📧 Share Scoreboard</button>
     </div>
 </body>
 </html>
