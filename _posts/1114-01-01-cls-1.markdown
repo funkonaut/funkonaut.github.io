@@ -57,11 +57,11 @@ Upon launch it will read you a header that has some copyright information and a 
 The Power Shell is a window with text. It will default your focus to the start of a line where you can begin typing a **command**, we will call this line the **command line prompt**. Before where you start typing is a line of text that tells you where you are located in the computer (more on that soon). 
 
 #### File and Folder Structure
-Also known as 
+Files and folders are organized on the computer in what we call a directory hierarchy or directory structure. This structure can be explained like a tree. When you are navigating the files and folder on your computer, even when you are using the file explorer you are still navigating this tree structure. 
 
 
 #### The Computer Path
-We call where things are located in the computer a **path**, or an address to a folder or file. Its kind of like a URL for where files and folders are on your computer. A path will read something like `C:\Users\name\`. When you launch PowerShell it should default you to your **home directory**. Directory is just another name for a folder they can be used interchangeably. The home directory has a path shortcut it is `~/` this will be useful so you don't have to type `C:\Users\name\` every time you want to use the home folder path. We use paths to navigate and work with information on the computer using the power shell, so its important to understand how they work, the vocabulary surrounding them, and their structure.
+We call where things are located in the computer's file and folder system (the tree) a **path**, or an address to a folder or file. Its kind of like a URL for where files and folders are on your computer. A path will read something like `C:\Users\name\`. When you launch PowerShell it should default you to your **home directory**. Directory is just another name for a folder they can be used interchangeably. The home directory has a path shortcut it is `~/` this will be useful so you don't have to type `C:\Users\name\` every time you want to use the home folder path. We use paths to navigate and work with information on the computer using the power shell, so its important to understand how they work, the vocabulary surrounding them, and their structure.
 <br><br>
 
 #### What are commands?
