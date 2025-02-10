@@ -1,82 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Olympics Scoreboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Olympics Scoreboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    }
+    h1, h2, p {
+      margin: 0.5em 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    caption {
+      font-weight: bold;
+      padding: 10px;
+    }
+    .event-buttons {
+      margin-bottom: 15px;
+    }
+    .event-buttons button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+    }
+    .event-buttons button:hover {
+      background-color: #0056b3;
+    }
+    .nav-buttons {
+      margin-top: 10px;
+    }
+    .nav-buttons button {
+      margin: 5px;
+      padding: 10px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .nav-buttons button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Event data for Email Reply Race and Typing Marathon
+      const events = {
+        email: {
+          title: "🏆 Email Reply Race 🏆",
+          description: "Welcome to the Email Reply Race, part of the Computer Olympics! Your challenge is to read and reply to five emails each day correctly using Outlook on your laptop with a screen reader. Each email will increase in difficulty—from finding a keyword to composing a full response. Earn points for replying before the next class and for correct answers. Bonus points are awarded for being the first to correctly reply and having proper spelling, grammar, and extra details! Ready, set, email!",
+          scores: [
+            { name: "William", score: 0 },
+            { name: "Willie", score: 0 },
+            { name: "Lucky", score: 0 },
+            { name: "Jackson", score: 0 },
+            { name: "Matthew", score: 0 }
+          ]
+        },
+        typing: {
+          title: "Typing Marathon: ",
+          description: "Score points by logging on to Typing Club and practicing for 10 minutes a day. For every 10 minutes that you practice each day this week, you will get 1 point. Scores will update at the beginning of each day."
         }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+      };
+
+      // Typing Marathon week data
+      const typingWeeks = [
+        {
+          week: "February 3rd, 2025",
+          scores: [
+            { name: "William", score: 3 },
+            { name: "Willie", score: 4 },
+            { name: "Lucky", score: 11 },
+            { name: "Jackson", score: 3 },
+            { name: "Matthew", score: 2 }
+          ]
+        },
+        {
+          week: "February 10th, 2025",
+          scores: [
+            { name: "William", score: 0 },
+            { name: "Willie", score: 0 },
+            { name: "Lucky", score: 0 },
+            { name: "Jackson", score: 0 },
+            { name: "Matthew", score: 0 }
+          ]
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+      ];
+
+      // Default settings: Email Reply Race is shown first.
+      let currentEvent = "email";
+      // For typing event, default to Week 2 ("Week of February 10th, 2025")
+      let currentWeekIndex = 1;
+
+      // Function to update the scoreboard dynamically
+      function updateScoreboard() {
+        const tbody = document.querySelector("tbody");
+        tbody.innerHTML = "";
+        // Use aria-live region for dynamic updates
+        const scoreboardRegion = document.getElementById("scoreboard-region");
+
+        if (currentEvent === "typing") {
+          // Show week navigation buttons for Typing Marathon
+          document.getElementById("week-nav").style.display = "block";
+
+          // Get current week data
+          const weekData = typingWeeks[currentWeekIndex];
+
+          // Update event title to include week info
+          document.getElementById("event-title").textContent =
+            events.typing.title +  weekData.week ;
+          document.getElementById("event-description").textContent =
+            events.typing.description;
+
+          // Sort and display scores for the current week
+          const scores = [...weekData.scores];
+          scores.sort((a, b) => b.score - a.score);
+          scores.forEach(player => {
+            const row = `<tr><td>${player.name}</td><td>${player.score}</td></tr>`;
+            tbody.innerHTML += row;
+          });
+        } else if (currentEvent === "email") {
+          // Hide week navigation buttons when Email Reply Race is active
+          document.getElementById("week-nav").style.display = "none";
+
+          // Update title and description for Email Reply Race
+          document.getElementById("event-title").textContent =
+            events.email.title;
+          document.getElementById("event-description").textContent =
+            events.email.description;
+
+          // Sort and display scores for Email Reply Race
+          const scores = [...events.email.scores];
+          scores.sort((a, b) => b.score - a.score);
+          scores.forEach(player => {
+            const row = `<tr><td>${player.name}</td><td>${player.score}</td></tr>`;
+            tbody.innerHTML += row;
+          });
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
+
+        // Announce update to screen readers
+        scoreboardRegion.setAttribute("aria-live", "polite");
+      }
+
+      // Event listener for Email Reply Race button (default and first button)
+      document.getElementById("email-button").addEventListener("click", function() {
+        currentEvent = "email";
+        updateScoreboard();
+      });
+
+      // Event listener for Typing Marathon button
+      document.getElementById("typing-button").addEventListener("click", function() {
+        currentEvent = "typing";
+        // Set default to Week 2 when switching to Typing Marathon
+        currentWeekIndex = 1;
+        updateScoreboard();
+      });
+
+      // Event listeners for week navigation buttons (applicable for Typing Marathon)
+      document.getElementById("prev-week").addEventListener("click", function() {
+        if (currentWeekIndex > 0) {
+          currentWeekIndex--;
+          updateScoreboard();
+        } else {
+          alert("This is the earliest week available.");
         }
-        th {
-            background-color: #007bff;
-            color: white;
+      });
+
+      document.getElementById("next-week").addEventListener("click", function() {
+        if (currentWeekIndex < typingWeeks.length - 1) {
+          currentWeekIndex++;
+          updateScoreboard();
+        } else {
+          alert("No further weeks available.");
         }
-        caption {
-            font-weight: bold;
-            padding: 10px;
-        }
-    </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let scores = [
-                { name: "William", score: 2 },
-                { name: "Willie", score: 2 },
-                { name: "Lucky", score: 9 },
-                { name: "Jackson", score: 2 },
-                { name: "Matthew", score: 2 }
-            ];
-            
-            function updateScoreboard() {
-                scores.sort((a, b) => b.score - a.score);
-                let tbody = document.querySelector("tbody");
-                tbody.innerHTML = "";
-                scores.forEach(player => {
-                    let row = `<tr><td>${player.name}</td><td>${player.score}</td></tr>`;
-                    tbody.innerHTML += row;
-                });
-            }
-            
-            updateScoreboard();
-        });
-    </script>
+      });
+
+      // Initialize the scoreboard with the default event (Email Reply Race)
+      updateScoreboard();
+    });
+  </script>
 </head>
 <body>
-    <div class="container">
-        <h1>🏆 Computer Olympics Scoreboard 🏆</h1>
-        <h2>🚀 This Week's Event: Typing Marathon ⌨️🔥</h2>
-        <p>Score points by logging on to Typing Club and practicing for 10 minutes a day. For every 10 minutes that you practice each day this week, you will get 1 point. Scores will update at the beginning of each day.</p>
-        <table aria-describedby="scoreboard-summary">
-            <caption>Current standings for the Typing Marathon event</caption>
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Score</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <p id="scoreboard-summary">This table lists the participants and their current scores for the Typing Marathon event in the Computer Olympics.</p>
+  <div class="container" role="main">
+    <h1>🏆 Computer Olympics Scoreboard 🏆</h1>
+    <div class="event-buttons">
+      <!-- Email Reply Race button is placed first for accessibility -->
+      <button id="email-button">Email Reply Race</button>
+      <button id="typing-button">Typing Marathon</button>
     </div>
+    <h2 id="event-title"></h2>
+    <p id="event-description"></p>
+    <table aria-describedby="scoreboard-summary">
+      <caption>Current standings for this event</caption>
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Score</th>
+        </tr>
+      </thead>
+      <tbody id="scoreboard-region"></tbody>
+    </table>
+    <p id="scoreboard-summary">
+      This table lists the participants and their current scores for the selected Computer Olympics event.
+    </p>
+    <!-- Week navigation buttons (displayed only for Typing Marathon) -->
+    <div class="nav-buttons" id="week-nav" style="display: none;">
+      <button id="prev-week" aria-label="Previous week scoreboard">⬅️ Previous Week</button>
+      <button id="next-week" aria-label="Next week scoreboard">Next Week ➡️</button>
+    </div>
+  </div>
 </body>
 </html>
