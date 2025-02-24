@@ -70,14 +70,36 @@
     .nav-buttons button:hover {
       background-color: #0056b3;
     }
+    /* Winner heading styling */
+    #winner-heading {
+      color: green;
+      font-size: 1.4em;
+      margin-top: 10px;
+    }
   </style>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      // Event data for Email Reply Race and Typing Marathon
+      // Common event data: title and description for each event.
       const events = {
         email: {
           title: "🏆 Email Reply Race 🏆",
-          description: "Welcome to the Email Reply Race, part of the Computer Olympics! Your challenge is to read and reply to five emails each day correctly using Outlook on your laptop with a screen reader. Each email will increase in difficulty—from finding a keyword to composing a full response. Earn points for replying before the next class and for correct answers. Bonus points are awarded for being the first to correctly reply and having proper spelling, grammar, and extra details! Ready, set, email!",
+          description: "Welcome to the Email Reply Race, part of the Computer Olympics! Your challenge is to read and reply to five emails each day correctly using Outlook on your laptop with a screen reader. Each email will increase in difficulty—from finding a keyword to composing a full response. Earn points for replying before the next class and for correct answers. Bonus points are awarded for being the first to correctly reply and having proper spelling, grammar, and extra details! Ready, set, email!"
+        },
+        typing: {
+          title: "Typing Marathon: ",
+          description: "Score points by logging on to Typing Club and practicing for 10 minutes a day. For every 10 minutes that you practice each day this week, you will get 1 point. Scores will update at the beginning of each day."
+        },
+        shortcut: {
+          title: "Shortcut Showdown: ",
+          description: "Master your keyboard shortcuts! Each day at the beginning of class, you will be given a set of Windows or screen reader keyboard shortcuts to practice. Earn points by correctly demonstrating the shortcut functions and applying them in real-world tasks."
+        }
+      };
+
+      // Week data for Email Reply Race
+      const emailWeeks = [
+        {
+          week: "February 3rd, 2025",
+          date: "2025-02-03T00:00:00",
           scores: [
             { name: "William", score: 7 },
             { name: "Willie", score: 10 },
@@ -86,16 +108,24 @@
             { name: "Matthew", score: 7 }
           ]
         },
-        typing: {
-          title: "Typing Marathon: ",
-          description: "Score points by logging on to Typing Club and practicing for 10 minutes a day. For every 10 minutes that you practice each day this week, you will get 1 point. Scores will update at the beginning of each day."
+        {
+          week: "February 24th, 2025",
+          date: "2025-02-24T00:00:00",
+          scores: [
+            { name: "William", score: 0 },
+            { name: "Willie", score: 0 },
+            { name: "Lucky", score: 0 },
+            { name: "Jackson", score: 0 },
+            { name: "Matthew", score: 0 }
+          ]
         }
-      };
+      ];
 
-      // Typing Marathon week data
+      // Week data for Typing Marathon
       const typingWeeks = [
         {
           week: "February 3rd, 2025",
+          date: "2025-02-03T00:00:00",
           scores: [
             { name: "William", score: 3 },
             { name: "Willie", score: 4 },
@@ -106,6 +136,7 @@
         },
         {
           week: "February 10th, 2025",
+          date: "2025-02-10T00:00:00",
           scores: [
             { name: "William", score: 0 },
             { name: "Willie", score: 3 },
@@ -113,98 +144,174 @@
             { name: "Jackson", score: 0 },
             { name: "Matthew", score: 1 }
           ]
+        },
+        {
+          week: "February 24th, 2025",
+          date: "2025-02-24T00:00:00",
+          scores: [
+            { name: "William", score: 0 },
+            { name: "Willie", score: 0 },
+            { name: "Lucky", score: 0 },
+            { name: "Jackson", score: 0 },
+            { name: "Matthew", score: 0 }
+          ]
         }
       ];
 
-      // Default settings: Email Reply Race is shown first.
-      let currentEvent = "email";
-      // For typing event, default to Week 2 ("Week of February 10th, 2025")
-      let currentWeekIndex = 1;
+      // Week data for Shortcut Showdown – only one week: February 24, 2025.
+      const shortcutWeeks = [
+        {
+          week: "February 24th, 2025",
+          date: "2025-02-24T00:00:00",
+          scores: [
+            { name: "William", score: 0 },
+            { name: "Willie", score: 0 },
+            { name: "Lucky", score: 0 },
+            { name: "Jackson", score: 0 },
+            { name: "Matthew", score: 0 }
+          ]
+        }
+      ];
+
+      // Default settings: now the default event is Shortcut Showdown.
+      let currentEvent = "shortcut";
+      let emailWeekIndex = 1;
+      let typingWeekIndex = 2;
+      let shortcutWeekIndex = 0; // Only one week available.
+
+      // Helper function: checks if an event is completed (7 days have passed since its date)
+      function isEventCompleted(eventDate) {
+        const now = new Date();
+        const diffDays = (now - eventDate) / (1000 * 60 * 60 * 24);
+        return diffDays >= 7;
+      }
 
       // Function to update the scoreboard dynamically
       function updateScoreboard() {
         const tbody = document.querySelector("tbody");
         tbody.innerHTML = "";
-        // Use aria-live region for dynamic updates
         const scoreboardRegion = document.getElementById("scoreboard-region");
+        const winnerHeading = document.getElementById("winner-heading");
+        let eventDate, scores, weekData;
 
         if (currentEvent === "typing") {
-          // Show week navigation buttons for Typing Marathon
-          document.getElementById("week-nav").style.display = "block";
-
-          // Get current week data
-          const weekData = typingWeeks[currentWeekIndex];
-
-          // Update event title to include week info
+          document.getElementById("week-nav").style.display = typingWeeks.length > 1 ? "block" : "none";
+          weekData = typingWeeks[typingWeekIndex];
+          eventDate = new Date(weekData.date);
+          scores = [...weekData.scores];
           document.getElementById("event-title").textContent =
-            events.typing.title +  weekData.week ;
+            events.typing.title + weekData.week;
           document.getElementById("event-description").textContent =
             events.typing.description;
-
-          // Sort and display scores for the current week
-          const scores = [...weekData.scores];
-          scores.sort((a, b) => b.score - a.score);
-          scores.forEach(player => {
-            const row = `<tr><td>${player.name}</td><td>${player.score}</td></tr>`;
-            tbody.innerHTML += row;
-          });
         } else if (currentEvent === "email") {
-          // Hide week navigation buttons when Email Reply Race is active
-          document.getElementById("week-nav").style.display = "none";
-
-          // Update title and description for Email Reply Race
+          document.getElementById("week-nav").style.display = emailWeeks.length > 1 ? "block" : "none";
+          weekData = emailWeeks[emailWeekIndex];
+          eventDate = new Date(weekData.date);
+          scores = [...weekData.scores];
           document.getElementById("event-title").textContent =
-            events.email.title;
+            events.email.title + " - " + weekData.week;
           document.getElementById("event-description").textContent =
             events.email.description;
-
-          // Sort and display scores for Email Reply Race
-          const scores = [...events.email.scores];
-          scores.sort((a, b) => b.score - a.score);
-          scores.forEach(player => {
-            const row = `<tr><td>${player.name}</td><td>${player.score}</td></tr>`;
-            tbody.innerHTML += row;
-          });
+        } else if (currentEvent === "shortcut") {
+          // Only one week exists for Shortcut Showdown, so hide navigation.
+          document.getElementById("week-nav").style.display = shortcutWeeks.length > 1 ? "block" : "none";
+          weekData = shortcutWeeks[shortcutWeekIndex];
+          eventDate = new Date(weekData.date);
+          scores = [...weekData.scores];
+          document.getElementById("event-title").textContent =
+            events.shortcut.title + " - " + weekData.week;
+          document.getElementById("event-description").textContent =
+            events.shortcut.description;
         }
 
-        // Announce update to screen readers
+        // Sort scores highest to lowest and update winner heading if the event is completed
+        scores.sort((a, b) => b.score - a.score);
+        if (isEventCompleted(eventDate)) {
+          const topScore = scores[0].score;
+          const winners = scores
+            .filter(player => player.score === topScore)
+            .map(player => player.name)
+            .join(", ");
+          winnerHeading.textContent = "Winner: " + winners;
+        } else {
+          winnerHeading.textContent = "";
+        }
+
+        scores.forEach(player => {
+          const row = `<tr><td>${player.name}</td><td>${player.score}</td></tr>`;
+          tbody.innerHTML += row;
+        });
         scoreboardRegion.setAttribute("aria-live", "polite");
       }
 
-      // Event listener for Email Reply Race button (default and first button)
+      // Event listeners for event selection buttons (Shortcut Showdown is now listed first)
+      document.getElementById("shortcut-button").addEventListener("click", function() {
+        currentEvent = "shortcut";
+        updateScoreboard();
+      });
+
       document.getElementById("email-button").addEventListener("click", function() {
         currentEvent = "email";
         updateScoreboard();
       });
 
-      // Event listener for Typing Marathon button
       document.getElementById("typing-button").addEventListener("click", function() {
         currentEvent = "typing";
-        // Set default to Week 2 when switching to Typing Marathon
-        currentWeekIndex = 1;
         updateScoreboard();
       });
 
-      // Event listeners for week navigation buttons (applicable for Typing Marathon)
+      // Week navigation buttons event listeners
       document.getElementById("prev-week").addEventListener("click", function() {
-        if (currentWeekIndex > 0) {
-          currentWeekIndex--;
-          updateScoreboard();
-        } else {
-          alert("This is the earliest week available.");
+        if (currentEvent === "email") {
+          if (emailWeekIndex > 0) {
+            emailWeekIndex--;
+            updateScoreboard();
+          } else {
+            alert("This is the earliest week available.");
+          }
+        } else if (currentEvent === "typing") {
+          if (typingWeekIndex > 0) {
+            typingWeekIndex--;
+            updateScoreboard();
+          } else {
+            alert("This is the earliest week available.");
+          }
+        } else if (currentEvent === "shortcut") {
+          if (shortcutWeekIndex > 0) {
+            shortcutWeekIndex--;
+            updateScoreboard();
+          } else {
+            alert("This is the only week available.");
+          }
         }
       });
 
       document.getElementById("next-week").addEventListener("click", function() {
-        if (currentWeekIndex < typingWeeks.length - 1) {
-          currentWeekIndex++;
-          updateScoreboard();
-        } else {
-          alert("No further weeks available.");
+        if (currentEvent === "email") {
+          if (emailWeekIndex < emailWeeks.length - 1) {
+            emailWeekIndex++;
+            updateScoreboard();
+          } else {
+            alert("No further weeks available.");
+          }
+        } else if (currentEvent === "typing") {
+          if (typingWeekIndex < typingWeeks.length - 1) {
+            typingWeekIndex++;
+            updateScoreboard();
+          } else {
+            alert("No further weeks available.");
+          }
+        } else if (currentEvent === "shortcut") {
+          if (shortcutWeekIndex < shortcutWeeks.length - 1) {
+            shortcutWeekIndex++;
+            updateScoreboard();
+          } else {
+            alert("No further weeks available.");
+          }
         }
       });
 
-      // Initialize the scoreboard with the default event (Email Reply Race)
+      // Initialize the scoreboard with the default event (Shortcut Showdown)
       updateScoreboard();
     });
   </script>
@@ -213,12 +320,14 @@
   <div class="container" role="main">
     <h1>🏆 Computer Olympics Scoreboard 🏆</h1>
     <div class="event-buttons">
-      <!-- Email Reply Race button is placed first for accessibility -->
+      <!-- Reordered buttons so Shortcut Showdown appears first -->
+      <button id="shortcut-button">Shortcut Showdown</button>
       <button id="email-button">Email Reply Race</button>
       <button id="typing-button">Typing Marathon</button>
     </div>
     <h2 id="event-title"></h2>
     <p id="event-description"></p>
+    <h2 id="winner-heading"></h2>
     <table aria-describedby="scoreboard-summary">
       <caption>Current standings for this event</caption>
       <thead>
@@ -232,7 +341,6 @@
     <p id="scoreboard-summary">
       This table lists the participants and their current scores for the selected Computer Olympics event.
     </p>
-    <!-- Week navigation buttons (displayed only for Typing Marathon) -->
     <div class="nav-buttons" id="week-nav" style="display: none;">
       <button id="prev-week" aria-label="Previous week scoreboard">⬅️ Previous Week</button>
       <button id="next-week" aria-label="Next week scoreboard">Next Week ➡️</button>
