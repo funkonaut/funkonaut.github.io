@@ -91,7 +91,7 @@
         },
         shortcut: {
           title: "Shortcut Showdown: ",
-          description: "Master your keyboard shortcuts! Each day at the beginning of class, you will be given a set of Windows or screen reader keyboard shortcuts to practice. Earn points by correctly demonstrating the shortcut functions and applying them in real-world tasks."
+          description: "ON HOLD: Master your keyboard shortcuts! Each day at the beginning of class, you will be given a set of Windows or screen reader keyboard shortcuts to practice. Earn points by correctly demonstrating the shortcut functions and applying them in real-world tasks."
         }
       };
 
@@ -112,11 +112,11 @@
           week: "February 24th, 2025",
           date: "2025-02-24T00:00:00",
           scores: [
-            { name: "William", score: 0 },
-            { name: "Willie", score: 0 },
-            { name: "Lucky", score: 0 },
-            { name: "Jackson", score: 0 },
-            { name: "Matthew", score: 0 }
+            { name: "William", score: 1 },
+            { name: "Willie", score: 3 },
+            { name: "Lucky", score: 3 },
+            { name: "Jackson", score: 1 },
+            { name: "Matthew", score: 2 }
           ]
         }
       ];
@@ -149,13 +149,14 @@
           week: "February 24th, 2025",
           date: "2025-02-24T00:00:00",
           scores: [
-            { name: "William", score: 0 },
-            { name: "Willie", score: 0 },
-            { name: "Lucky", score: 0 },
-            { name: "Jackson", score: 0 },
-            { name: "Matthew", score: 0 }
+            { name: "William", score: 3 },
+            { name: "Willie", score: 3 },
+            { name: "Lucky", score: 3 },
+            { name: "Jackson", score: 4 },
+            { name: "Matthew", score: 4 }
           ]
-        }
+        },
+        
       ];
 
       // Week data for Shortcut Showdown – only one week: February 24, 2025.
@@ -174,10 +175,10 @@
       ];
 
       // Default settings: now the default event is Shortcut Showdown.
-      let currentEvent = "shortcut";
-      let emailWeekIndex = 1;
-      let typingWeekIndex = 2;
-      let shortcutWeekIndex = 0; // Only one week available.
+      let currentEvent = "typing";
+      let emailWeekIndex = 2;
+      let typingWeekIndex = 0;
+      let shortcutWeekIndex = 1; // Only one week available.
 
       // Helper function: checks if an event is completed (7 days have passed since its date)
       function isEventCompleted(eventDate) {
