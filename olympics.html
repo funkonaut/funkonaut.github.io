@@ -156,6 +156,17 @@
             { name: "Matthew", score: 4 }
           ]
         },
+        {
+          week: "March 3rd, 2025",
+          date: "2025-03-03T00:00:00",
+          scores: [
+            { name: "William", score: 2 },
+            { name: "Willie", score: 3 },
+            { name: "Lucky", score: 9 },
+            { name: "Jackson", score: 3 },
+            { name: "Matthew", score: 3 }
+          ]
+        }
         
       ];
 
@@ -197,7 +208,7 @@
 
         if (currentEvent === "typing") {
           document.getElementById("week-nav").style.display = typingWeeks.length > 1 ? "block" : "none";
-          weekData = typingWeeks[typingWeekIndex];
+          weekData = typingWeeks[typingWeeks.length-1];
           eventDate = new Date(weekData.date);
           scores = [...weekData.scores];
           document.getElementById("event-title").textContent =
@@ -206,7 +217,7 @@
             events.typing.description;
         } else if (currentEvent === "email") {
           document.getElementById("week-nav").style.display = emailWeeks.length > 1 ? "block" : "none";
-          weekData = emailWeeks[emailWeekIndex];
+          weekData = emailWeeks[emailWeeks.length-1];
           eventDate = new Date(weekData.date);
           scores = [...weekData.scores];
           document.getElementById("event-title").textContent =
@@ -216,7 +227,7 @@
         } else if (currentEvent === "shortcut") {
           // Only one week exists for Shortcut Showdown, so hide navigation.
           document.getElementById("week-nav").style.display = shortcutWeeks.length > 1 ? "block" : "none";
-          weekData = shortcutWeeks[shortcutWeekIndex];
+          weekData = shortcutWeeks[shortcutWeeks.length-1];
           eventDate = new Date(weekData.date);
           scores = [...weekData.scores];
           document.getElementById("event-title").textContent =
