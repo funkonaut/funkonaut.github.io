@@ -86,12 +86,12 @@
           description: "Welcome to the Email Reply Race, part of the Computer Olympics! Your challenge is to read and reply to five emails each day correctly using Outlook on your laptop with a screen reader. Each email will increase in difficulty—from finding a keyword to composing a full response. Earn points for replying before the next class and for correct answers. Bonus points are awarded for being the first to correctly reply and having proper spelling, grammar, and extra details! Ready, set, email!"
         },
         typing: {
-          title: "Typing Marathon: ",
+          title: "Typing Marathon",
           description: "Score points by logging on to Typing Club and practicing for 10 minutes a day. For every 10 minutes that you practice each day this week, you will get 1 point. Scores will update at the beginning of each day."
         },
         shortcut: {
-          title: "Shortcut Showdown: ",
-          description: "ON HOLD: Master your keyboard shortcuts! Each day at the beginning of class, you will be given a set of Windows or screen reader keyboard shortcuts to practice. Earn points by correctly demonstrating the shortcut functions and applying them in real-world tasks."
+          title: "Shortcut Showdown",
+          description: "Master your keyboard shortcuts! Each day at the beginning of class, you will be given a set of Windows or screen reader keyboard shortcuts to practice. Earn points by correctly demonstrating the shortcut functions and applying them in real-world tasks."
         }
       };
 
@@ -195,20 +195,20 @@
       // Week data for Shortcut Showdown – only one week: February 24, 2025.
       const shortcutWeeks = [
         {
-          week: "February 24th, 2025",
-          date: "2025-02-24T00:00:00",
+          week: "March 10th through April 1st, 2025",
+          date: "2025-03-10T00:00:00",
           scores: [
-            { name: "William", score: 0 },
-            { name: "Willie", score: 0 },
-            { name: "Lucky", score: 0 },
-            { name: "Jackson", score: 0 },
-            { name: "Matthew", score: 0 }
+            { name: "William", score: 8 },
+            { name: "Willie", score: 8 },
+            { name: "Lucky", score: 7 },
+            { name: "Jackson", score: 7 },
+            { name: "Matthew", score: 7 }
           ]
         }
       ];
 
       // Default settings: now the default event is Shortcut Showdown.
-      let currentEvent = "typing";
+      let currentEvent = "shortcut";
       let emailWeekIndex = 2;
       let typingWeekIndex = 2;
       let shortcutWeekIndex = 2; // Only one week available.
