@@ -230,7 +230,7 @@
       ];
 
       // Default settings: now the default event is Shortcut Showdown.
-      let currentEvent = "shortcut";
+      let currentEvent = "email";
       let emailWeekIndex = 2;
       let typingWeekIndex = 2;
       let shortcutWeekIndex = 2; // Only one week available.
@@ -256,7 +256,7 @@
           eventDate = new Date(weekData.date);
           scores = [...weekData.scores];
           document.getElementById("event-title").textContent =
-            events.typing.title + weekData.week;
+            events.typing.title + " - " + weekData.week;
           document.getElementById("event-description").textContent =
             events.typing.description;
         } else if (currentEvent === "email") {
