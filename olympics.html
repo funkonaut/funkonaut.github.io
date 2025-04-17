@@ -226,11 +226,11 @@
           week: "April 14th, 2025",
           date: "2025-04-14T00:00:00",
           scores: [
-            { name: "William", score: 3 },
-            { name: "Willie", score: 1 },
-            { name: "Lucky", score: 1 },
+            { name: "William", score: 5 },
+            { name: "Willie", score: 2 },
+            { name: "Lucky", score: 4 },
             { name: "Jackson", score: 3 },
-            { name: "Matthew", score: 3 }
+            { name: "Matthew", score: 6 }
           ]
         }
         
@@ -310,7 +310,7 @@
             .filter(player => player.score === topScore)
             .map(player => player.name)
             .join(", ");
-          winnerHeading.textContent = "Current 1st Place: " + winners;
+          winnerHeading.textContent = "Winner: " + winners;
         } else {
           winnerHeading.textContent = "";
         }
