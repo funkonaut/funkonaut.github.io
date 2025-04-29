@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video + Audio Syncer</title>
+  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    input, button {
+      margin-top: 1rem;
+      display: block;
+    }
+    #log {
+      margin-top: 1rem;
+      background: #eee;
+      padding: 1rem;
+      height: 150px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Video + Audio Syncer</h1>
+
+  <label>Upload Video (.mov):
+    <input type="file" id="videoUpload" accept="video/quicktime">
+  </label>
+
+  <label>Upload Audio (.wav):
+    <input type="file" id="audioUpload" accept="audio/wav">
+  </label>
+
+  <button id="syncButton" disabled>Sync and Merge</button>
+
+  <a id="downloadLink" style="display:none; margin-top: 1rem;">Download Synced Video</a>
+
+  <div id="log"></div>
+
+  <script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+    const logElem = document.getElementById('log');
+
+    let videoFile, audioFile;
+
+    document.getElementById('videoUpload').addEventListener('change', (e) => {
+      videoFile = e.target.files[0];
+      checkReady();
+    });
+
+    document.getElementById('audioUpload').addEventListener('change', (e) => {
+      audioFile = e.target.files[0];
+      checkReady();
+    });
+
+    function checkReady() {
+      if (videoFile && audioFile) {
+        document.getElementById('syncButton').disabled = false;
+      }
+    }
+
+    function log(message) {
+      console.log(message);
+      logElem.textContent += message + '\n';
+      logElem.scrollTop = logElem.scrollHeight;
+    }
+
+    document.getElementById('syncButton').addEventListener('click', async () => {
+      document.getElementById('syncButton').disabled = true;
+      log('Loading FFmpeg...');
+      if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+      }
+      log('FFmpeg loaded.');
+
+      // Write the uploaded files to the ffmpeg virtual file system
+      ffmpeg.FS('writeFile', 'input.mov', await fetchFile(videoFile));
+      ffmpeg.FS('writeFile', 'input.wav', await fetchFile(audioFile));
+
+      log('Files written. Starting sync and merge...');
+
+      // Remove original audio and add the new audio
+      await ffmpeg.run(
+        '-i', 'input.mov',
+        '-i', 'input.wav',
+        '-c:v', 'copy',       // Copy video stream without re-encoding
+        '-c:a', 'aac',         // Encode audio to AAC for MP4/MOV
+        '-map', '0:v:0',       // Map video from first input
+        '-map', '1:a:0',       // Map audio from second input
+        '-shortest',           // Stop encoding when shortest stream ends
+        'output.mov'
+      );
+
+      log('Syncing complete. Preparing download...');
+
+      // Read the output file
+      const data = ffmpeg.FS('readFile', 'output.mov');
+      const videoBlob = new Blob([data.buffer], { type: 'video/quicktime' });
+      const url = URL.createObjectURL(videoBlob);
+
+      const downloadLink = document.getElementById('downloadLink');
+      downloadLink.href = url;
+      downloadLink.download = 'synced_video.mov';
+      downloadLink.textContent = 'Download Synced Video';
+      downloadLink.style.display = 'block';
+
+      log('Done!');
+    });
+  </script>
+</body>
+</html>
