@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phish or Legit?</title>
+  <style>
+    body { font-family: Arial; margin: 2em; }
+    .email { border: 1px solid #ccc; padding: 1em; margin-bottom: 1.5em; }
+    .buttons { margin-top: 1em; }
+    button { margin-right: 1em; padding: 0.5em 1em; }
+  </style>
+</head>
+<body>
+  <h1>Phish or Legit? Email Sorting Game</h1>
+  <p>Read each email below and decide whether it’s a phishing attempt or a legitimate message.</p>
+
+  <!-- Email 1 -->
+  <div class="email">
+    <h3>Subject: Urgent! Your account has been suspended</h3>
+    <p>From: <strong>support@amaz0n-secure.com</strong></p>
+    <p>Dear Customer,</p>
+    <p>We detected suspicious activity in your Amazon account. Please <a href="#">click here</a> immediately to verify your identity or your account will be closed.</p>
+    <div class="buttons">
+      <button onclick="alert('Correct! This is phishing.')">Phish</button>
+      <button onclick="alert('Oops! This is actually a phishing email.')">Legit</button>
+    </div>
+  </div>
+
+  <!-- Email 2 -->
+  <div class="email">
+    <h3>Subject: Your receipt from the school bookstore</h3>
+    <p>From: <strong>bookstore@myschool.edu</strong></p>
+    <p>Thanks for your purchase! Your receipt for "Intro to Coding" is attached. Let us know if you have questions.</p>
+    <div class="buttons">
+      <button onclick="alert('Nope! This looks legitimate.')">Phish</button>
+      <button onclick="alert('Correct! This is a legit email.')">Legit</button>
+    </div>
+  </div>
+
+  <!-- Email 3 -->
+  <div class="email">
+    <h3>Subject: You’ve won a $1000 Gift Card!</h3>
+    <p>From: <strong>promotions@freeprizesnow.biz</strong></p>
+    <p>Congratulations! You’ve been selected for a free $1000 gift card. <a href="#">Claim now!</a></p>
+    <div class="buttons">
+      <button onclick="alert('Correct! Definitely a phishing attempt.')">Phish</button>
+      <button onclick="alert('Yikes! This is phishing.')">Legit</button>
+    </div>
+  </div>
+
+</body>
+</html>
