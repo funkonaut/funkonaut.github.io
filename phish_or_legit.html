@@ -14,39 +14,51 @@
   <h1>Phish or Legit? Email Sorting Game</h1>
   <p>Read each email below and decide whether it’s a phishing attempt or a legitimate message.</p>
 
-  <!-- Email 1 -->
+  
   <div class="email">
-    <h3>Subject: Urgent! Your account has been suspended</h3>
-    <p>From: <strong>support@amaz0n-secure.com</strong></p>
-    <p>Dear Customer,</p>
-    <p>We detected suspicious activity in your Amazon account. Please <a href="#">click here</a> immediately to verify your identity or your account will be closed.</p>
+    <h3>Subject: IT Helpdesk Ticket #8281: Verify Your Email</h3>
+    <p>From: <strong>techsupport@school-itdesk.com</strong></p>
+    <p>Hello,</p>
+    <p>We’re upgrading our email servers. Please <a href="#">verify your login</a> to avoid interruption in your school email access.</p>
+    <p>This is mandatory for all users by 5 PM today.</p>
     <div class="buttons">
-      <button onclick="alert('Correct! This is phishing.')">Phish</button>
-      <button onclick="alert('Oops! This is actually a phishing email.')">Legit</button>
+      <button onclick="alert('Correct! This is a phishing email — fake IT address and urgent tone.')">Phish</button>
+      <button onclick="alert('Oops! This is a phishing attempt.')">Legit</button>
     </div>
   </div>
 
-  <!-- Email 2 -->
   <div class="email">
-    <h3>Subject: Your receipt from the school bookstore</h3>
-    <p>From: <strong>bookstore@myschool.edu</strong></p>
-    <p>Thanks for your purchase! Your receipt for "Intro to Coding" is attached. Let us know if you have questions.</p>
+    <h3>Subject: Your Amazon.com Order #113-9983773-0983745</h3>
+    <p>From: <strong>order-update@amazon.com</strong></p>
+    <p>Thanks for your purchase! Your item will be delivered Friday. You can <a href="#">track your package</a> here.</p>
+    <p>If you didn’t place this order, go to Your Orders to cancel or report an issue.</p>
     <div class="buttons">
-      <button onclick="alert('Nope! This looks legitimate.')">Phish</button>
-      <button onclick="alert('Correct! This is a legit email.')">Legit</button>
+      <button onclick="alert('Nope! This is a legit email from Amazon.')">Phish</button>
+      <button onclick="alert('Correct! This is a legitimate receipt.')">Legit</button>
     </div>
   </div>
 
-  <!-- Email 3 -->
   <div class="email">
-    <h3>Subject: You’ve won a $1000 Gift Card!</h3>
-    <p>From: <strong>promotions@freeprizesnow.biz</strong></p>
-    <p>Congratulations! You’ve been selected for a free $1000 gift card. <a href="#">Claim now!</a></p>
+    <h3>Subject: Your School Password Will Expire in 24 Hours</h3>
+    <p>From: <strong>admin@schoolsystem.net</strong></p>
+    <p>This is an automated message. Your password will expire unless updated. <a href="#">Update it here</a>.</p>
+    <p>Failure to do so will result in account lockout.</p>
     <div class="buttons">
-      <button onclick="alert('Correct! Definitely a phishing attempt.')">Phish</button>
-      <button onclick="alert('Yikes! This is phishing.')">Legit</button>
+      <button onclick="alert('Correct! This is a phishing attempt — fake domain, fear language.')">Phish</button>
+      <button onclick="alert('Nope — this is phishing.')">Legit</button>
     </div>
   </div>
 
+  <div class="email">
+    <h3>Subject: Quick Survey: Help Us Improve Lunch Options!</h3>
+    <p>From: <strong>cafeteria@tsbvi.edu</strong></p>
+    <p>Hi! The school cafeteria is gathering student input. Take this quick 3-question <a href="#">survey</a> about your lunch favorites!</p>
+    <p>Thanks for helping us serve you better!</p>
+    <div class="buttons">
+      <button onclick="alert('Nope! This is a real message from the school.')">Phish</button>
+      <button onclick="alert('Correct! This is legit.')">Legit</button>
+    </div>
+  </div>
+  
 </body>
 </html>
