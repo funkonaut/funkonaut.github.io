@@ -14,7 +14,42 @@
   <h1>Phish or Legit? Email Sorting Game</h1>
   <p>Read each email below and decide whether it’s a phishing attempt or a legitimate message.</p>
 
-  
+  <!-- Email 1 -->
+   <h2>Level 1</h2>
+  <div class="email">
+    <h3>Subject: Urgent! Your account has been suspended</h3>
+    <p>From: <strong>support@amaz0n-secure.com</strong></p>
+    <p>Dear Customer,</p>
+    <p>We detected suspicious activity in your Amazon account. Please <a href="#">click here</a> immediately to verify your identity or your account will be closed.</p>
+    <div class="buttons">
+      <button onclick="alert('Correct! This is phishing.')">Phish</button>
+      <button onclick="alert('Oops! This is actually a phishing email.')">Legit</button>
+    </div>
+  </div>
+
+  <!-- Email 2 -->
+  <div class="email">
+    <h3>Subject: Your receipt from the school bookstore</h3>
+    <p>From: <strong>bookstore@myschool.edu</strong></p>
+    <p>Thanks for your purchase! Your receipt for "Intro to Coding" is attached. Let us know if you have questions.</p>
+    <div class="buttons">
+      <button onclick="alert('Nope! This looks legitimate.')">Phish</button>
+      <button onclick="alert('Correct! This is a legit email.')">Legit</button>
+    </div>
+  </div>
+
+  <!-- Email 3 -->
+  <div class="email">
+    <h3>Subject: You’ve won a $1000 Gift Card!</h3>
+    <p>From: <strong>promotions@freeprizesnow.biz</strong></p>
+    <p>Congratulations! You’ve been selected for a free $1000 gift card. <a href="#">Claim now!</a></p>
+    <div class="buttons">
+      <button onclick="alert('Correct! Definitely a phishing attempt.')">Phish</button>
+      <button onclick="alert('Yikes! This is phishing.')">Legit</button>
+    </div>
+  </div>
+
+  <h2>Level 2</h2>
   <div class="email">
     <h3>Subject: IT Helpdesk Ticket #8281: Verify Your Email</h3>
     <p>From: <strong>techsupport@school-itdesk.com</strong></p>
@@ -59,6 +94,66 @@
       <button onclick="alert('Correct! This is legit.')">Legit</button>
     </div>
   </div>
-  
+
+  <h2>Level 3</h2>
+  <div class="email">
+    <h3>Subject: Quick favor needed — please reply</h3>
+    <p>From: <strong>Mrs. Burnett &lt;mrs.burnett@gmail.com&gt;</strong></p>
+    <p>Hi,</p>
+    <p>I’m in a meeting and can’t talk. I need you to purchase some gift cards for staff appreciation. Just reply when you see this.</p>
+    <p>Thanks,</p>
+    <p>Mrs. Burnett</p>
+    <div class="buttons">
+      <button onclick="alert('Correct! This is a phishing attempt — fake Gmail address, different name, urgent request.')">Phish</button>
+      <button onclick="alert('Nope! It looks like your teacher, but this is phishing.')">Legit</button>
+    </div>
+  </div>
+
+  <div class="email">
+    <h3>Subject: Important security update from Google</h3>
+    <p>From: <strong>security@google.verify-account.com</strong></p>
+    <p>Your Google account was accessed from a new device. If this wasn’t you, <a href="#">secure your account here</a>.</p>
+    <p>Thank you,  
+    Google Security Team</p>
+    <div class="buttons">
+      <button onclick="alert('Correct! This is phishing — the real domain should be google.com, not verify-account.com.')">Phish</button>
+      <button onclick="alert('Nope! That’s a fake Google domain.')">Legit</button>
+    </div>
+  </div>
+  <div class="email">
+    <h3>Subject: Digital Citizenship Workshop Materials</h3>
+    <p>From: <strong>Ms. Alvarez &lt;alvarez@myschool.edu&gt;</strong></p>
+    <p>Hi students,</p>
+    <p>Here’s a document with resources from today’s workshop: <a href="http://bit.ly/3Xy7Hack">http://bit.ly/3Xy7Hack</a></p>
+    <p>Let me know if you have trouble accessing it.</p>
+    <div class="buttons">
+      <button onclick="alert('Correct! The shortened link is suspicious — always check full URLs.')">Phish</button>
+      <button onclick="alert('Nope! The shortened link could lead to a malicious site.')">Legit</button>
+    </div>
+  </div>
+
+  <div class="email">
+    <h3>Subject: Account Usage Alert - EduNet Services</h3>
+    <p>From: <strong>security@edunet-services.com</strong></p>
+    <p>Dear user,</p>
+    <p>Unusual sign-in activity was detected. If you did not initiate this login, please <a href="#">click here to review your account</a>.</p>
+    <p>Thank you for using EduNet. Stay safe online.</p>
+    <div class="buttons">
+      <button onclick="alert('Correct! This is a phishing attempt — EduNet is a fake service name.')">Phish</button>
+      <button onclick="alert('Oops! EduNet isn’t a real provider — this is phishing.')">Legit</button>
+    </div>
+  </div>
+  <div class="email">
+    <h3>Subject: FAFSA Application Reminder</h3>
+    <p>From: <strong>notifications@fafsa.gov</strong></p>
+    <p>Friendly reminder that your FAFSA form has not yet been completed. Be sure to submit by the priority deadline to maximize your aid options.</p>
+    <p>Apply or check your status at <a href="https://fafsa.gov">https://fafsa.gov</a></p>
+    <div class="buttons">
+      <button onclick="alert('Nope! This is actually a legitimate message from FAFSA.')">Phish</button>
+      <button onclick="alert('Correct! This is a legit reminder email.')">Legit</button>
+    </div>
+  </div>
+          
+
 </body>
 </html>
