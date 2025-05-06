@@ -143,6 +143,43 @@
       <button onclick="alert('Correct! This is a legit reminder email.')">Legit</button>
     </div>
   </div>
+
+  <h2>Level 4</h2>
+  <div class="email">
+    <h3>Subject: Updated Payroll Calendar</h3>
+    <p>From: <strong>hr@myschool.co</strong> (displayed as “HR Department”)</p>
+    <p>Hi team,</p>
+    <p>Attached is the revised payroll schedule for the spring term. Please review it and let us know if you notice any issues.</p>
+    <p><a href="#">View Payroll Calendar</a></p>
+    <div class="buttons">
+      <button onclick="alert('Correct! This is phishing — look closely at the domain: myschool.co (not .edu).')">Phish</button>
+      <button onclick="alert('Nope! The domain is slightly off — it’s phishing.')">Legit</button>
+    </div>
+  </div>
+
+  <div class="email">
+    <h3>Subject: Incident Report</h3>
+    <p>From: <strong>safety@myschool.edu</strong></p>
+    <p>Hello,</p>
+    <p>Attached is a copy of the incident report from today’s fire drill. Please download the file and send it to your department head.</p>
+    <p>Attachment: <strong>incident_details.exe</strong></p>
+    <div class="buttons">
+      <button onclick="alert('Correct! Even with a real domain, an .exe attachment is a huge red flag.')">Phish</button>
+      <button onclick="alert('Nope! .exe files should never be sent this way — phishing.')">Legit</button>
+    </div>
+  </div>
+  
+  <div class="email">
+    <h3>Subject: Your Apple ID was used to sign in</h3>
+    <p>From: <strong>appleid@apple.com</strong></p>
+    <p>Your Apple ID was used to sign in to iCloud from a new device. If this was you, no action is needed.</p>
+    <p>If you didn’t make this change, <a href="https://apple.com.verify-info.security-alerts-login.com">click here to secure your account</a>.</p>
+    <div class="buttons">
+      <button onclick="alert('Correct! Link is going to a spoofed Apple site.')">Phish</button>
+      <button onclick="alert('Nope! The link gives away the phishing — it’s not really apple.com.')">Legit</button>
+    </div>
+  </div>
+  
           
 
 </body>
