@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Files Are Locked</title>
+  <style>
+    body {
+      background-color: #000000;
+      color: #ff0000;
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.5em;
+    }
+    .warning-box {
+      border: 2px solid red;
+      padding: 20px;
+      background-color: #1a0000;
+      margin: 30px auto;
+      max-width: 600px;
+    }
+    .timer {
+      font-size: 2em;
+      margin-top: 10px;
+      font-weight: bold;
+      color: yellow;
+    }
+    .fake-btn {
+      background-color: #ff0000;
+      color: #ffffff;
+      padding: 10px 20px;
+      margin: 15px;
+      border: none;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>⚠️ Your Files Have Been Encrypted ⚠️</h1>
+  <div class="warning-box">
+    <p>All your important files have been locked using military-grade encryption.</p>
+    <p>To get your files back, you must pay 1.0 Bitcoin to the address below within:</p>
+    <div class="timer" id="countdown">00:29:59</div>
+    <p>After this time, your decryption key will be destroyed permanently.</p>
+    <p>Bitcoin Address: <strong>1Fak3B1tc0inAddr355Here4444</strong></p>
+    <button class="fake-btn" onclick="alert('This is just a demo.')">I Have Paid</button>
+    <button class="fake-btn" onclick="alert('Sorry. You cannot decrypt the files. Just kidding!')">Decrypt Files</button>
+  </div>
+
+  <script>
+    // Fake countdown timer
+    let minutes = 29;
+    let seconds = 59;
+    const timer = document.getElementById('countdown');
+    setInterval(() => {
+      seconds--;
+      if (seconds < 0) {
+        seconds = 59;
+        minutes--;
+      }
+      if (minutes < 0) {
+        minutes = 0;
+        seconds = 0;
+      }
+      timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+  </script>
+
+</body>
+</html>
