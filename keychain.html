@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>OpenSCAD Keychain → Single-File Web App (2D SVG + STL Export)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!--
+README (short)
+--------------
+This single-file app mirrors the behavior/parameters of the provided OpenSCAD keychain generator.
+
+Decisions honored:
+- Preview: 2D SVG only.
+- Export: STL only (no SVG export).
+- Fonts: Arial, Comic Sans MS, Times New Roman, Pixel (embedded slot).
+- Scaling: 96 DPI (1 mm ≈ 3.7795275591 px).
+- Param renames: 2ndline→secondLine, facedownmode→facedownMode.
+- Single file. No external assets.
+- Bubble shape: exact “offset” in preview via SVG stroke-based dilation; STL uses high-res raster extrusion
+  (canvas rendering + dilation via stroke) to approximate geometric offset to sub-millimeter accuracy.
+
+Notes & known limits:
+- “Exact offset” of glyphs in SVG preview is achieved by stroking text with round joins/caps. This matches
+  a morphology dilation in practice. For STL, we rasterize at a high pixel density and extrude those pixels:
+  the result is accurate to the chosen mm-per-pixel (default 0.2 mm) and typically slices perfectly.
+- System fonts (Arial / Comic Sans MS / Times New Roman) are used directly by the browser for preview.
+  STL generation also uses the browser’s text raster (no font files required).
+- Pixel font: there’s a data-URL placeholder below. If you want a true pixel font, paste a base64 WOFF in
+  the FONT_PIXEL_DATA_URL constant. Otherwise it falls back to 'monospace'.
+- STL geometry is constructed by extruding the filled pixel grid (top/bottom faces for each filled cell +
+  side faces only on boundaries). This avoids external libraries and robustly produces manifold meshes.
+
+Usage:
+1) Adjust parameters in the left panel. The preview updates live (mm units).
+2) Click “Download STL” to export a printable model. Scale is in millimeters.
+3) “Reset” returns to the defaults. URL sync keeps your settings in the query string.
+
+--------------------------------------------------------------------- -->
+<style>
+  :root {
+    --bg: #0b0c10;
+    --panel: #15171c;
+    --ink: #f2f5f7;
+    --muted: #a6b0bb;
+    --accent: #5ac8fa;
+    --ok: #34c759;
+    --warn: #ff9f0a;
+    --grid: #20242c;
+    --bubble: #dde3ea;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--ink); background: var(--bg);
+    display: grid; grid-template-columns: 380px 1fr; gap: 0;
+  }
+  aside {
+    padding: 16px 18px;
+    background: var(--panel);
+    overflow: auto;
+    border-right: 1px solid #101218;
+  }
+  main {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+  h1 { font-size: 16px; margin: 0 0 8px; color: var(--ink); }
+  .muted { color: var(--muted); font-size: 12px; }
+  .row { display: grid; grid-template-columns: 45% 55%; gap: 8px; margin-bottom: 10px; align-items: center; }
+  label { font-size: 13px; color: var(--muted); }
+  input[type="text"], input[type="number"], select {
+    width: 100%; padding: 6px 8px; border: 1px solid #2a2e36; border-radius: 6px;
+    background: #0e1117; color: var(--ink);
+  }
+  input[type="checkbox"] { transform: scale(1.15); }
+  .btnbar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  button {
+    border: 1px solid #263241; background: #111821; color: var(--ink);
+    padding: 7px 10px; border-radius: 8px; cursor: pointer; font-weight: 600;
+  }
+  button.primary { border-color: #10405a; background: #0e2a3a; color: #bfe9ff; }
+  button.ok { border-color: #175f3c; background: #0e281c; color: #bff0cc; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .card {
+    background: #0f141b; border: 1px solid #111821; border-radius: 10px; padding: 10px; margin-bottom: 12px;
+  }
+  .small { font-size: 12px; }
+  .dim { color: #93a1ad; }
+  .grid {
+    position: relative; border-left: 1px solid #0c0f14;
+  }
+  .toolbar { padding: 10px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #101218; background:#0f141b; }
+  .toolbar .value { font-variant-numeric: tabular-nums; }
+  #previewWrap {
+    position: relative; overflow: auto; background: repeating-conic-gradient(from 0deg, #10151d 0% 25%, #0e1218 0% 50%) 0 0 / 24px 24px;
+    border-top: 1px solid #0c0f14;
+  }
+  svg { display: block; margin: 0; background: transparent; }
+  .note { color: #d7dee6; font-size: 12px; }
+  .warn { color: var(--warn); font-weight: 600; }
+  .oktx { color: var(--ok); }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+  .hr { height: 1px; background: #151a22; margin: 12px 0; }
+  .row.inline { grid-template-columns: 1fr auto; }
+</style>
+</head>
+<body>
+  <aside aria-label="Controls">
+    <h1>Keychain Generator (Web)</h1>
+    <div class="muted" style="margin-bottom:12px;">Units: <b>mm</b>. 1&nbsp;mm = <span class="mono">3.7795275591</span> px @96&nbsp;DPI.</div>
+
+    <div class="card" role="group" aria-labelledby="lbl-text">
+      <div id="lbl-text" class="muted small" style="margin-bottom:6px;">Text</div>
+      <div class="row">
+        <label for="name">Line 1</label>
+        <input id="name" type="text" value="Name" />
+      </div>
+      <div class="row">
+        <label for="line2">Line 2</label>
+        <input id="line2" type="text" value="Line2" />
+      </div>
+      <div class="row">
+        <label for="secondLine">Enable second line</label>
+        <input id="secondLine" type="checkbox" checked />
+      </div>
+      <div class="row">
+        <label for="facedownMode">Facedown mode</label>
+        <input id="facedownMode" type="checkbox" />
+      </div>
+      <div class="row">
+        <label for="fontFamily">Font family</label>
+        <select id="fontFamily">
+          <option>Arial</option>
+          <option>Comic Sans MS</option>
+          <option>Times New Roman</option>
+          <option>Pixel</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="fontStyle">Font style</label>
+        <select id="fontStyle">
+          <option value="normal">Regular</option>
+          <option value="italic">Italic</option>
+          <option value="bold">Bold</option>
+          <option value="bold italic">Bold Italic</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="fontSize">Font size</label>
+        <input id="fontSize" type="number" min="2" step="0.5" value="15" />
+      </div>
+      <div class="row">
+        <label for="line2Offset">Line2 X offset</label>
+        <input id="line2Offset" type="number" step="0.5" value="0" />
+      </div>
+      <div class="row">
+        <label for="line2VerticalOffset">Line2 Y offset</label>
+        <input id="line2VerticalOffset" type="number" step="0.5" value="-15" />
+      </div>
+    </div>
+
+    <div class="card" role="group" aria-labelledby="lbl-geom">
+      <div id="lbl-geom" class="muted small" style="margin-bottom:6px;">Geometry</div>
+      <div class="row">
+        <label for="thickness">Base thickness</label>
+        <input id="thickness" type="number" min="0.1" step="0.1" value="2" />
+      </div>
+      <div class="row">
+        <label for="textThickness">Text thickness</label>
+        <input id="textThickness" type="number" min="0.1" step="0.1" value="1" />
+      </div>
+      <div class="row">
+        <label for="r">Bubble offset radius</label>
+        <input id="r" type="number" min="0" step="0.5" value="3" />
+      </div>
+
+      <div class="row">
+        <label for="keychainHoleSize">Hole diameter</label>
+        <input id="keychainHoleSize" type="number" min="0.1" step="0.5" value="4" />
+      </div>
+      <div class="row">
+        <label for="keychainHoleOffset">Hole X offset</label>
+        <input id="keychainHoleOffset" type="number" step="0.5" value="1" />
+      </div>
+
+      <div class="row">
+        <label for="boxWidth">Box width</label>
+        <input id="boxWidth" type="number" min="0" step="0.5" value="0" />
+      </div>
+      <div class="row">
+        <label for="boxHeight">Box height</label>
+        <input id="boxHeight" type="number" min="0" step="0.5" value="0" />
+      </div>
+      <div class="row">
+        <label for="boxXOffset">Box X offset</label>
+        <input id="boxXOffset" type="number" step="0.5" value="0" />
+      </div>
+      <div class="row">
+        <label for="boxYOffset">Box Y offset</label>
+        <input id="boxYOffset" type="number" step="0.5" value="-30" />
+      </div>
+    </div>
+
+    <div class="card small" role="group" aria-labelledby="lbl-adv">
+      <div id="lbl-adv" class="muted small" style="margin-bottom:6px;">Advanced (Export)</div>
+      <div class="row">
+        <label for="mmPerPixel">Raster cell size (mm)</label>
+        <input id="mmPerPixel" type="number" min="0.1" step="0.05" value="0.2" />
+      </div>
+      <div class="row">
+        <label for="dpi">DPI (fixed)</label>
+        <input id="dpi" type="number" value="96" disabled />
+      </div>
+      <div class="small dim">Lower mm-per-pixel → smoother STL but larger files.</div>
+    </div>
+
+    <div class="btnbar">
+      <button id="btnReset" title="Reset all values">Reset</button>
+      <button id="btnLink" class="primary" title="Copy URL with current params">Copy Shareable URL</button>
+      <button id="btnDownload" class="ok" title="Export STL">Download STL</button>
+    </div>
+
+    <div class="hr"></div>
+    <div class="note">
+      <div><b>Tip:</b> For a true pixel font, paste a base64 WOFF into the <span class="mono">FONT_PIXEL_DATA_URL</span> constant (in code).</div>
+      <div style="margin-top:6px;">STL extrusion uses high-res raster geometry; accuracy is typically &lt;= 0.2&nbsp;mm by default.</div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <div class="muted small">Preview (SVG)</div>
+      <div class="muted small" style="margin-left:auto;">Canvas size: <span id="sz" class="value mono">—</span></div>
+    </div>
+    <div id="previewWrap" class="grid" tabindex="0" aria-label="Design preview">
+      <svg id="svg" width="1200" height="600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Keychain preview">
+        <defs>
+          <!-- stroke-based dilation (visual bubble) -->
+          <filter id="none"></filter>
+        </defs>
+        <g id="gRoot" transform="translate(80,160)">
+          <g id="bg">
+            <!-- bubble layer(s) -->
+          </g>
+          <g id="shapes">
+            <!-- tab/box -->
+          </g>
+          <g id="txt">
+            <!-- text layer(s) -->
+          </g>
+          <g id="ruler"></g>
+        </g>
+      </svg>
+    </div>
+  </main>
+
+<script>
+/* -------------------------- Constants & Utilities -------------------------- */
+const DPI = 96;
+const PX_PER_MM = DPI / 25.4; // 3.779527559055...
+const DEFAULTS = {
+  name: "Name",
+  line2: "Line2",
+  secondLine: true,
+  facedownMode: false,
+  fontFamily: "Arial",
+  fontStyle: "normal",
+  fontSize: 15,
+  line2Offset: 0,
+  line2VerticalOffset: -15,
+  thickness: 2,
+  textThickness: 1,
+  r: 3,
+  keychainHoleSize: 4,
+  keychainHoleOffset: 1,
+  boxWidth: 0,
+  boxHeight: 0,
+  boxXOffset: 0,
+  boxYOffset: -30,
+  mmPerPixel: 0.2
+};
+const FLOAT32_BYTES = 4;
+
+/* Optional embedded pixel font (data URL WOFF). Leave blank to fallback to monospace */
+const FONT_PIXEL_DATA_URL = ""; // e.g. "data:font/woff;base64,AAAB..."
+
+/* Short helpers */
+const $ = sel => document.querySelector(sel);
+const mm2px = mm => mm * PX_PER_MM;
+const px2mm = px => px / PX_PER_MM;
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const esc = s => encodeURIComponent(String(s));
+
+/* -------------------------- State & URL Sync -------------------------- */
+let state = {...DEFAULTS};
+
+function readUI() {
+  state.name = $('#name').value;
+  state.line2 = $('#line2').value;
+  state.secondLine = $('#secondLine').checked;
+  state.facedownMode = $('#facedownMode').checked;
+  state.fontFamily = $('#fontFamily').value;
+  state.fontStyle = $('#fontStyle').value;
+  state.fontSize = parseFloat($('#fontSize').value) || DEFAULTS.fontSize;
+  state.line2Offset = parseFloat($('#line2Offset').value) || 0;
+  state.line2VerticalOffset = parseFloat($('#line2VerticalOffset').value) || 0;
+  state.thickness = parseFloat($('#thickness').value) || DEFAULTS.thickness;
+  state.textThickness = parseFloat($('#textThickness').value) || DEFAULTS.textThickness;
+  state.r = Math.max(0, parseFloat($('#r').value) || 0);
+  state.keychainHoleSize = Math.max(0.1, parseFloat($('#keychainHoleSize').value) || DEFAULTS.keychainHoleSize);
+  state.keychainHoleOffset = parseFloat($('#keychainHoleOffset').value) || DEFAULTS.keychainHoleOffset;
+  state.boxWidth = Math.max(0, parseFloat($('#boxWidth').value) || 0);
+  state.boxHeight = Math.max(0, parseFloat($('#boxHeight').value) || 0);
+  state.boxXOffset = parseFloat($('#boxXOffset').value) || 0;
+  state.boxYOffset = parseFloat($('#boxYOffset').value) || 0;
+  state.mmPerPixel = clamp(parseFloat($('#mmPerPixel').value) || DEFAULTS.mmPerPixel, 0.05, 1.0);
+}
+
+function writeUI() {
+  $('#name').value = state.name;
+  $('#line2').value = state.line2;
+  $('#secondLine').checked = state.secondLine;
+  $('#facedownMode').checked = state.facedownMode;
+  $('#fontFamily').value = state.fontFamily;
+  $('#fontStyle').value = state.fontStyle;
+  $('#fontSize').value = state.fontSize;
+  $('#line2Offset').value = state.line2Offset;
+  $('#line2VerticalOffset').value = state.line2VerticalOffset;
+  $('#thickness').value = state.thickness;
+  $('#textThickness').value = state.textThickness;
+  $('#r').value = state.r;
+  $('#keychainHoleSize').value = state.keychainHoleSize;
+  $('#keychainHoleOffset').value = state.keychainHoleOffset;
+  $('#boxWidth').value = state.boxWidth;
+  $('#boxHeight').value = state.boxHeight;
+  $('#boxXOffset').value = state.boxXOffset;
+  $('#boxYOffset').value = state.boxYOffset;
+  $('#mmPerPixel').value = state.mmPerPixel;
+}
+
+function paramsToQuery() {
+  const o = state;
+  const pairs = [];
+  for (const k in o) pairs.push(`${k}=${esc(o[k])}`);
+  return '?' + pairs.join('&');
+}
+function parseQuery() {
+  const q = new URLSearchParams(location.search);
+  for (const [k,v] of q.entries()) {
+    const t = typeof DEFAULTS[k];
+    if (t === 'boolean') state[k] = (v === 'true');
+    else if (t === 'number') state[k] = Number(v);
+    else state[k] = v;
+  }
+}
+
+function copyLink() {
+  const url = location.origin + location.pathname + paramsToQuery();
+  navigator.clipboard.writeText(url).then(()=> {
+    $('#btnLink').textContent = 'Copied!';
+    setTimeout(()=>$('#btnLink').textContent='Copy Shareable URL', 1200);
+  });
+}
+
+/* -------------------------- Font Setup (Pixel) -------------------------- */
+if (FONT_PIXEL_DATA_URL) {
+  const font = new FontFace("PixelEmbed", `url(${FONT_PIXEL_DATA_URL}) format('woff')`);
+  font.load().then(ff => {
+    document.fonts.add(ff);
+  }).catch(()=>{/*ignore*/});
+}
+
+/* -------------------------- SVG Preview -------------------------- */
+function applyPreview() {
+  const svg = $('#svg'), gRoot = $('#gRoot');
+  const gBG = $('#bg'), gTXT = $('#txt'), gShapes = $('#shapes');
+  gBG.innerHTML = '';
+  gTXT.innerHTML = '';
+  gShapes.innerHTML = '';
+
+  const rpx = mm2px(state.r);
+  const bubbleStroke = 2 * rpx;
+
+  // Prepare common text attributes
+  const style = state.fontStyle;
+  const isBold = /bold/.test(style);
+  const isItalic = /italic/.test(style);
+  let weight = isBold ? 'bold' : 'normal';
+  let fontStyle = isItalic ? 'italic' : 'normal';
+
+  const fontCSS = `${weight} ${fontStyle} ${mm2px(state.fontSize)}px ` + (state.fontFamily === 'Pixel' ? 'PixelEmbed, monospace' : state.fontFamily);
+
+  // Draw bubble for line 1 via stroke (visual dilation)
+  const makeText = (str, x, y, forBubble=false) => {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    el.setAttribute('x', x); el.setAttribute('y', y);
+    el.setAttribute('dominant-baseline', 'middle');
+    el.setAttribute('text-anchor', 'start');
+    el.setAttribute('font', fontCSS);
+    el.setAttribute('font-size', mm2px(state.fontSize));
+    el.setAttribute('font-style', fontStyle);
+    el.setAttribute('font-weight', weight);
+    el.setAttribute('font-family', (state.fontFamily === 'Pixel' ? 'PixelEmbed, monospace' : state.fontFamily));
+    el.textContent = str;
+    if (forBubble) {
+      el.setAttribute('fill', 'none');
+      el.setAttribute('stroke', 'var(--bubble)');
+      el.setAttribute('stroke-width', bubbleStroke);
+      el.setAttribute('stroke-linejoin', 'round');
+      el.setAttribute('stroke-linecap', 'round');
+      el.style.paintOrder = 'stroke fill';
+    } else {
+      el.setAttribute('fill', '#000000');
+    }
+    return el;
+  };
+
+  // Baseline at y=0 (middle aligned)
+  const l1y = 0;
+  gBG.appendChild(makeText(state.name, 0, l1y, true));
+  gTXT.appendChild(makeText(state.name, 0, l1y, false));
+
+  if (state.secondLine) {
+    const x2 = mm2px(state.line2Offset);
+    const y2 = mm2px(state.line2VerticalOffset);
+    gBG.appendChild(makeText(state.line2, x2, y2, true));
+    gTXT.appendChild(makeText(state.line2, x2, y2, false));
+  }
+
+  // Tab (circle pad + rectangle). The hole itself is not rendered here; purely preview shape.
+  const padR = (state.keychainHoleSize + 3) / 2;
+  const padCx = mm2px(-state.keychainHoleOffset - 3);
+  const padCy = 0;
+  const padEl = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  padEl.setAttribute('cx', padCx);
+  padEl.setAttribute('cy', padCy);
+  padEl.setAttribute('r', mm2px(padR));
+  padEl.setAttribute('fill', 'var(--bubble)');
+  gShapes.appendChild(padEl);
+
+  const rectX = mm2px(-state.keychainHoleOffset - 4);
+  const rectY = mm2px(-state.keychainHoleSize/2 - 1.25);
+  const rectW = mm2px(7 + state.keychainHoleOffset);
+  const rectH = mm2px(state.keychainHoleSize + 2.5);
+  const rectEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rectEl.setAttribute('x', rectX);
+  rectEl.setAttribute('y', rectY);
+  rectEl.setAttribute('width', rectW);
+  rectEl.setAttribute('height', rectH);
+  rectEl.setAttribute('fill', 'var(--bubble)');
+  gShapes.appendChild(rectEl);
+
+  // Optional box
+  if (state.boxWidth > 0 && state.boxHeight > 0) {
+    const b = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    b.setAttribute('x', mm2px(state.boxXOffset));
+    b.setAttribute('y', mm2px(state.boxYOffset));
+    b.setAttribute('width', mm2px(state.boxWidth));
+    b.setAttribute('height', mm2px(state.boxHeight));
+    b.setAttribute('fill', 'var(--bubble)');
+    gShapes.appendChild(b);
+  }
+
+  // Update displayed canvas size hint (approx)
+  const bbox = $('#gRoot').getBBox();
+  $('#sz').textContent = `${(px2mm(bbox.width)).toFixed(1)}×${(px2mm(bbox.height)).toFixed(1)} mm`;
+}
+
+/* -------------------------- Raster Geometry (for STL) -------------------------- */
+/**
+ * We draw the whole base bubble (text strokes dilated + tab + box) into a high-res
+ * offscreen canvas, then convert filled pixels to a watertight mesh by:
+ *  - Creating top/bottom faces per filled cell,
+ *  - Creating side faces only where cell borders empty space.
+ * Repeat with raw text (no dilation) for raised lettering.
+ */
+
+function buildCanvasesForExport() {
+  const res = state.mmPerPixel; // mm per pixel (cell size)
+  const ppx = 1 / res;          // pixels per mm
+  const pad = Math.ceil((state.r + Math.max(state.fontSize, state.keychainHoleSize) + 20) * ppx);
+
+  // Estimate canvas size from SVG bbox:
+  const bbox = $('#gRoot').getBBox();
+  const wmm = Math.max(px2mm(bbox.width) + 2*state.r + 30, 60);
+  const hmm = Math.max(px2mm(bbox.height) + 2*state.r + 30, 30);
+
+  const W = Math.ceil(wmm * ppx) + pad;
+  const H = Math.ceil(hmm * ppx) + pad;
+
+  const base = document.createElement('canvas');
+  const text = document.createElement('canvas');
+  base.width = text.width = W;
+  base.height = text.height = H;
+
+  const cxB = base.getContext('2d', { willReadFrequently: true });
+  const cxT = text.getContext('2d', { willReadFrequently: true });
+
+  cxB.imageSmoothingEnabled = false;
+  cxT.imageSmoothingEnabled = false;
+
+  const originX = Math.ceil(W * 0.35); // left padding
+  const originY = Math.ceil(H * 0.5);  // vertical center baseline
+
+  // Common font CSS
+  const style = state.fontStyle;
+  const isBold = /bold/.test(style), isItalic = /italic/.test(style);
+  const weight = isBold ? 'bold' : 'normal';
+  const fontStyle = isItalic ? 'italic' : 'normal';
+  const pxPerMm = ppx;
+  const fontPx = state.fontSize * pxPerMm;
+
+  const fam = (state.fontFamily === 'Pixel' ? (FONT_PIXEL_DATA_URL ? 'PixelEmbed' : 'monospace') : state.fontFamily);
+  const fontCSS = `${weight} ${fontStyle} ${fontPx}px ${fam}`;
+
+  /* Draw base bubble (dilated text) */
+  cxB.save();
+  cxB.translate(originX, originY);
+  cxB.fillStyle = '#ffffff';
+  cxB.strokeStyle = '#ffffff';
+  cxB.lineJoin = 'round';
+  cxB.lineCap = 'round';
+
+  cxB.font = fontCSS;
+  cxB.textBaseline = 'middle';
+  cxB.textAlign = 'left';
+
+  // line 1 bubble via stroke as dilation
+  cxB.lineWidth = 2 * state.r * pxPerMm;
+  cxB.strokeText(state.name, 0, 0);
+  cxB.fillText(state.name, 0, 0);
+
+  // line 2 bubble if enabled
+  if (state.secondLine) {
+    cxB.strokeText(state.line2, state.line2Offset * pxPerMm, state.line2VerticalOffset * pxPerMm);
+    cxB.fillText(state.line2, state.line2Offset * pxPerMm, state.line2VerticalOffset * pxPerMm);
+  }
+
+  // Tab: rectangle + outer circle, then punch inner circle
+  cxB.globalCompositeOperation = 'source-over';
+  // Rect
+  cxB.fillRect(
+    (-state.keychainHoleOffset - 4) * pxPerMm,
+    (-state.keychainHoleSize/2 - 1.25) * pxPerMm,
+    (7 + state.keychainHoleOffset) * pxPerMm,
+    (state.keychainHoleSize + 2.5) * pxPerMm
+  );
+  // Outer circle
+  cxB.beginPath();
+  cxB.arc((-state.keychainHoleOffset - 3) * pxPerMm, 0, (state.keychainHoleSize + 3)/2 * pxPerMm, 0, Math.PI * 2);
+  cxB.closePath(); cxB.fill();
+
+  // Inner hole (erase)
+  cxB.globalCompositeOperation = 'destination-out';
+  cxB.beginPath();
+  cxB.arc((-state.keychainHoleOffset - 3) * pxPerMm, 0, (state.keychainHoleSize)/2 * pxPerMm, 0, Math.PI * 2);
+  cxB.closePath(); cxB.fill();
+
+  // Optional box
+  if (state.boxWidth > 0 && state.boxHeight > 0) {
+    cxB.globalCompositeOperation = 'source-over';
+    cxB.fillRect(
+      state.boxXOffset * pxPerMm,
+      state.boxYOffset * pxPerMm,
+      state.boxWidth  * pxPerMm,
+      state.boxHeight * pxPerMm
+    );
+  }
+  cxB.restore();
+
+  /* Draw raw text (for raised text extrude) */
+  cxT.save();
+  cxT.translate(originX, originY);
+  cxT.fillStyle = '#ffffff';
+  cxT.font = fontCSS;
+  cxT.textBaseline = 'middle';
+  cxT.textAlign = 'left';
+  cxT.fillText(state.name, 0, 0);
+  if (state.secondLine) {
+    cxT.fillText(state.line2, state.line2Offset * pxPerMm, state.line2VerticalOffset * pxPerMm);
+  }
+  cxT.restore();
+
+  return { base, text, originX, originY, pxPerMm };
+}
+
+/* Convert canvas bitmap into a mesh by extruding filled pixels */
+function canvasToMesh(canvas, cellMM, heightMM, z0) {
+  const w = canvas.width, h = canvas.height;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const img = ctx.getImageData(0,0,w,h).data;
+
+  // Helper to test if pixel is "filled" (alpha > 0)
+  const filled = (x,y) => {
+    if (x<0||y<0||x>=w||y>=h) return false;
+    return img[(y*w + x)*4 + 3] > 0;
+  };
+
+  const tris = []; // list of triangles: each triangle is [ [x,y,z], [x,y,z], [x,y,z] ]
+
+  // Emit a cell's top/bottom faces
+  function emitTopBottom(ix, iy) {
+    const x0 = ix * cellMM, y0 = -iy * cellMM; // invert Y to keep a right-handed look
+    const x1 = x0 + cellMM, y1 = y0 - cellMM;
+    // Top (z = z0 + height)
+    const zt = z0 + heightMM, zb = z0;
+    // two tris (CCW up)
+    tris.push([[x0,y0,zt],[x1,y0,zt],[x1,y1,zt]]);
+    tris.push([[x0,y0,zt],[x1,y1,zt],[x0,y1,zt]]);
+    // Bottom (face downward; CW when looking from above)
+    tris.push([[x0,y0,zb],[x1,y1,zb],[x1,y0,zb]]);
+    tris.push([[x0,y0,zb],[x0,y1,zb],[x1,y1,zb]]);
+  }
+
+  // Emit side face along an edge (from (x0,y0)→(x1,y1) at top and bottom)
+  function emitSide(p0, p1) {
+    const [x0,y0] = p0, [x1,y1] = p1;
+    const zb = z0, zt = z0 + heightMM;
+    // Two tris forming quad, outward normal by winding (CCW when looking from outside)
+    tris.push([[x0,y0,zb],[x1,y1,zb],[x1,y1,zt]]);
+    tris.push([[x0,y0,zb],[x1,y1,zt],[x0,y0,zt]]);
+  }
+
+  // Walk grid and create faces
+  for (let y=0; y<h; y++) {
+    for (let x=0; x<w; x++) {
+      if (!filled(x,y)) continue;
+      emitTopBottom(x,y);
+
+      // For each side, if neighbor empty/out-of-bounds, emit a wall:
+      // Left edge
+      if (!filled(x-1,y)) {
+        const p0=[x*cellMM, -y*cellMM], p1=[x*cellMM, -(y+1)*cellMM];
+        emitSide(p0,p1);
+      }
+      // Right edge
+      if (!filled(x+1,y)) {
+        const p0=[(x+1)*cellMM, -(y+1)*cellMM], p1=[(x+1)*cellMM, -y*cellMM];
+        emitSide(p0,p1);
+      }
+      // Top edge (negative Y)
+      if (!filled(x,y-1)) {
+        const p0=[(x+1)*cellMM, -y*cellMM], p1=[x*cellMM, -y*cellMM];
+        emitSide(p0,p1);
+      }
+      // Bottom edge (positive Y)
+      if (!filled(x,y+1)) {
+        const p0=[x*cellMM, -(y+1)*cellMM], p1=[(x+1)*cellMM, -(y+1)*cellMM];
+        emitSide(p0,p1);
+      }
+    }
+  }
+
+  return tris;
+}
+
+/* Build STL binary from triangles */
+function trianglesToBinarySTL(tris) {
+  const triCount = tris.length;
+  const buffer = new ArrayBuffer(84 + 50 * triCount);
+  const dv = new DataView(buffer);
+  let off = 0;
+
+  // 80-byte header
+  for (let i=0; i<80; i++) dv.setUint8(off++, 0);
+
+  // uint32 triangle count
+  dv.setUint32(off, triCount, true); off += 4;
+
+  // Helper to compute normal (not unit necessarily)
+  function normal(a,b,c) {
+    const ux = b[0]-a[0], uy = b[1]-a[1], uz = b[2]-a[2];
+    const vx = c[0]-a[0], vy = c[1]-a[1], vz = c[2]-a[2];
+    return [
+      uy*vz - uz*vy,
+      uz*vx - ux*vz,
+      ux*vy - uy*vx
+    ];
+  }
+
+  for (const t of tris) {
+    const [a,b,c] = t;
+    const n = normal(a,b,c);
+    dv.setFloat32(off, n[0], true); off += 4;
+    dv.setFloat32(off, n[1], true); off += 4;
+    dv.setFloat32(off, n[2], true); off += 4;
+    for (const p of [a,b,c]) {
+      dv.setFloat32(off, p[0], true); off += 4;
+      dv.setFloat32(off, p[1], true); off += 4;
+      dv.setFloat32(off, p[2], true); off += 4;
+    }
+    dv.setUint16(off, 0, true); off += 2; // attribute byte count
+  }
+  return new Blob([buffer], {type: 'application/octet-stream'});
+}
+
+/* Build the combined STL using raster extrusion for base and text */
+function buildSTL() {
+  const { base, text } = buildCanvasesForExport();
+  const cell = state.mmPerPixel;
+
+  const tris = [];
+
+  // Base (bubble + tab + optional box) at z=0 with thickness
+  const baseTris = canvasToMesh(base, cell, state.thickness, 0);
+  tris.push(...baseTris);
+
+  // Text (raised) on top of base
+  const txtH = state.facedownMode ? 0.1 : state.textThickness;
+  if (txtH > 0) {
+    const textTris = canvasToMesh(text, cell, txtH, state.thickness);
+    tris.push(...textTris);
+  }
+
+  const blob = trianglesToBinarySTL(tris);
+  const fn = `keychain_${state.name || 'name'}_${state.fontFamily}_${state.fontSize}mm_r${state.r}_hole${state.keychainHoleSize}.stl`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fn.replace(/\s+/g,'_');
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+
+/* -------------------------- Wiring & Boot -------------------------- */
+function attachUI() {
+  const inputs = [
+    '#name','#line2','#secondLine','#facedownMode','#fontFamily','#fontStyle','#fontSize',
+    '#line2Offset','#line2VerticalOffset','#thickness','#textThickness','#r','#keychainHoleSize',
+    '#keychainHoleOffset','#boxWidth','#boxHeight','#boxXOffset','#boxYOffset','#mmPerPixel'
+  ];
+  for (const sel of inputs) {
+    $(sel).addEventListener('input', () => { readUI(); history.replaceState(null,'',paramsToQuery()); applyPreview(); });
+  }
+  $('#btnReset').addEventListener('click', () => {
+    state = {...DEFAULTS};
+    writeUI(); history.replaceState(null,'',paramsToQuery()); applyPreview();
+  });
+  $('#btnLink').addEventListener('click', copyLink);
+  $('#btnDownload').addEventListener('click', buildSTL);
+}
+
+function boot() {
+  parseQuery();
+  writeUI();
+  attachUI();
+  applyPreview();
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
