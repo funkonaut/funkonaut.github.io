@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mr. Salinas Advisory Technology Scoreboard</title>
+<style>
+  :root{
+    --bg:#0e1116;
+    --panel:#161b22;
+    --accent:#3ea6ff;
+    --accent-2:#a1e3ff;
+    --text:#ffffff;
+    --muted:#cbd5e1;
+    --good:#22c55e;
+    --focus:#fff600;
+    --border:#2a3240;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f6f7fb;
+      --panel:#ffffff;
+      --accent:#0b6bcb;
+      --accent-2:#74b6ff;
+      --text:#0b0d12;
+      --muted:#334155;
+      --focus:#9d1aff;
+      --border:#d8dee9;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    background: radial-gradient(1200px 800px at 10% 0%, #17202d 0%, var(--bg) 55%) no-repeat fixed;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .container{
+    max-width: 960px;
+    margin: 24px auto;
+    padding: 16px;
+  }
+  header{
+    background: linear-gradient(180deg, var(--panel), rgba(0,0,0,0)) padding-box;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+  }
+  h1{
+    margin:0 0 8px;
+    font-size: clamp(1.4rem, 1.2rem + 1.2vw, 2rem);
+    letter-spacing: 0.3px;
+  }
+  .subtitle{
+    margin:0;
+    color: var(--muted);
+    font-size: 0.975rem;
+  }
+
+  /* Expectations grid */
+  .expectations{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .card{
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .card h3{
+    margin:0 0 6px;
+    font-size: 1rem;
+  }
+  .card p{
+    margin:0;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  /* Controls / Week nav */
+  .controls{
+    margin: 16px 0 8px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn{
+    background: var(--accent);
+    color: #001019;
+    font-weight: 700;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(62,166,255,0.35);
+  }
+  .btn.secondary{
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--accent);
+  }
+  .btn:focus-visible{
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .week-label{
+    font-weight: 700;
+    letter-spacing: 0.25px;
+  }
+
+  /* Scoreboard */
+  .panel{
+    background: var(--panel);
+    border:1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    margin-top: 16px;
+  }
+  .title-row{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  h2{
+    margin:0;
+    font-size: clamp(1.1rem,1rem + .6vw,1.4rem);
+  }
+  .desc{
+    color: var(--muted);
+    margin: 4px 0 8px;
+    font-size: 0.95rem;
+  }
+  table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+  th, td{
+    border-bottom: 1px solid var(--border);
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 1rem;
+  }
+  th{
+    color: var(--muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+  }
+  tbody tr:nth-child(even){
+    background: rgba(255,255,255,0.02);
+  }
+  .winner{
+    color: var(--good);
+    font-weight: 800;
+  }
+  .note{
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* Confetti (light) */
+  .confetti{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .confetti > i{
+    position: absolute;
+    top:-10px;
+    width: 8px; height: 12px;
+    background: var(--accent);
+    opacity: 0.9;
+    transform: translateY(-20px) rotate(0deg);
+    animation: fall linear forwards;
+  }
+  @keyframes fall{
+    to{
+      transform: translateY(110vh) rotate(360deg);
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .confetti{ display:none; }
+  }
+
+  a:focus-visible{ outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header aria-describedby="subtitle">
+      <h1>Mr. Salinas Advisory Technology Scoreboard</h1>
+      <p id="subtitle" class="subtitle">Advisory norms first, then the Typing event — calm, clear, and accessible.</p>
+
+      <!-- Advisory Expectations -->
+      <section class="expectations" aria-label="Advisory Expectations">
+        <div class="card">
+          <h3>👂 Active Listening</h3>
+          <p>Face the speaker’s voice, pause devices, and get ready to learn.</p>
+        </div>
+        <div class="card">
+          <h3>✋ Raising Hands (Following Protocol)</h3>
+          <p>Use your hand or verbal cue, wait your turn, and share clearly.</p>
+        </div>
+        <div class="card">
+          <h3>🤝 Respect & Growth Mindset</h3>
+          <p>Be kind, try new strategies, and learn from mistakes.</p>
+        </div>
+        <div class="card">
+          <h3>🚶 Traveling Safely</h3>
+          <p>Move with care, keep pathways clear, devices carried safely.</p>
+        </div>
+        <div class="card">
+          <h3>👋 Greeting at the Door</h3>
+          <p>Say hello, make eye contact if appropriate, use names and smiles.</p>
+        </div>
+        <div class="card">
+          <h3>🐔 Chicken Check-In</h3>
+          <p>Quick pulse check — one brave share before we start.</p>
+        </div>
+        <div class="card">
+          <h3>🐱 Cat Ball Check-In</h3>
+          <p>Pass the “cat ball,” listen closely, and cheer each speaker.</p>
+        </div>
+      </section>
+    </header>
+
+    <!-- Typing Event -->
+    <section class="panel" aria-labelledby="typing-title">
+      <div class="title-row">
+        <h2 id="typing-title">Typing — Weekly Standings</h2>
+        <div class="controls" aria-label="Week Navigation">
+          <button class="btn secondary" id="prev-week" aria-label="Previous week">⬅️ Prev</button>
+          <span class="week-label" id="week-label">Week</span>
+          <button class="btn" id="next-week" aria-label="Next week">Next ➡️</button>
+        </div>
+      </div>
+      <p class="desc" id="typing-desc">
+        Scoring: <strong>1 point</strong> for each day you practice <strong>10 minutes</strong>.
+        <strong>+3 bonus</strong> for a 5-day (Mon–Sun) streak. Winner shown when the week is complete.
+      </p>
+
+      <div role="region" aria-live="polite" aria-atomic="true">
+        <table aria-describedby="typing-note">
+          <thead>
+            <tr>
+              <th scope="col">Student</th>
+              <th scope="col">Base</th>
+              <th scope="col">Bonus</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody id="score-body"></tbody>
+        </table>
+        <p id="typing-note" class="note">
+          Base = days practiced (10 min). Bonus = +3 if 5-day streak earned. Total = Base + Bonus.
+        </p>
+        <p id="winner" class="winner" aria-live="polite"></p>
+      </div>
+    </section>
+  </div>
+
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<script>
+(() => {
+  // =======================
+  // DATA (Edit here)
+  // =======================
+  const roster = ["Jackson","Phillip","Matthew","William"];
+
+  // Each week has a Monday start (Mon–Sun). Set "complete" to true when the week has ended.
+  // "scores": base day-count (each 10-minute day = 1). "bonus": true if student hit 5-day streak.
+  const typingWeeks = [
+    {
+      label: "Week of Sep 22–28, 2025",
+      startISO: "2025-09-22",
+      endISO:   "2025-09-28",
+      complete: false,
+      scores: {
+        Jackson: { base: 0, bonus: false },
+        Phillip: { base: 0, bonus: false },
+        Matthew: { base: 0, bonus: false },
+        William: { base: 0, bonus: false }
+      }
+    }
+  ];
+
+  // =======================
+  // STATE
+  // =======================
+  let weekIndex = typingWeeks.length - 1; // default to most recent
+
+  // =======================
+  // HELPERS
+  // =======================
+  const $ = (sel, root=document) => root.querySelector(sel);
+  function totalFor(entry){ return (entry?.base ?? 0) + ((entry?.bonus) ? 3 : 0); }
+
+  // Confetti (gentle)
+  function launchConfetti(){
+    const root = $("#confetti");
+    if(!root) return;
+    root.innerHTML = "";
+    const pieces = 50;
+    for(let i=0;i<pieces;i++){
+      const piece = document.createElement("i");
+      const left = Math.random()*100;
+      const delay = Math.random()*0.7;
+      const dur = 2.2 + Math.random()*1.8;
+      const hue = Math.floor(200 + Math.random()*120); // cool hues
+      piece.style.left = left + "vw";
+      piece.style.animationDuration = dur + "s";
+      piece.style.animationDelay = delay + "s";
+      piece.style.background = `hsl(${hue} 90% 60%)`;
+      root.appendChild(piece);
+    }
+    setTimeout(()=>{ root.innerHTML=""; }, 5000);
+  }
+
+  // Render the scoreboard for the selected week
+  function renderWeek(){
+    const week = typingWeeks[weekIndex];
+    $("#week-label").textContent = week.label;
+
+    const tbody = $("#score-body");
+    tbody.innerHTML = "";
+
+    // Build rows from roster order for consistency, then sort by total desc for table
+    const rows = roster.map(name => {
+      const entry = week.scores[name] || { base:0, bonus:false };
+      return {
+        name,
+        base: entry.base ?? 0,
+        bonus: entry.bonus ? 3 : 0,
+        total: totalFor(entry)
+      };
+    }).sort((a,b)=> b.total - a.total);
+
+    // Winner (only if complete)
+    const winnerEl = $("#winner");
+    if(week.complete){
+      const top = rows[0].total;
+      const winners = rows.filter(r=> r.total === top).map(r=> r.name);
+      winnerEl.textContent = `🏆 Winner: ${winners.join(", ")}`;
+      launchConfetti();
+    } else {
+      winnerEl.textContent = "";
+    }
+
+    // Fill table
+    for(const r of rows){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${r.name}</td>
+        <td>${r.base}</td>
+        <td>${r.bonus ? "+3" : "—"}</td>
+        <td><strong>${r.total}</strong></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  // Navigation
+  $("#prev-week").addEventListener("click", ()=>{
+    if(weekIndex > 0){ weekIndex--; renderWeek(); }
+  });
+  $("#next-week").addEventListener("click", ()=>{
+    if(weekIndex < typingWeeks.length - 1){ weekIndex++; renderWeek(); }
+  });
+
+  // Init
+  renderWeek();
+})();
+</script>
+</body>
+</html>
