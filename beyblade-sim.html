@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Beyblade Arena</title>
+  <style>
+    body {
+      background: #0a0a0a;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+    }
+
+    canvas {
+      background: radial-gradient(circle, #444 0%, #111 70%);
+      border: 3px solid white;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🌀 Beyblade Arena Battle</h1>
+<button onclick="startBattle()">Start Battle</button>
+<p id="result"></p>
+
+<canvas id="arena" width="500" height="500"></canvas>
+
+<script>
+const canvas = document.getElementById("arena");
+const ctx = canvas.getContext("2d");
+
+let blade1, blade2, animation;
+
+function createBlade(name, color) {
+  return {
+    name: name,
+    x: Math.random() * 400 + 50,
+    y: Math.random() * 400 + 50,
+    vx: (Math.random() - 0.5) * 6,
+    vy: (Math.random() - 0.5) * 6,
+    radius: 20,
+    stamina: 100,
+    color: color,
+    spin: 0
+  };
+}
+
+function drawBlade(b) {
+  ctx.save();
+  ctx.translate(b.x, b.y);
+  ctx.rotate(b.spin);
+
+  ctx.beginPath();
+  ctx.arc(0, 0, b.radius, 0, Math.PI * 2);
+  ctx.fillStyle = b.color;
+  ctx.fill();
+
+  ctx.strokeStyle = "white";
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function updateBlade(b) {
+  b.x += b.vx;
+  b.y += b.vy;
+  b.spin += 0.2;
+
+  // Wall bounce
+  if (b.x < b.radius || b.x > canvas.width - b.radius) b.vx *= -1;
+  if (b.y < b.radius || b.y > canvas.height - b.radius) b.vy *= -1;
+
+  // Stamina drain
+  b.stamina -= 0.1;
+}
+
+function collide(b1, b2) {
+  let dx = b1.x - b2.x;
+  let dy = b1.y - b2.y;
+  let dist = Math.sqrt(dx * dx + dy * dy);
+
+  if (dist < b1.radius + b2.radius) {
+    // Bounce effect
+    let tempVx = b1.vx;
+    let tempVy = b1.vy;
+
+    b1.vx = b2.vx;
+    b1.vy = b2.vy;
+
+    b2.vx = tempVx;
+    b2.vy = tempVy;
+
+    // Damage
+    b1.stamina -= Math.random() * 5;
+    b2.stamina -= Math.random() * 5;
+  }
+}
+
+function drawHUD() {
+  ctx.fillStyle = "white";
+  ctx.fillText("Blaze: " + Math.max(0, Math.floor(blade1.stamina)), 10, 20);
+  ctx.fillText("Shadow: " + Math.max(0, Math.floor(blade2.stamina)), 350, 20);
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  updateBlade(blade1);
+  updateBlade(blade2);
+
+  collide(blade1, blade2);
+
+  drawBlade(blade1);
+  drawBlade(blade2);
+  drawHUD();
+
+  if (blade1.stamina <= 0 || blade2.stamina <= 0) {
+    cancelAnimationFrame(animation);
+    let winner = blade1.stamina > blade2.stamina ? blade1.name : blade2.name;
+    document.getElementById("result").innerText = "🏆 Winner: " + winner;
+    return;
+  }
+
+  animation = requestAnimationFrame(gameLoop);
+}
+
+function startBattle() {
+  blade1 = createBlade("Blaze Dragon", "red");
+  blade2 = createBlade("Shadow Serpent", "cyan");
+  document.getElementById("result").innerText = "";
+  gameLoop();
+}
+</script>
+
+</body>
+</html>
