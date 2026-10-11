@@ -10,46 +10,39 @@
     --bg: #f6f5f1;
     --panel: #ffffff;
     --ink: #1c1e22;
-    --muted: #596070;
+    --muted: #555c6b;
     --line: #d8d5cb;
+    --field-border: #6f7584;
+    --field-bg: #ffffff;
     --accent: #1f5fae;
     --accent-ink: #ffffff;
-    --accent-soft: #e6eef9;
+    --focus: #0b3d91;
+    --focus-halo: #ffffff;
     --paper: #fffdf7;
-    --paper-edge: #cfcabc;
+    --paper-edge: #8f8a7c;
     --dot: #1c1e22;
-    --start: #17804a;
-    --finish: #c2410c;
-    --title: #6a4cc0;
+    --start: #137240;
+    --finish: #b33a09;
+    --title: #5a3db0;
     --warn-bg: #fff3d1;
-    --warn-ink: #5e4100;
-    --focus: #f59e0b;
+    --warn-ink: #4f3700;
+    --warn-edge: #a87a00;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #15171b;
-      --panel: #1e2127;
-      --ink: #ebe9e4;
-      --muted: #a4a9b4;
-      --line: #353a44;
-      --accent: #74a9ff;
-      --accent-ink: #0b1322;
-      --accent-soft: #23314a;
-      --paper: #272b33;
-      --paper-edge: #444a56;
-      --dot: #f2f0ea;
-      --start: #4ade80;
-      --finish: #fb923c;
-      --title: #b8a3ff;
-      --warn-bg: #3a2f10;
-      --warn-ink: #ffdb8f;
+      --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
+      --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
+      --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
+      --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c; --title: #b8a3ff;
+      --warn-bg: #3a2f10; --warn-ink: #ffe2a3; --warn-edge: #d4a017;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #a4a9b4; --line: #353a44;
-    --accent: #74a9ff; --accent-ink: #0b1322; --accent-soft: #23314a; --paper: #272b33;
-    --paper-edge: #444a56; --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c;
-    --title: #b8a3ff; --warn-bg: #3a2f10; --warn-ink: #ffdb8f;
+    --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
+    --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
+    --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
+    --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c; --title: #b8a3ff;
+    --warn-bg: #3a2f10; --warn-ink: #ffe2a3; --warn-edge: #d4a017;
   }
 
   * { box-sizing: border-box; }
@@ -57,68 +50,78 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
-  header, main, footer { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
-  header { padding-top: 24px; padding-bottom: 8px; }
-  h1 { font-size: 1.75rem; margin: 0 0 4px; }
-  header p { margin: 0; color: var(--muted); max-width: 70ch; }
+  .top, main, .help { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .top { padding-top: 24px; }
+  h1 { font-size: 1.9rem; margin: 0 0 4px; }
+  .top p { margin: 0; color: var(--muted); max-width: 70ch; }
+  h2 { font-size: 1.3rem; margin: 0 0 10px; }
+  h3 { font-size: 1.08rem; margin: 16px 0 8px; }
 
   main {
     display: grid;
-    grid-template-columns: minmax(300px, 380px) 1fr;
+    grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+    grid-template-areas: "make preview" "options preview";
+    grid-template-rows: auto 1fr;
     gap: 20px;
-    align-items: start;
-    padding-top: 16px;
+    padding-top: 20px;
     padding-bottom: 24px;
   }
-  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  #make { grid-area: make; }
+  #previewSection { grid-area: preview; align-self: start; position: sticky; top: 12px; }
+  #optionsCol { grid-area: options; display: flex; flex-direction: column; gap: 14px; }
+  @media (max-width: 880px) {
+    main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "make" "preview" "options"; }
+    #previewSection { position: static; }
+  }
 
   .panel {
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 12px;
-    padding: 16px;
+    padding: 18px;
   }
-  fieldset {
-    border: 0;
-    border-top: 1px solid var(--line);
-    margin: 0;
-    padding: 14px 0 6px;
-  }
-  fieldset:first-of-type { border-top: 0; padding-top: 0; }
-  legend { font-weight: 700; padding: 0; margin-bottom: 8px; font-size: 1.02rem; }
+  .intro { margin: 0 0 4px; }
 
-  .field { margin-bottom: 12px; }
-  .field label, .field .label { display: block; font-weight: 600; margin-bottom: 4px; }
-  .hint { display: block; color: var(--muted); font-size: 0.875rem; margin-top: 2px; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .field { margin-bottom: 14px; }
+  .field > label { display: block; font-weight: 600; margin-bottom: 4px; }
+  .hint { display: block; color: var(--muted); font-size: 0.92rem; margin: 4px 0 0; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 400px) { .row, .row3 { grid-template-columns: 1fr; } }
 
-  input[type="number"], input[type="text"], select {
+  input[type="text"], select {
     width: 100%;
     font: inherit;
     color: var(--ink);
-    background: var(--bg);
-    border: 1px solid var(--line);
+    background: var(--field-bg);
+    border: 2px solid var(--field-border);
     border-radius: 8px;
     padding: 8px 10px;
-    min-height: 42px;
+    min-height: 48px;
   }
-  input[type="range"] { width: 100%; accent-color: var(--accent); }
-  .check { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-weight: 600; }
-  .check input { width: 20px; height: 20px; accent-color: var(--accent); }
-  .scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.8rem; }
 
-  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .choice {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 4px; min-height: 44px; cursor: pointer;
+  }
+  .choice input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--accent); cursor: pointer; }
+  .choice span small { display: block; color: var(--muted); font-size: 0.9rem; }
 
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--focus-halo);
+  }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 8px; }
   button {
     font: inherit;
     font-weight: 700;
     border-radius: 10px;
-    padding: 10px 18px;
-    min-height: 46px;
+    padding: 10px 20px;
+    min-height: 52px;
     cursor: pointer;
     border: 2px solid var(--accent);
   }
@@ -126,203 +129,121 @@
   .secondary { background: transparent; color: var(--accent); }
   button:hover { filter: brightness(1.08); }
 
-  .seed-row { display: flex; gap: 8px; align-items: end; }
-  .seed-row .field { flex: 1; margin-bottom: 0; }
+  .disclosure {
+    width: 100%;
+    display: flex; align-items: center; gap: 12px;
+    text-align: left;
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 1.15rem;
+  }
+  .disclosure[aria-expanded="true"] { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .chev {
+    display: inline-block; flex: none; width: 0; height: 0;
+    border-top: 0.4em solid transparent; border-bottom: 0.4em solid transparent;
+    border-left: 0.6em solid currentColor;
+    transition: transform 0.15s;
+  }
+  .disclosure[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  @media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+  .disclosure-heading { margin: 0; font-size: inherit; }
+  .disclosure-body {
+    border: 1px solid var(--line);
+    border-top: 0;
+    border-radius: 0 0 12px 12px;
+    padding: 4px 18px 14px;
+    background: var(--panel);
+  }
+  .disclosure-body h3 { border-top: 1px solid var(--line); padding-top: 14px; margin-top: 14px; }
+  .disclosure-body > p:first-child + h3, .disclosure-body > h3:first-child { border-top: 0; padding-top: 0; }
 
-  .summary { margin: 0 0 10px; font-size: 0.95rem; }
-  .summary strong { font-weight: 700; }
   .warn {
     background: var(--warn-bg);
     color: var(--warn-ink);
-    border-radius: 8px;
+    border-left: 4px solid var(--warn-edge);
+    border-radius: 6px;
     padding: 8px 12px;
-    margin: 0 0 12px;
-    font-size: 0.92rem;
+    margin: 6px 0 12px;
+    font-size: 0.95rem;
   }
   .warn:empty { display: none; }
 
-  .preview-wrap {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 12px;
-    overflow: auto;
-  }
-  #preview { display: block; width: 100%; height: auto; max-height: 78vh; }
+  .desc { margin: 0 0 12px; }
+  .desc div { margin: 0 0 2px; }
+  .desc div:first-child { font-weight: 700; }
+  .preview-wrap { background: var(--bg); border-radius: 10px; padding: 12px; }
+  #preview { display: block; width: 100%; height: auto; max-height: 76vh; border-radius: 4px; }
   #preview .paper { fill: var(--paper); stroke: var(--paper-edge); stroke-width: 0.6; }
   #preview .d-wall { fill: var(--dot); }
   #preview .d-start { fill: var(--start); }
   #preview .d-finish { fill: var(--finish); }
   #preview .d-title { fill: var(--title); }
-
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 0.875rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 0.9rem; }
   .legend span::before {
-    content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 50%;
     margin-right: 6px; vertical-align: -1px; background: var(--c);
   }
 
-  details { margin-top: 14px; }
-  summary { cursor: pointer; font-weight: 600; }
-  pre.braille {
-    font-family: "Segoe UI Symbol", "DejaVu Sans Mono", "Apple Braille", monospace;
-    font-size: 15px;
-    line-height: 1.25;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 10px;
-    overflow: auto;
-  }
 
-  footer { padding-bottom: 32px; color: var(--muted); font-size: 0.92rem; }
-  footer h2 { font-size: 1.05rem; color: var(--ink); margin: 0 0 6px; }
-  footer ol, footer ul { margin-top: 4px; padding-left: 22px; }
-  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .help { padding-bottom: 36px; }
+  .help ol, .help ul { margin: 4px 0 0; padding-left: 22px; }
+  .help li { margin-bottom: 4px; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
 </style>
 </head>
 <body>
 
-<header>
+<!-- Text rule: keep every paragraph, hint, and list item under about 90 characters.
+     JAWS splits longer text into several "lines" when reading with the arrow keys. -->
+<div class="top">
   <h1>Tactile Maze Maker</h1>
-  <p>Makes finger-tracing mazes as BRF files for a braille embosser. The walls are single lines of dots, and the student traces the open space between them.</p>
-</header>
+  <p>Makes finger-tracing mazes for a braille embosser.</p>
+  <p>The walls are lines of dots. You trace the open path between them.</p>
+</div>
 
 <main>
-  <form class="panel" id="controls" onsubmit="return false">
-    <fieldset>
-      <legend>Difficulty</legend>
-      <div class="field">
-        <label for="difficulty">Level</label>
-        <select id="difficulty">
-          <option value="1">Level 1 – First maze (3 × 3)</option>
-          <option value="2" selected>Level 2 – Easy (4 × 4)</option>
-          <option value="3">Level 3 – Medium (6 × 5)</option>
-          <option value="4">Level 4 – Hard (9 × 8)</option>
-          <option value="5">Level 5 – Full page</option>
-          <option value="custom">Custom</option>
-        </select>
-        <span class="hint">Changing any setting below switches this to Custom.</span>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label for="gridW">Squares across</label>
-          <input type="number" id="gridW" min="2" max="40" value="4">
-        </div>
-        <div class="field">
-          <label for="gridH">Squares down</label>
-          <input type="number" id="gridH" min="2" max="40" value="4">
-        </div>
-      </div>
-      <div class="field">
-        <label for="branch">Branching</label>
-        <input type="range" id="branch" min="0" max="100" value="15" aria-describedby="branchHint">
-        <div class="scale" aria-hidden="true"><span>Long winding paths</span><span>Many short dead ends</span></div>
-        <span class="hint" id="branchHint">Left: one long path with few choices. Right: more choices, with lots of short dead ends.</span>
-      </div>
-      <div class="field">
-        <label for="loops">Extra paths (loops)</label>
-        <input type="range" id="loops" min="0" max="60" value="0" aria-describedby="loopsHint">
-        <div class="scale" aria-hidden="true"><span>None</span><span>Many</span></div>
-        <span class="hint" id="loopsHint">Opens some dead ends so there's more than one way through. More loops make the maze more forgiving.</span>
-      </div>
-      <div class="field">
-        <label for="layout">Start and finish</label>
-        <select id="layout">
-          <option value="tlbr">Top-left → bottom-right</option>
-          <option value="lr">Left side → right side</option>
-          <option value="tb">Top → bottom</option>
-          <option value="far">Farthest apart (harder)</option>
-        </select>
-      </div>
-    </fieldset>
+  <!-- Simple view: everything most people need -->
+  <div id="make" class="panel">
+    <h2>Make a maze</h2>
+    <p class="intro">Choose a level, then download the braille file.</p>
+    <p class="intro">Press New maze for a different maze at the same level.</p>
 
-    <fieldset>
-      <legend>Path size</legend>
-      <div class="field">
-        <label for="corridor">Path width (mm)</label>
-        <input type="number" id="corridor" min="8" max="40" step="0.5" value="18" aria-describedby="corridorHint">
-        <span class="hint" id="corridorHint">Distance from wall to wall. This gets rounded to a whole number of braille cells across and lines down, so every path is the same width. The actual width appears above the preview.</span>
-      </div>
-    </fieldset>
+    <h3 id="levelHeading">Change level</h3>
+    <div class="field">
+      <select id="difficulty" aria-labelledby="levelHeading" aria-describedby="levelHint">
+        <option value="1">Level 1: first maze, 3 by 3</option>
+        <option value="2" selected>Level 2: easy, 4 by 4</option>
+        <option value="3">Level 3: medium, 6 by 5</option>
+        <option value="4">Level 4: hard, 9 by 8</option>
+        <option value="5">Level 5: full page</option>
+        <option value="custom">Custom, set in More maze options</option>
+      </select>
+      <p class="hint" id="levelHint">Higher levels are bigger, with more turns and dead ends.</p>
+    </div>
 
-    <fieldset>
-      <legend>Start &amp; finish markers</legend>
-      <div class="row">
-        <div class="field">
-          <label for="startMark">Start</label>
-          <select id="startMark"></select>
-        </div>
-        <div class="field">
-          <label for="finishMark">Finish</label>
-          <select id="finishMark"></select>
-        </div>
-      </div>
-      <label class="check"><input type="checkbox" id="openings" checked> Gaps in the outer wall at start &amp; finish</label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Braille title</legend>
-      <label class="check"><input type="checkbox" id="useTitle" checked> Put a title on the top line</label>
-      <div class="field">
-        <label for="titleText">Title text</label>
-        <input type="text" id="titleText" value="Maze" maxlength="60">
-      </div>
-      <label class="check"><input type="checkbox" id="addLevel" checked> Add the level (e.g. “Maze Level 2”)</label>
-      <span class="hint">Written in uncontracted (Grade 1) UEB.</span>
-    </fieldset>
-
-    <fieldset>
-      <legend>Page &amp; embosser</legend>
-      <div class="row">
-        <div class="field">
-          <label for="cells">Cells per line</label>
-          <input type="number" id="cells" min="10" max="60" value="40">
-        </div>
-        <div class="field">
-          <label for="lines">Lines per page</label>
-          <input type="number" id="lines" min="5" max="40" value="25">
-        </div>
-      </div>
-      <span class="hint" style="margin:-6px 0 12px">40 × 25 fits standard 11.5 × 11 in braille paper. Use the same numbers in your embosser and BrailleBlaster settings.</span>
-      <div class="row3">
-        <div class="field">
-          <label for="cellW">Cell spacing</label>
-          <input type="number" id="cellW" min="4" max="10" step="0.1" value="6.2">
-        </div>
-        <div class="field">
-          <label for="lineH">Line spacing</label>
-          <input type="number" id="lineH" min="5" max="15" step="0.1" value="10">
-        </div>
-        <div class="field">
-          <label for="dotSp">Dot spacing</label>
-          <input type="number" id="dotSp" min="1.5" max="3.5" step="0.1" value="2.5">
-        </div>
-      </div>
-      <span class="hint" style="margin:-6px 0 12px">Spacing values are in mm, measured center to center. They only affect the preview and how the path width gets rounded. The defaults are standard US braille spacing.</span>
-      <label class="check"><input type="checkbox" id="formFeed" checked> End the file with a page break</label>
-    </fieldset>
-  </form>
-
-  <section class="panel" aria-labelledby="previewHeading">
-    <h2 id="previewHeading" class="sr-only">Preview</h2>
+    <h3>Make and download</h3>
     <div class="actions">
-      <button type="button" class="primary" id="downloadBtn">Download .brf</button>
       <button type="button" class="secondary" id="newBtn">New maze</button>
+      <button type="button" class="primary" id="downloadBtn">Download braille file</button>
     </div>
-    <div class="seed-row" style="margin-bottom:14px">
-      <div class="field">
-        <label for="seed">Maze number (seed)</label>
-        <input type="number" id="seed" min="1" max="999999" value="1" aria-describedby="seedHint">
-      </div>
-    </div>
-    <span class="hint" id="seedHint" style="margin:-8px 0 14px">The same number and settings always make the same maze, so you can reproduce one later.</span>
 
-    <p class="summary" id="summary" role="status" aria-live="polite"></p>
-    <p class="warn" id="warn"></p>
+    <div class="warn" id="warnAll"></div>
+  </div>
 
+  <!-- Preview. Each fact is its own short line for arrow-key reading. The picture is a
+       Tab stop named "Maze picture" and described by those lines, so Tab reads them all. -->
+  <div id="previewSection" class="panel">
+    <h2>Current maze</h2>
+    <div class="desc" id="desc"></div>
     <div class="preview-wrap">
-      <svg id="preview" role="img" aria-labelledby="previewDesc" xmlns="http://www.w3.org/2000/svg">
-        <desc id="previewDesc">Preview of the embossed page</desc>
-      </svg>
+      <svg id="preview" role="img" tabindex="0" aria-label="Maze picture" aria-describedby="desc" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
     <div class="legend" aria-hidden="true">
       <span style="--c: var(--dot)">Wall dots</span>
@@ -330,26 +251,164 @@
       <span style="--c: var(--finish)">Finish</span>
       <span style="--c: var(--title)">Title</span>
     </div>
+  </div>
 
-    <details>
-      <summary>Show the braille characters</summary>
-      <pre class="braille" id="brailleText"></pre>
-    </details>
-  </section>
+  <!-- Advanced, collapsed by default -->
+  <div id="optionsCol">
+    <div>
+      <h2 class="disclosure-heading">
+        <button type="button" class="disclosure" id="moreBtn" aria-expanded="false" aria-controls="moreBody">
+          <span class="chev" aria-hidden="true"></span>More maze options
+        </button>
+      </h2>
+      <div class="disclosure-body" id="moreBody" hidden>
+        <p class="hint">Changing size, dead ends, or extra routes switches the level to Custom.</p>
+
+        <h3>Maze size</h3>
+        <div class="row">
+          <div class="field">
+            <label for="gridW">Squares across</label>
+            <select id="gridW" aria-describedby="sizeHint warnSize"></select>
+          </div>
+          <div class="field">
+            <label for="gridH">Squares down</label>
+            <select id="gridH" aria-describedby="sizeHint warnSize"></select>
+          </div>
+        </div>
+        <p class="hint" id="sizeHint" style="margin-top:-8px">Only sizes that fit on the page are listed.</p>
+        <div class="warn" id="warnSize"></div>
+
+        <h3 id="deadEndsHeading">Dead ends</h3>
+        <div role="radiogroup" aria-labelledby="deadEndsHeading">
+          <label class="choice"><input type="radio" name="branch" value="few"><span>Few<small><span class="sr-only">, </span>One long winding path</small></span></label>
+          <label class="choice"><input type="radio" name="branch" value="some"><span>Some</span></label>
+          <label class="choice"><input type="radio" name="branch" value="many"><span>Many<small><span class="sr-only">, </span>Lots of short dead ends to check</small></span></label>
+        </div>
+
+        <h3 id="routesHeading">Extra routes</h3>
+        <div role="radiogroup" aria-labelledby="routesHeading">
+          <label class="choice"><input type="radio" name="loops" value="none"><span>None<small><span class="sr-only">, </span>Only one way to the finish</small></span></label>
+          <label class="choice"><input type="radio" name="loops" value="few"><span>A few</span></label>
+          <label class="choice"><input type="radio" name="loops" value="many"><span>Many<small><span class="sr-only">, </span>More forgiving: several ways to the finish</small></span></label>
+        </div>
+
+        <h3>Start and finish</h3>
+        <div class="field">
+          <label for="layout">Where the start and finish go</label>
+          <select id="layout">
+            <option value="tlbr">Top left to bottom right</option>
+            <option value="lr">Left side to right side</option>
+            <option value="tb">Top to bottom</option>
+            <option value="far">Far apart on random sides (harder)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="startMark">Start marker</label>
+          <select id="startMark" aria-describedby="warnMarker"></select>
+        </div>
+        <div class="field">
+          <label for="finishMark">Finish marker</label>
+          <select id="finishMark" aria-describedby="warnMarker"></select>
+        </div>
+        <label class="choice"><input type="checkbox" id="openings" checked><span>Gaps in the outer wall at start and finish</span></label>
+        <div class="warn" id="warnMarker"></div>
+
+        <h3 id="pathHeading">Path width</h3>
+        <div class="field">
+          <select id="pathWidth" aria-labelledby="pathHeading" aria-describedby="pathHint1 pathHint2">
+            <option value="2">Narrow</option>
+            <option value="3" selected>Standard</option>
+            <option value="4">Wide</option>
+            <option value="5">Extra wide</option>
+          </select>
+          <p class="hint" id="pathHint1">Measured wall to wall.</p>
+          <p class="hint" id="pathHint2">Every path in the maze is the same width.</p>
+        </div>
+
+        <h3>Braille title</h3>
+        <label class="choice"><input type="checkbox" id="useTitle" checked><span>Put a title on the top line</span></label>
+        <div class="field">
+          <label for="titleText">Title text</label>
+          <input type="text" id="titleText" value="Maze" maxlength="60" aria-describedby="titleHint warnTitle">
+          <p class="hint" id="titleHint">Written in uncontracted braille.</p>
+        </div>
+        <label class="choice"><input type="checkbox" id="addLevel" checked><span>Add the level, like “Maze Level 2”</span></label>
+        <div class="warn" id="warnTitle"></div>
+
+        <h3 id="codeHeading">Maze code</h3>
+        <div class="field">
+          <input type="text" id="mazeCode" inputmode="numeric" autocomplete="off" maxlength="6" value="1"
+                 aria-labelledby="codeHeading" aria-describedby="codeHint1 codeHint2 codeHint3">
+          <p class="hint" id="codeHint1">Each code makes a different maze.</p>
+          <p class="hint" id="codeHint2">Type a code you used before to get the same maze again.</p>
+          <p class="hint" id="codeHint3">Up and Down arrows change the code by one.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="disclosure-heading">
+        <button type="button" class="disclosure" id="setupBtn" aria-expanded="false" aria-controls="setupBody">
+          <span class="chev" aria-hidden="true"></span>Embosser and page setup
+        </button>
+      </h2>
+      <div class="disclosure-body" id="setupBody" hidden>
+        <h3>Page size</h3>
+        <div class="row">
+          <div class="field">
+            <label for="cells">Cells per line</label>
+            <input type="text" id="cells" inputmode="numeric" autocomplete="off" value="40" aria-describedby="pageHint1 pageHint2">
+          </div>
+          <div class="field">
+            <label for="lines">Lines per page</label>
+            <input type="text" id="lines" inputmode="numeric" autocomplete="off" value="25" aria-describedby="pageHint1 pageHint2">
+          </div>
+        </div>
+        <p class="hint" id="pageHint1" style="margin-top:-8px">40 by 25 fits standard 11.5 by 11 inch braille paper.</p>
+        <p class="hint" id="pageHint2">These must match your embosser and BrailleBlaster page settings.</p>
+        <label class="choice"><input type="checkbox" id="formFeed" checked><span>End the file with a page break</span></label>
+
+        <h3>Dot spacing</h3>
+        <div class="row3">
+          <div class="field">
+            <label for="cellW">Cell to cell</label>
+            <input type="text" id="cellW" inputmode="decimal" autocomplete="off" value="6.2" aria-describedby="spacingHint1 spacingHint2">
+          </div>
+          <div class="field">
+            <label for="lineH">Line to line</label>
+            <input type="text" id="lineH" inputmode="decimal" autocomplete="off" value="10" aria-describedby="spacingHint1 spacingHint2">
+          </div>
+          <div class="field">
+            <label for="dotSp">Dot to dot</label>
+            <input type="text" id="dotSp" inputmode="decimal" autocomplete="off" value="2.5" aria-describedby="spacingHint1 spacingHint2">
+          </div>
+        </div>
+        <p class="hint" id="spacingHint1" style="margin-top:-8px">In millimeters, measured center to center.</p>
+        <p class="hint" id="spacingHint2">The defaults are standard US braille.</p>
+      </div>
+    </div>
+  </div>
 </main>
 
-<footer>
-  <h2>Embossing with BrailleBlaster</h2>
-  <ol>
-    <li>Click <strong>Download .brf</strong>.</li>
-    <li>In BrailleBlaster, open the file with <strong>File › Open</strong>. A BRF opens in Braille Preview exactly as it was laid out and can't be edited there.</li>
-    <li>Choose <strong>File › Emboss</strong> (Ctrl+E), pick your embosser and set <strong>Interpoint to No</strong>.</li>
-  </ol>
-  <ul>
-    <li>Cells per line and lines per page here need to match the embosser's page settings. If they're larger, lines will wrap and break the maze.</li>
-    <li>Emboss one test page first. If the paths feel too narrow or too wide, change the path width and try again.</li>
-  </ul>
-</footer>
+<div class="help">
+  <div class="panel">
+    <h2>Embossing with BrailleBlaster</h2>
+    <ol>
+      <li>Press Download braille file.</li>
+      <li>In BrailleBlaster, choose File, Open. The maze opens in Braille Preview.</li>
+      <li>Choose File, Emboss (Control E) and pick your embosser.</li>
+      <li>Set Interpoint to No.</li>
+    </ol>
+    <ul>
+      <li>Cells per line and lines per page must match your embosser.</li>
+      <li>If they are bigger, lines wrap and break the maze.</li>
+      <li>Emboss a test page first. If paths feel too narrow or wide, change the path width.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Screen reader announcements -->
+<div id="announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script>
 (() => {
@@ -359,34 +418,43 @@
   const BRF = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
   const BIT = [[1, 2, 4], [8, 16, 32]]; // BIT[col][row]
   const TITLE_GAP_MM = 7;
+  const ANNOUNCE_DELAY_MS = 700;
+
+  const BRANCH = { few: 0, some: 0.3, many: 0.7 };
+  const LOOPS = { none: 0, few: 0.25, many: 0.6 };
 
   const PRESETS = {
-    1: { w: 3, h: 3, branch: 0,  loops: 0 },
-    2: { w: 4, h: 4, branch: 15, loops: 0 },
-    3: { w: 6, h: 5, branch: 30, loops: 0 },
-    4: { w: 9, h: 8, branch: 45, loops: 0 },
-    5: { fill: true, branch: 50, loops: 0 },
+    1: { w: 3, h: 3, branch: "few",  loops: "none" },
+    2: { w: 4, h: 4, branch: "few",  loops: "none" },
+    3: { w: 6, h: 5, branch: "some", loops: "none" },
+    4: { w: 9, h: 8, branch: "many", loops: "none" },
+    5: { fill: true, branch: "many", loops: "none" },
   };
 
   // Marker shapes as dot offsets [dx, dy] around the dot nearest the square's center.
   const MARKERS = {
-    block:   { label: "Solid block (9 dots)", dots: [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]] },
-    x:       { label: "X shape (5 dots)", dots: [[-1,-1],[1,-1],[0,0],[-1,1],[1,1]] },
-    diamond: { label: "Diamond ring (4 dots)", dots: [[0,-1],[-1,0],[1,0],[0,1]] },
+    block:   { label: "Solid block, 9 dots", dots: [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]] },
+    x:       { label: "X shape, 5 dots", dots: [[-1,-1],[1,-1],[0,0],[-1,1],[1,1]] },
+    diamond: { label: "Diamond ring, 4 dots", dots: [[0,-1],[-1,0],[1,0],[0,1]] },
     pair:    { label: "Two dots side by side", dots: [[-1,0],[1,0]] },
     single:  { label: "Single dot", dots: [[0,0]] },
     letterS: { label: "Braille letter s", letter: "S" },
     letterF: { label: "Braille letter f", letter: "F" },
-    none:    { label: "None", dots: [] },
+    none:    { label: "No marker", dots: [] },
   };
 
   const $ = (id) => document.getElementById(id);
-  const ids = ["difficulty","gridW","gridH","branch","loops","layout","corridor","startMark","finishMark",
-               "openings","useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed","seed"];
+  const FIELD_IDS = ["difficulty","gridW","gridH","layout","pathWidth","startMark","finishMark","openings",
+                     "useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed"];
+  const RADIO_NAMES = ["branch", "loops"];
   const MAZE_FIELDS = ["gridW","gridH","branch","loops"];
-  const STORE_KEY = "tactileMaze.v1";
+  const PATH_FIELDS = ["pathWidth","cellW","lineH","dotSp"];
+  const PATH_NAMES = { 2: "Narrow", 3: "Standard", 4: "Wide", 5: "Extra wide" };
+  const STORE_KEY = "tactileMaze.v3";
 
-  let current = null; // last build result
+  let current = null;       // last build result
+  let announceTimer = 0;
+  let pathsChanged = false; // speak path width only when it changes
 
   // ---------- setup ----------
   for (const sel of [$("startMark"), $("finishMark")]) {
@@ -398,35 +466,123 @@
   }
   $("startMark").value = "block";
   $("finishMark").value = "x";
+  setRadio("branch", "few");
+  setRadio("loops", "none");
+  fillSizeOptions($("gridW"), 40); // trimmed to what fits on first build
+  fillSizeOptions($("gridH"), 40);
 
   loadSettings();
-  $("seed").value = randomSeed();
+  $("mazeCode").value = randomCode();
+  if ($("difficulty").value !== "custom") applyPreset();
 
-  for (const id of ids) {
-    const el = $(id);
-    const evt = (el.type === "text" || el.type === "number" || el.type === "range") ? "input" : "change";
-    el.addEventListener(evt, () => {
-      if (id === "difficulty") applyPreset();
-      if (MAZE_FIELDS.includes(id)) $("difficulty").value = "custom";
-      saveSettings();
-      build();
+  // Disclosure buttons (collapsed on every visit)
+  for (const btn of document.querySelectorAll(".disclosure")) {
+    btn.addEventListener("click", () => {
+      const open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", String(open));
+      $(btn.getAttribute("aria-controls")).hidden = !open;
     });
   }
-  $("newBtn").addEventListener("click", () => { $("seed").value = randomSeed(); build(); });
+
+  // One handler for every setting: text-like fields on input, the rest on change.
+  const onSetting = (e) => {
+    const el = e.target;
+    const key = el.type === "radio" ? el.name : el.id;
+    if (!key) return;
+    const textLike = el.type === "text";
+    if (textLike !== (e.type === "input")) return;
+    if (key === "mazeCode") {
+      const digits = el.value.replace(/\D/g, "");
+      if (digits !== el.value) el.value = digits;
+    }
+    if (key === "difficulty") applyPreset();
+    if (MAZE_FIELDS.includes(key)) $("difficulty").value = "custom";
+    if (PATH_FIELDS.includes(key)) pathsChanged = true;
+    if (key !== "mazeCode") saveSettings();
+    build();
+    scheduleAnnounce();
+  };
+  document.addEventListener("input", onSetting);
+  document.addEventListener("change", onSetting);
+
+  // Up and Down arrows step the maze code, like a spin button.
+  $("mazeCode").addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    const n = parseInt($("mazeCode").value, 10) || 1;
+    $("mazeCode").value = Math.min(999999, Math.max(1, n + (e.key === "ArrowUp" ? 1 : -1)));
+    build();
+    scheduleAnnounce();
+  });
+
+  $("newBtn").addEventListener("click", () => {
+    $("mazeCode").value = randomCode();
+    build();
+    scheduleAnnounce(150);
+  });
   $("downloadBtn").addEventListener("click", download);
 
-  if ($("difficulty").value !== "custom") applyPreset();
-  build();
+  // ---------- announcements ----------
+  // Waits until changes stop, then speaks one message, so arrowing through a
+  // list or typing a number doesn't read a sentence on every keypress.
+  function scheduleAnnounce(delay = ANNOUNCE_DELAY_MS) {
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(() => {
+      if (!current) { announce(warnText()); return; }
+      const parts = [current.summary];
+      if (pathsChanged) parts.push(current.pathsSentence);
+      parts.push(...current.warnings);
+      pathsChanged = false;
+      announce(parts.join(" "));
+    }, delay);
+  }
+
+  function announce(text) {
+    const region = $("announcer");
+    region.textContent = "";
+    // Clearing first and setting on the next tick makes repeat messages speak again.
+    setTimeout(() => { region.textContent = text; }, 60);
+  }
 
   // ---------- settings ----------
-  function randomSeed() { return 1 + Math.floor(Math.random() * 99999); }
+  function randomCode() { return 1 + Math.floor(Math.random() * 99999); }
+
+  function getRadio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : null;
+  }
+  function setRadio(name, value) {
+    const el = document.querySelector(`input[name="${name}"][value="${value}"]`);
+    if (el) el.checked = true;
+  }
+
+  // Size lists only offer sizes that fit, so an impossible size can't be chosen.
+  function fillSizeOptions(sel, max) {
+    if (sel.options.length === max - 1) return;
+    const keep = sel.value;
+    sel.textContent = "";
+    for (let n = 2; n <= max; n++) {
+      const o = document.createElement("option");
+      o.value = n; o.textContent = n;
+      sel.appendChild(o);
+    }
+    if (keep) sel.value = Math.min(max, Math.max(2, +keep));
+  }
+
+  function updatePathLabels(s) {
+    for (const o of $("pathWidth").options) {
+      const n = +o.value;
+      const text = `${PATH_NAMES[n]}, about ${Math.round(n * s.cellW)} millimeters${n === 3 ? ", one adult finger" : ""}`;
+      if (o.textContent !== text) o.textContent = text;
+    }
+  }
 
   function applyPreset() {
     const p = PRESETS[$("difficulty").value];
     if (!p) return;
     if (!p.fill) { $("gridW").value = p.w; $("gridH").value = p.h; }
-    $("branch").value = p.branch;
-    $("loops").value = p.loops;
+    setRadio("branch", p.branch);
+    setRadio("loops", p.loops);
   }
 
   function num(id, lo, hi, fallback) {
@@ -440,10 +596,10 @@
       level: $("difficulty").value,
       w: Math.round(num("gridW", 2, 60, 4)),
       h: Math.round(num("gridH", 2, 60, 4)),
-      branch: num("branch", 0, 100, 0) / 100,
-      loops: num("loops", 0, 100, 0) / 100,
+      branch: BRANCH[getRadio("branch")] ?? 0,
+      loops: LOOPS[getRadio("loops")] ?? 0,
       layout: $("layout").value,
-      corridor: num("corridor", 8, 40, 18),
+      pathCells: Math.round(num("pathWidth", 2, 5, 3)),
       startMark: $("startMark").value,
       finishMark: $("finishMark").value,
       openings: $("openings").checked,
@@ -456,10 +612,10 @@
       lineH: num("lineH", 5, 15, 10),
       dotSp: num("dotSp", 1.5, 3.5, 2.5),
       formFeed: $("formFeed").checked,
-      seed: Math.round(num("seed", 1, 999999, 1)),
+      code: Math.round(num("mazeCode", 1, 999999, 1)),
     };
     s.fill = !!(PRESETS[s.level] && PRESETS[s.level].fill);
-    // Keep the two dot columns of a cell inside the cell, and the three dot rows inside a line.
+    // Keep a cell's two dot columns inside the cell, and a line's three dot rows inside the line.
     s.dotSp = Math.min(s.dotSp, s.cellW * 0.6, s.lineH / 2.2);
     return s;
   }
@@ -467,11 +623,11 @@
   function saveSettings() {
     try {
       const out = {};
-      for (const id of ids) {
-        if (id === "seed") continue;
+      for (const id of FIELD_IDS) {
         const el = $(id);
         out[id] = el.type === "checkbox" ? el.checked : el.value;
       }
+      for (const name of RADIO_NAMES) out[name] = getRadio(name);
       localStorage.setItem(STORE_KEY, JSON.stringify(out));
     } catch (e) { /* storage unavailable; settings just won't persist */ }
   }
@@ -480,12 +636,13 @@
     try {
       const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
       if (!saved) return;
-      for (const id of ids) {
+      for (const id of FIELD_IDS) {
         if (!(id in saved)) continue;
         const el = $(id);
         if (el.type === "checkbox") el.checked = !!saved[id];
         else el.value = saved[id];
       }
+      for (const name of RADIO_NAMES) if (saved[name]) setRadio(name, saved[name]);
     } catch (e) { /* ignore */ }
   }
 
@@ -582,17 +739,19 @@
     return { W, H, openE, openS, neighbors, isOpen };
   }
 
-  function distancesFrom(m, start) {
+  // Breadth-first search; returns parent links for rebuilding shortest routes.
+  function searchFrom(m, start) {
     const dist = new Int32Array(m.W * m.H).fill(-1);
+    const parent = new Int32Array(m.W * m.H).fill(-1);
     dist[start] = 0;
     const q = [start];
     for (let i = 0; i < q.length; i++) {
       const cell = q[i];
       for (const [n, d] of m.neighbors(cell)) {
-        if (m.isOpen(cell, d) && dist[n] < 0) { dist[n] = dist[cell] + 1; q.push(n); }
+        if (m.isOpen(cell, d) && dist[n] < 0) { dist[n] = dist[cell] + 1; parent[n] = cell; q.push(n); }
       }
     }
-    return dist;
+    return { dist, parent };
   }
 
   function pickEnds(m, layout, rand) {
@@ -613,7 +772,7 @@
       for (let r = 0; r < H; r++) for (let c = 0; c < W; c++)
         if (c === 0 || r === 0 || c === W - 1 || r === H - 1) edge.push(r * W + c);
       const st = edge[ri(edge.length)];
-      const dist = distancesFrom(m, st);
+      const { dist } = searchFrom(m, st);
       let fin = edge[0];
       for (const e of edge) if (dist[e] > dist[fin]) fin = e;
       const sc = st % W, sr = (st / W) | 0, fc = fin % W, fr = (fin / W) | 0;
@@ -621,6 +780,39 @@
     }
     return { s: { c: 0, r: 0, side: "W" }, f: { c: W - 1, r: H - 1, side: "E" } };
   }
+
+  // Route length, turns, and dead ends, for the text description.
+  function mazeStats(m, ends) {
+    const { W } = m;
+    const startCell = ends.s.r * W + ends.s.c;
+    const finishCell = ends.f.r * W + ends.f.c;
+    const { parent } = searchFrom(m, startCell);
+    const route = [finishCell];
+    while (route[route.length - 1] !== startCell) route.push(parent[route[route.length - 1]]);
+    route.reverse();
+    let turns = 0;
+    for (let i = 2; i < route.length; i++) {
+      if (route[i] - route[i - 1] !== route[i - 1] - route[i - 2]) turns++;
+    }
+    let deadEnds = 0;
+    for (let cell = 0; cell < m.W * m.H; cell++) {
+      if (cell === startCell || cell === finishCell) continue;
+      const degree = m.neighbors(cell).filter(([, d]) => m.isOpen(cell, d)).length;
+      if (degree === 1) deadEnds++;
+    }
+    return { squares: route.length, turns, deadEnds };
+  }
+
+  function placeWords(c, r, W, H) {
+    const v = r === 0 ? "top" : r === H - 1 ? "bottom" : "middle";
+    const h = c === 0 ? "left" : c === W - 1 ? "right" : "middle";
+    if (v === "middle" && h === "middle") return "center";
+    if (v === "middle") return `${h} side`;
+    if (h === "middle") return v;
+    return `${v} ${h}`;
+  }
+
+  const plural = (n, word) => n === 0 ? `no ${word}s` : `${n} ${word}${n === 1 ? "" : "s"}`;
 
   // ---------- braille title (uncontracted UEB) ----------
   const PUNCT = { ".": "4", ",": "1", "?": "8", "!": "6", "'": "'", "-": "-", ":": "3", ";": "2" };
@@ -657,18 +849,19 @@
     const s = readSettings();
     const g = makeGeom(s);
     const maxX = g.dc - 1, maxY = g.dr - 1;
-    const warnings = [];
+    const warn = { size: [], marker: [], title: [] };
+    const levelName = PRESETS[s.level] ? `Level ${s.level}` : "Custom";
 
     // Title text
     let titleBrf = "";
     let titleWords = "";
     if (s.useTitle) {
       titleWords = s.titleText.trim();
-      if (s.addLevel) titleWords += (titleWords ? " " : "") + (PRESETS[s.level] ? "Level " + s.level : "Custom");
+      if (s.addLevel && PRESETS[s.level]) titleWords += (titleWords ? " " : "") + levelName;
       titleBrf = toBrailleAscii(titleWords);
       if (titleBrf.length > s.cells) {
         titleBrf = titleBrf.slice(0, s.cells);
-        warnings.push("The title is too long for one line, so it was cut off.");
+        warn.title.push("The title is too long for one braille line.", "The end was cut off.");
       }
     }
     const hasTitle = titleBrf.length > 0;
@@ -682,24 +875,31 @@
       while (minY <= maxY && g.ymm(minY) < need) minY += 3;
     }
 
-    const cellsPer = Math.max(1, Math.round(s.corridor / s.cellW)); // braille cells per square
-    const linesPer = Math.max(1, Math.round(s.corridor / s.lineH)); // braille lines per square
-    const stepX = cellsPer * 2, stepY = linesPer * 3;               // in dot columns / rows
+    updatePathLabels(s);
+    const cellsPer = s.pathCells;                                            // braille cells per square
+    const linesPer = Math.max(1, Math.round(cellsPer * s.cellW / s.lineH)); // braille lines per square
+    const stepX = cellsPer * 2, stepY = linesPer * 3;                        // in dot columns / rows
     const maxW = Math.floor(maxX / stepX);
     const maxH = Math.floor((maxY - minY) / stepY);
     if (maxW < 2 || maxH < 2) {
-      showError("A maze won't fit on this page at that path width. Try a smaller path width or a bigger page.");
+      showError(["A maze will not fit on this page at this path width.", "Choose a narrower path or a bigger page."]);
       return;
     }
+    fillSizeOptions($("gridW"), maxW);
+    fillSizeOptions($("gridH"), maxH);
 
-    let W = s.fill ? maxW : s.w;
-    let H = s.fill ? maxH : s.h;
+    // Levels use their own size; Custom uses the size lists.
+    const preset = PRESETS[s.level];
+    let W = s.fill ? maxW : preset ? preset.w : s.w;
+    let H = s.fill ? maxH : preset ? preset.h : s.h;
     if (W > maxW || H > maxH) {
-      warnings.push(`A ${W} × ${H} maze doesn't fit at ${s.corridor} mm paths on a ${s.cells} × ${s.lines} page, so it was shrunk to the largest that fits (${Math.min(W, maxW)} × ${Math.min(H, maxH)}).`);
-      W = Math.min(W, maxW);
-      H = Math.min(H, maxH);
+      const fitW = Math.min(W, maxW), fitH = Math.min(H, maxH);
+      warn.size.push(`${W} by ${H} squares does not fit at this path width.`, `This maze is ${fitW} by ${fitH}, the largest that fits.`);
+      W = fitW;
+      H = fitH;
     }
-    if (s.fill) { $("gridW").value = W; $("gridH").value = H; }
+    $("gridW").value = W;
+    $("gridH").value = H;
 
     // Center horizontally (walls on the left dot column of a cell); top-align under the title.
     const usedCells = W * cellsPer + 1;
@@ -707,7 +907,7 @@
     const Y = wallPositions(minY, H, stepY);
 
     // Maze
-    const rand = mulberry32(s.seed);
+    const rand = mulberry32(s.code);
     const maze = generateMaze(W, H, s.branch, s.loops, rand);
     const ends = pickEnds(maze, s.layout, rand);
     const openSide = (c, r, side) => s.openings && (
@@ -773,9 +973,9 @@
     };
     placeMarker(ends.s, s.startMark, 2);
     placeMarker(ends.f, s.finishMark, 3);
-    if (collision) warnings.push("A marker touches a wall at this path width. Try a wider path or a smaller marker.");
+    if (collision) warn.marker.push("A marker is touching a wall at this path width.", "Choose a wider path or a smaller marker.");
 
-    // Title on line 1 (top line), starting at the left margin
+    // Title on the top line, starting at the left margin
     for (let i = 0; i < titleBrf.length; i++) {
       const bits = BRF.indexOf(titleBrf[i]);
       for (let col = 0; col < 2; col++)
@@ -784,63 +984,91 @@
     }
 
     // Convert to BRF lines
-    const brfLines = [], uniLines = [];
+    const brfLines = [];
     for (let ln = 0; ln < s.lines; ln++) {
-      let a = "", u = "";
+      let a = "";
       for (let ch = 0; ch < s.cells; ch++) {
         let bits = 0;
         for (let col = 0; col < 2; col++)
           for (let row = 0; row < 3; row++)
             if (dots[(ln * 3 + row) * g.dc + ch * 2 + col]) bits |= BIT[col][row];
         a += BRF[bits];
-        u += String.fromCharCode(0x2800 + bits);
       }
       brfLines.push(a.replace(/ +$/, ""));
-      uniLines.push(u.replace(/⠀+$/, ""));
     }
-    while (brfLines.length && brfLines[brfLines.length - 1] === "") { brfLines.pop(); uniLines.pop(); }
+    while (brfLines.length && brfLines[brfLines.length - 1] === "") brfLines.pop();
 
     let brf = brfLines.join("\r\n") + "\r\n";
     if (s.formFeed) brf += "\f";
 
-    // Path width stats
-    const spans = (arr, mm) => {
-      const d = [];
-      for (let i = 1; i < arr.length; i++) d.push(mm(arr[i]) - mm(arr[i - 1]));
-      return [Math.min(...d), Math.max(...d)];
+    // Text description: one short fact per line (under JAWS's 100-character line limit),
+    // and the picture is described by these lines.
+    const stats = mazeStats(maze, ends);
+    const pathAcross = (cellsPer * s.cellW).toFixed(1).replace(/\.0$/, "");
+    const pathDown = (linesPer * s.lineH).toFixed(1).replace(/\.0$/, "");
+    const facts = [
+      `${levelName}, ${W} by ${H} squares`,
+      `Start: ${placeWords(ends.s.c, ends.s.r, W, H)}. Finish: ${placeWords(ends.f.c, ends.f.r, W, H)}`,
+      `Shortest route: ${stats.squares} squares with ${plural(stats.turns, "turn")}`,
+      plural(stats.deadEnds, "dead end").replace(/^./, (c) => c.toUpperCase()),
+      `Maze code ${s.code}`,
+    ];
+    const pathsSentence = `Paths are ${pathAcross} millimeters wide across and ${pathDown} down.`;
+    const summary = facts.join(". ") + ".";
+
+    const allWarnings = [...warn.size, ...warn.marker, ...warn.title];
+    const level = levelName.toLowerCase().replace(/\s+/g, "");
+    current = {
+      brf,
+      levelName,
+      code: s.code,
+      filename: `maze-${level}-${W}x${H}-code${s.code}.brf`,
+      summary,
+      pathsSentence,
+      warnings: allWarnings,
     };
-    const fmt = ([a, b]) => Math.abs(a - b) < 0.05 ? `${a.toFixed(1)} mm` : `${a.toFixed(1)}–${b.toFixed(1)} mm`;
-    const across = fmt(spans(X, g.xmm)), down = fmt(spans(Y, g.ymm));
 
-    const levelName = PRESETS[s.level] ? `Level ${s.level}` : "Custom";
-    current = { brf, s, levelName, W, H };
+    setLines("desc", facts.map((f) => f + ".").concat(pathsSentence));
+    setLines("warnAll", allWarnings);
+    setLines("warnSize", warn.size);
+    setLines("warnMarker", warn.marker);
+    setLines("warnTitle", warn.title);
 
-    $("summary").innerHTML =
-      `<strong>${levelName}: ${W} × ${H} squares.</strong> ` +
-      `Paths are ${across} wide left to right and ${down} top to bottom. Maze #${s.seed}.`;
-    $("warn").textContent = warnings.join(" ");
-    $("brailleText").textContent = uniLines.join("\n");
-
-    drawPreview(s, g, dots, `${levelName} maze, ${W} by ${H} squares${hasTitle ? `, titled “${titleWords}”` : ""}.`);
+    drawPreview(s, g, dots);
   }
 
-  function showError(msg) {
+  // Each sentence gets its own line, so arrow keys read whole sentences.
+  function setLines(id, lines) {
+    const el = $(id);
+    el.textContent = "";
+    for (const line of lines) {
+      const div = document.createElement("div");
+      div.textContent = line;
+      el.appendChild(div);
+    }
+  }
+
+  function warnText() {
+    return [...$("warnAll").children].map((d) => d.textContent).join(" ");
+  }
+
+  function showError(lines) {
     current = null;
-    $("summary").textContent = "";
-    $("warn").textContent = msg;
-    $("brailleText").textContent = "";
-    const svg = $("preview");
-    svg.innerHTML = `<desc id="previewDesc">${msg}</desc>`;
+    setLines("desc", ["No maze."]);
+    setLines("warnAll", lines);
+    setLines("warnSize", lines);
+    setLines("warnMarker", []);
+    setLines("warnTitle", []);
+    $("preview").innerHTML = "";
   }
 
-  function drawPreview(s, g, dots, desc) {
+  function drawPreview(s, g, dots) {
     const pad = 6;
     const pageW = s.cells * s.cellW + pad * 2 - (s.cellW - s.dotSp);
     const pageH = s.lines * s.lineH + pad * 2 - (s.lineH - 2 * s.dotSp);
     const r = Math.min(0.8, s.dotSp * 0.34);
     const cls = ["", "d-wall", "d-start", "d-finish", "d-title"];
-    const parts = [`<desc id="previewDesc">${escapeHtml(desc)}</desc>`,
-      `<rect class="paper" x="0.3" y="0.3" width="${(pageW - 0.6).toFixed(2)}" height="${(pageH - 0.6).toFixed(2)}" rx="2"/>`];
+    const parts = [`<rect class="paper" x="0.3" y="0.3" width="${(pageW - 0.6).toFixed(2)}" height="${(pageH - 0.6).toFixed(2)}" rx="2"/>`];
     for (let y = 0; y < g.dr; y++) {
       for (let x = 0; x < g.dc; x++) {
         const t = dots[y * g.dc + x];
@@ -853,24 +1081,26 @@
     svg.innerHTML = parts.join("");
   }
 
-  function escapeHtml(t) {
-    return t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  }
-
   function download() {
-    if (!current) return;
+    if (!current) {
+      announce(warnText() || "There is no maze to download.");
+      return;
+    }
     const bytes = new Uint8Array(current.brf.length);
     for (let i = 0; i < current.brf.length; i++) bytes[i] = current.brf.charCodeAt(i) & 0x7f;
     const blob = new Blob([bytes], { type: "application/octet-stream" });
     const a = document.createElement("a");
-    const level = current.levelName.toLowerCase().replace(/\s+/g, "");
     a.href = URL.createObjectURL(blob);
-    a.download = `maze-${level}-${current.W}x${current.H}-${current.s.seed}.brf`;
+    a.download = current.filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    clearTimeout(announceTimer);
+    announce(`Downloaded braille file: ${current.levelName}, maze code ${current.code}.`);
   }
+
+  build();
 })();
 </script>
 </body>
