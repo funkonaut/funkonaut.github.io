@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tactile Maze Maker</title>
+<meta name="description" content="Generate finger-tracing mazes as BRF files for braille embossers.">
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --panel: #ffffff;
+    --ink: #1c1e22;
+    --muted: #596070;
+    --line: #d8d5cb;
+    --accent: #1f5fae;
+    --accent-ink: #ffffff;
+    --accent-soft: #e6eef9;
+    --paper: #fffdf7;
+    --paper-edge: #cfcabc;
+    --dot: #1c1e22;
+    --start: #17804a;
+    --finish: #c2410c;
+    --title: #6a4cc0;
+    --warn-bg: #fff3d1;
+    --warn-ink: #5e4100;
+    --focus: #f59e0b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171b;
+      --panel: #1e2127;
+      --ink: #ebe9e4;
+      --muted: #a4a9b4;
+      --line: #353a44;
+      --accent: #74a9ff;
+      --accent-ink: #0b1322;
+      --accent-soft: #23314a;
+      --paper: #272b33;
+      --paper-edge: #444a56;
+      --dot: #f2f0ea;
+      --start: #4ade80;
+      --finish: #fb923c;
+      --title: #b8a3ff;
+      --warn-bg: #3a2f10;
+      --warn-ink: #ffdb8f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #a4a9b4; --line: #353a44;
+    --accent: #74a9ff; --accent-ink: #0b1322; --accent-soft: #23314a; --paper: #272b33;
+    --paper-edge: #444a56; --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c;
+    --title: #b8a3ff; --warn-bg: #3a2f10; --warn-ink: #ffdb8f;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header, main, footer { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  header { padding-top: 24px; padding-bottom: 8px; }
+  h1 { font-size: 1.75rem; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--muted); max-width: 70ch; }
+
+  main {
+    display: grid;
+    grid-template-columns: minmax(300px, 380px) 1fr;
+    gap: 20px;
+    align-items: start;
+    padding-top: 16px;
+    padding-bottom: 24px;
+  }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  fieldset {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: 0;
+    padding: 14px 0 6px;
+  }
+  fieldset:first-of-type { border-top: 0; padding-top: 0; }
+  legend { font-weight: 700; padding: 0; margin-bottom: 8px; font-size: 1.02rem; }
+
+  .field { margin-bottom: 12px; }
+  .field label, .field .label { display: block; font-weight: 600; margin-bottom: 4px; }
+  .hint { display: block; color: var(--muted); font-size: 0.875rem; margin-top: 2px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  input[type="number"], input[type="text"], select {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-height: 42px;
+  }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .check { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-weight: 600; }
+  .check input { width: 20px; height: 20px; accent-color: var(--accent); }
+  .scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.8rem; }
+
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  button {
+    font: inherit;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 10px 18px;
+    min-height: 46px;
+    cursor: pointer;
+    border: 2px solid var(--accent);
+  }
+  .primary { background: var(--accent); color: var(--accent-ink); }
+  .secondary { background: transparent; color: var(--accent); }
+  button:hover { filter: brightness(1.08); }
+
+  .seed-row { display: flex; gap: 8px; align-items: end; }
+  .seed-row .field { flex: 1; margin-bottom: 0; }
+
+  .summary { margin: 0 0 10px; font-size: 0.95rem; }
+  .summary strong { font-weight: 700; }
+  .warn {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0 0 12px;
+    font-size: 0.92rem;
+  }
+  .warn:empty { display: none; }
+
+  .preview-wrap {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px;
+    overflow: auto;
+  }
+  #preview { display: block; width: 100%; height: auto; max-height: 78vh; }
+  #preview .paper { fill: var(--paper); stroke: var(--paper-edge); stroke-width: 0.6; }
+  #preview .d-wall { fill: var(--dot); }
+  #preview .d-start { fill: var(--start); }
+  #preview .d-finish { fill: var(--finish); }
+  #preview .d-title { fill: var(--title); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 0.875rem; }
+  .legend span::before {
+    content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: 6px; vertical-align: -1px; background: var(--c);
+  }
+
+  details { margin-top: 14px; }
+  summary { cursor: pointer; font-weight: 600; }
+  pre.braille {
+    font-family: "Segoe UI Symbol", "DejaVu Sans Mono", "Apple Braille", monospace;
+    font-size: 15px;
+    line-height: 1.25;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px;
+    overflow: auto;
+  }
+
+  footer { padding-bottom: 32px; color: var(--muted); font-size: 0.92rem; }
+  footer h2 { font-size: 1.05rem; color: var(--ink); margin: 0 0 6px; }
+  footer ol, footer ul { margin-top: 4px; padding-left: 22px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tactile Maze Maker</h1>
+  <p>Makes finger-tracing mazes as BRF files for a braille embosser. The walls are single lines of dots, and the student traces the open space between them.</p>
+</header>
+
+<main>
+  <form class="panel" id="controls" onsubmit="return false">
+    <fieldset>
+      <legend>Difficulty</legend>
+      <div class="field">
+        <label for="difficulty">Level</label>
+        <select id="difficulty">
+          <option value="1">Level 1 – First maze (3 × 3)</option>
+          <option value="2" selected>Level 2 – Easy (4 × 4)</option>
+          <option value="3">Level 3 – Medium (6 × 5)</option>
+          <option value="4">Level 4 – Hard (9 × 8)</option>
+          <option value="5">Level 5 – Full page</option>
+          <option value="custom">Custom</option>
+        </select>
+        <span class="hint">Changing any setting below switches this to Custom.</span>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="gridW">Squares across</label>
+          <input type="number" id="gridW" min="2" max="40" value="4">
+        </div>
+        <div class="field">
+          <label for="gridH">Squares down</label>
+          <input type="number" id="gridH" min="2" max="40" value="4">
+        </div>
+      </div>
+      <div class="field">
+        <label for="branch">Branching</label>
+        <input type="range" id="branch" min="0" max="100" value="15" aria-describedby="branchHint">
+        <div class="scale" aria-hidden="true"><span>Long winding paths</span><span>Many short dead ends</span></div>
+        <span class="hint" id="branchHint">Left: one long path with few choices. Right: more choices, with lots of short dead ends.</span>
+      </div>
+      <div class="field">
+        <label for="loops">Extra paths (loops)</label>
+        <input type="range" id="loops" min="0" max="60" value="0" aria-describedby="loopsHint">
+        <div class="scale" aria-hidden="true"><span>None</span><span>Many</span></div>
+        <span class="hint" id="loopsHint">Opens some dead ends so there's more than one way through. More loops make the maze more forgiving.</span>
+      </div>
+      <div class="field">
+        <label for="layout">Start and finish</label>
+        <select id="layout">
+          <option value="tlbr">Top-left → bottom-right</option>
+          <option value="lr">Left side → right side</option>
+          <option value="tb">Top → bottom</option>
+          <option value="far">Farthest apart (harder)</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Path size</legend>
+      <div class="field">
+        <label for="corridor">Path width (mm)</label>
+        <input type="number" id="corridor" min="8" max="40" step="0.5" value="18" aria-describedby="corridorHint">
+        <span class="hint" id="corridorHint">Distance from wall to wall. This gets rounded to a whole number of braille cells across and lines down, so every path is the same width. The actual width appears above the preview.</span>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Start &amp; finish markers</legend>
+      <div class="row">
+        <div class="field">
+          <label for="startMark">Start</label>
+          <select id="startMark"></select>
+        </div>
+        <div class="field">
+          <label for="finishMark">Finish</label>
+          <select id="finishMark"></select>
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" id="openings" checked> Gaps in the outer wall at start &amp; finish</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Braille title</legend>
+      <label class="check"><input type="checkbox" id="useTitle" checked> Put a title on the top line</label>
+      <div class="field">
+        <label for="titleText">Title text</label>
+        <input type="text" id="titleText" value="Maze" maxlength="60">
+      </div>
+      <label class="check"><input type="checkbox" id="addLevel" checked> Add the level (e.g. “Maze Level 2”)</label>
+      <span class="hint">Written in uncontracted (Grade 1) UEB.</span>
+    </fieldset>
+
+    <fieldset>
+      <legend>Page &amp; embosser</legend>
+      <div class="row">
+        <div class="field">
+          <label for="cells">Cells per line</label>
+          <input type="number" id="cells" min="10" max="60" value="40">
+        </div>
+        <div class="field">
+          <label for="lines">Lines per page</label>
+          <input type="number" id="lines" min="5" max="40" value="25">
+        </div>
+      </div>
+      <span class="hint" style="margin:-6px 0 12px">40 × 25 fits standard 11.5 × 11 in braille paper. Use the same numbers in your embosser and BrailleBlaster settings.</span>
+      <div class="row3">
+        <div class="field">
+          <label for="cellW">Cell spacing</label>
+          <input type="number" id="cellW" min="4" max="10" step="0.1" value="6.2">
+        </div>
+        <div class="field">
+          <label for="lineH">Line spacing</label>
+          <input type="number" id="lineH" min="5" max="15" step="0.1" value="10">
+        </div>
+        <div class="field">
+          <label for="dotSp">Dot spacing</label>
+          <input type="number" id="dotSp" min="1.5" max="3.5" step="0.1" value="2.5">
+        </div>
+      </div>
+      <span class="hint" style="margin:-6px 0 12px">Spacing values are in mm, measured center to center. They only affect the preview and how the path width gets rounded. The defaults are standard US braille spacing.</span>
+      <label class="check"><input type="checkbox" id="formFeed" checked> End the file with a page break</label>
+    </fieldset>
+  </form>
+
+  <section class="panel" aria-labelledby="previewHeading">
+    <h2 id="previewHeading" class="sr-only">Preview</h2>
+    <div class="actions">
+      <button type="button" class="primary" id="downloadBtn">Download .brf</button>
+      <button type="button" class="secondary" id="newBtn">New maze</button>
+    </div>
+    <div class="seed-row" style="margin-bottom:14px">
+      <div class="field">
+        <label for="seed">Maze number (seed)</label>
+        <input type="number" id="seed" min="1" max="999999" value="1" aria-describedby="seedHint">
+      </div>
+    </div>
+    <span class="hint" id="seedHint" style="margin:-8px 0 14px">The same number and settings always make the same maze, so you can reproduce one later.</span>
+
+    <p class="summary" id="summary" role="status" aria-live="polite"></p>
+    <p class="warn" id="warn"></p>
+
+    <div class="preview-wrap">
+      <svg id="preview" role="img" aria-labelledby="previewDesc" xmlns="http://www.w3.org/2000/svg">
+        <desc id="previewDesc">Preview of the embossed page</desc>
+      </svg>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span style="--c: var(--dot)">Wall dots</span>
+      <span style="--c: var(--start)">Start</span>
+      <span style="--c: var(--finish)">Finish</span>
+      <span style="--c: var(--title)">Title</span>
+    </div>
+
+    <details>
+      <summary>Show the braille characters</summary>
+      <pre class="braille" id="brailleText"></pre>
+    </details>
+  </section>
+</main>
+
+<footer>
+  <h2>Embossing with BrailleBlaster</h2>
+  <ol>
+    <li>Click <strong>Download .brf</strong>.</li>
+    <li>In BrailleBlaster, open the file with <strong>File › Open</strong>. A BRF opens in Braille Preview exactly as it was laid out and can't be edited there.</li>
+    <li>Choose <strong>File › Emboss</strong> (Ctrl+E), pick your embosser and set <strong>Interpoint to No</strong>.</li>
+  </ol>
+  <ul>
+    <li>Cells per line and lines per page here need to match the embosser's page settings. If they're larger, lines will wrap and break the maze.</li>
+    <li>Emboss one test page first. If the paths feel too narrow or too wide, change the path width and try again.</li>
+  </ul>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  // North American Braille ASCII, indexed by dot bits (dot1=1, dot2=2, dot3=4, dot4=8, dot5=16, dot6=32).
+  const BRF = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
+  const BIT = [[1, 2, 4], [8, 16, 32]]; // BIT[col][row]
+  const TITLE_GAP_MM = 7;
+
+  const PRESETS = {
+    1: { w: 3, h: 3, branch: 0,  loops: 0 },
+    2: { w: 4, h: 4, branch: 15, loops: 0 },
+    3: { w: 6, h: 5, branch: 30, loops: 0 },
+    4: { w: 9, h: 8, branch: 45, loops: 0 },
+    5: { fill: true, branch: 50, loops: 0 },
+  };
+
+  // Marker shapes as dot offsets [dx, dy] around the dot nearest the square's center.
+  const MARKERS = {
+    block:   { label: "Solid block (9 dots)", dots: [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]] },
+    x:       { label: "X shape (5 dots)", dots: [[-1,-1],[1,-1],[0,0],[-1,1],[1,1]] },
+    diamond: { label: "Diamond ring (4 dots)", dots: [[0,-1],[-1,0],[1,0],[0,1]] },
+    pair:    { label: "Two dots side by side", dots: [[-1,0],[1,0]] },
+    single:  { label: "Single dot", dots: [[0,0]] },
+    letterS: { label: "Braille letter s", letter: "S" },
+    letterF: { label: "Braille letter f", letter: "F" },
+    none:    { label: "None", dots: [] },
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const ids = ["difficulty","gridW","gridH","branch","loops","layout","corridor","startMark","finishMark",
+               "openings","useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed","seed"];
+  const MAZE_FIELDS = ["gridW","gridH","branch","loops"];
+  const STORE_KEY = "tactileMaze.v1";
+
+  let current = null; // last build result
+
+  // ---------- setup ----------
+  for (const sel of [$("startMark"), $("finishMark")]) {
+    for (const [key, m] of Object.entries(MARKERS)) {
+      const o = document.createElement("option");
+      o.value = key; o.textContent = m.label;
+      sel.appendChild(o);
+    }
+  }
+  $("startMark").value = "block";
+  $("finishMark").value = "x";
+
+  loadSettings();
+  $("seed").value = randomSeed();
+
+  for (const id of ids) {
+    const el = $(id);
+    const evt = (el.type === "text" || el.type === "number" || el.type === "range") ? "input" : "change";
+    el.addEventListener(evt, () => {
+      if (id === "difficulty") applyPreset();
+      if (MAZE_FIELDS.includes(id)) $("difficulty").value = "custom";
+      saveSettings();
+      build();
+    });
+  }
+  $("newBtn").addEventListener("click", () => { $("seed").value = randomSeed(); build(); });
+  $("downloadBtn").addEventListener("click", download);
+
+  if ($("difficulty").value !== "custom") applyPreset();
+  build();
+
+  // ---------- settings ----------
+  function randomSeed() { return 1 + Math.floor(Math.random() * 99999); }
+
+  function applyPreset() {
+    const p = PRESETS[$("difficulty").value];
+    if (!p) return;
+    if (!p.fill) { $("gridW").value = p.w; $("gridH").value = p.h; }
+    $("branch").value = p.branch;
+    $("loops").value = p.loops;
+  }
+
+  function num(id, lo, hi, fallback) {
+    const v = parseFloat($(id).value);
+    if (!isFinite(v)) return fallback;
+    return Math.min(hi, Math.max(lo, v));
+  }
+
+  function readSettings() {
+    const s = {
+      level: $("difficulty").value,
+      w: Math.round(num("gridW", 2, 60, 4)),
+      h: Math.round(num("gridH", 2, 60, 4)),
+      branch: num("branch", 0, 100, 0) / 100,
+      loops: num("loops", 0, 100, 0) / 100,
+      layout: $("layout").value,
+      corridor: num("corridor", 8, 40, 18),
+      startMark: $("startMark").value,
+      finishMark: $("finishMark").value,
+      openings: $("openings").checked,
+      useTitle: $("useTitle").checked,
+      titleText: $("titleText").value,
+      addLevel: $("addLevel").checked,
+      cells: Math.round(num("cells", 10, 60, 40)),
+      lines: Math.round(num("lines", 5, 40, 25)),
+      cellW: num("cellW", 4, 10, 6.2),
+      lineH: num("lineH", 5, 15, 10),
+      dotSp: num("dotSp", 1.5, 3.5, 2.5),
+      formFeed: $("formFeed").checked,
+      seed: Math.round(num("seed", 1, 999999, 1)),
+    };
+    s.fill = !!(PRESETS[s.level] && PRESETS[s.level].fill);
+    // Keep the two dot columns of a cell inside the cell, and the three dot rows inside a line.
+    s.dotSp = Math.min(s.dotSp, s.cellW * 0.6, s.lineH / 2.2);
+    return s;
+  }
+
+  function saveSettings() {
+    try {
+      const out = {};
+      for (const id of ids) {
+        if (id === "seed") continue;
+        const el = $(id);
+        out[id] = el.type === "checkbox" ? el.checked : el.value;
+      }
+      localStorage.setItem(STORE_KEY, JSON.stringify(out));
+    } catch (e) { /* storage unavailable; settings just won't persist */ }
+  }
+
+  function loadSettings() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      if (!saved) return;
+      for (const id of ids) {
+        if (!(id in saved)) continue;
+        const el = $(id);
+        if (el.type === "checkbox") el.checked = !!saved[id];
+        else el.value = saved[id];
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  // ---------- geometry ----------
+  function makeGeom(s) {
+    return {
+      dc: s.cells * 2,                 // dot columns on the page
+      dr: s.lines * 3,                 // dot rows on the page
+      xmm: (x) => Math.floor(x / 2) * s.cellW + (x % 2) * s.dotSp,
+      ymm: (y) => Math.floor(y / 3) * s.lineH + (y % 3) * s.dotSp,
+    };
+  }
+
+  // Walls sit a whole number of cells (across) or lines (down) apart, so every
+  // path in the maze is exactly the same width under the finger.
+  function wallPositions(start, n, step) {
+    const out = [];
+    for (let i = 0; i <= n; i++) out.push(start + i * step);
+    return out;
+  }
+
+  function nearestIndex(targetMm, mm, max) {
+    let best = 0, bd = Infinity;
+    for (let k = 0; k <= max; k++) {
+      const d = Math.abs(mm(k) - targetMm);
+      if (d < bd) { bd = d; best = k; }
+    }
+    return best;
+  }
+
+  // ---------- maze ----------
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // Growing-tree algorithm: branch=0 behaves like depth-first (long corridors),
+  // branch=1 like Prim's (many short dead ends).
+  function generateMaze(W, H, branch, loops, rand) {
+    const N = W * H;
+    const openE = new Uint8Array(N); // passage from (c,r) to (c+1,r)
+    const openS = new Uint8Array(N); // passage from (c,r) to (c,r+1)
+    const seen = new Uint8Array(N);
+    const ri = (n) => Math.floor(rand() * n);
+
+    const carve = (cell, dir) => {
+      if (dir === "E") openE[cell] = 1;
+      else if (dir === "W") openE[cell - 1] = 1;
+      else if (dir === "S") openS[cell] = 1;
+      else openS[cell - W] = 1;
+    };
+    const neighbors = (cell) => {
+      const c = cell % W, r = (cell / W) | 0, out = [];
+      if (c > 0) out.push([cell - 1, "W"]);
+      if (c < W - 1) out.push([cell + 1, "E"]);
+      if (r > 0) out.push([cell - W, "N"]);
+      if (r < H - 1) out.push([cell + W, "S"]);
+      return out;
+    };
+    const isOpen = (cell, dir) =>
+      dir === "E" ? openE[cell] : dir === "W" ? openE[cell - 1] : dir === "S" ? openS[cell] : openS[cell - W];
+
+    const first = ri(N);
+    seen[first] = 1;
+    const active = [first];
+    while (active.length) {
+      const ai = rand() < branch ? ri(active.length) : active.length - 1;
+      const cell = active[ai];
+      const fresh = neighbors(cell).filter(([n]) => !seen[n]);
+      if (!fresh.length) { active.splice(ai, 1); continue; }
+      const [n, dir] = fresh[ri(fresh.length)];
+      carve(cell, dir);
+      seen[n] = 1;
+      active.push(n);
+    }
+
+    if (loops > 0) {
+      const order = [...Array(N).keys()];
+      for (let i = N - 1; i > 0; i--) { const j = ri(i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+      for (const cell of order) {
+        const nb = neighbors(cell);
+        const degree = nb.filter(([, d]) => isOpen(cell, d)).length;
+        if (degree !== 1 || rand() >= loops) continue;
+        const closed = nb.filter(([, d]) => !isOpen(cell, d));
+        if (closed.length) carve(cell, closed[ri(closed.length)][1]);
+      }
+    }
+
+    return { W, H, openE, openS, neighbors, isOpen };
+  }
+
+  function distancesFrom(m, start) {
+    const dist = new Int32Array(m.W * m.H).fill(-1);
+    dist[start] = 0;
+    const q = [start];
+    for (let i = 0; i < q.length; i++) {
+      const cell = q[i];
+      for (const [n, d] of m.neighbors(cell)) {
+        if (m.isOpen(cell, d) && dist[n] < 0) { dist[n] = dist[cell] + 1; q.push(n); }
+      }
+    }
+    return dist;
+  }
+
+  function pickEnds(m, layout, rand) {
+    const { W, H } = m;
+    const ri = (n) => Math.floor(rand() * n);
+    const sideOf = (c, r) => {
+      const sides = [];
+      if (c === 0) sides.push("W");
+      if (c === W - 1) sides.push("E");
+      if (r === 0) sides.push("N");
+      if (r === H - 1) sides.push("S");
+      return sides[ri(sides.length)];
+    };
+    if (layout === "lr") return { s: { c: 0, r: ri(H), side: "W" }, f: { c: W - 1, r: ri(H), side: "E" } };
+    if (layout === "tb") return { s: { c: ri(W), r: 0, side: "N" }, f: { c: ri(W), r: H - 1, side: "S" } };
+    if (layout === "far") {
+      const edge = [];
+      for (let r = 0; r < H; r++) for (let c = 0; c < W; c++)
+        if (c === 0 || r === 0 || c === W - 1 || r === H - 1) edge.push(r * W + c);
+      const st = edge[ri(edge.length)];
+      const dist = distancesFrom(m, st);
+      let fin = edge[0];
+      for (const e of edge) if (dist[e] > dist[fin]) fin = e;
+      const sc = st % W, sr = (st / W) | 0, fc = fin % W, fr = (fin / W) | 0;
+      return { s: { c: sc, r: sr, side: sideOf(sc, sr) }, f: { c: fc, r: fr, side: sideOf(fc, fr) } };
+    }
+    return { s: { c: 0, r: 0, side: "W" }, f: { c: W - 1, r: H - 1, side: "E" } };
+  }
+
+  // ---------- braille title (uncontracted UEB) ----------
+  const PUNCT = { ".": "4", ",": "1", "?": "8", "!": "6", "'": "'", "-": "-", ":": "3", ";": "2" };
+
+  function toBrailleAscii(text) {
+    let out = "";
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    words.forEach((w, wi) => {
+      if (wi) out += " ";
+      const letters = w.replace(/[^A-Za-z]/g, "");
+      const allCaps = letters.length >= 2 && letters === letters.toUpperCase();
+      if (allCaps) out += ",,";
+      let inNum = false;
+      for (const ch of w) {
+        if (ch >= "0" && ch <= "9") {
+          if (!inNum) { out += "#"; inNum = true; }
+          out += "JABCDEFGHI"[+ch];
+        } else if (/[A-Za-z]/.test(ch)) {
+          if (inNum && ch >= "a" && ch <= "j") out += ";"; // grade 1 indicator after a number
+          inNum = false;
+          if (!allCaps && ch >= "A" && ch <= "Z") out += ",";
+          out += ch.toUpperCase();
+        } else {
+          inNum = false;
+          if (PUNCT[ch]) out += PUNCT[ch];
+        }
+      }
+    });
+    return out;
+  }
+
+  // ---------- build ----------
+  function build() {
+    const s = readSettings();
+    const g = makeGeom(s);
+    const maxX = g.dc - 1, maxY = g.dr - 1;
+    const warnings = [];
+
+    // Title text
+    let titleBrf = "";
+    let titleWords = "";
+    if (s.useTitle) {
+      titleWords = s.titleText.trim();
+      if (s.addLevel) titleWords += (titleWords ? " " : "") + (PRESETS[s.level] ? "Level " + s.level : "Custom");
+      titleBrf = toBrailleAscii(titleWords);
+      if (titleBrf.length > s.cells) {
+        titleBrf = titleBrf.slice(0, s.cells);
+        warnings.push("The title is too long for one line, so it was cut off.");
+      }
+    }
+    const hasTitle = titleBrf.length > 0;
+
+    // Horizontal walls run along the middle dot row of a line (dots 2-5). That leaves a whole
+    // braille line centered between two walls, so markers sit evenly spaced from both.
+    // With a title, start on the first line that leaves a clear gap below it.
+    let minY = 1;
+    if (hasTitle) {
+      const need = g.ymm(2) + TITLE_GAP_MM;
+      while (minY <= maxY && g.ymm(minY) < need) minY += 3;
+    }
+
+    const cellsPer = Math.max(1, Math.round(s.corridor / s.cellW)); // braille cells per square
+    const linesPer = Math.max(1, Math.round(s.corridor / s.lineH)); // braille lines per square
+    const stepX = cellsPer * 2, stepY = linesPer * 3;               // in dot columns / rows
+    const maxW = Math.floor(maxX / stepX);
+    const maxH = Math.floor((maxY - minY) / stepY);
+    if (maxW < 2 || maxH < 2) {
+      showError("A maze won't fit on this page at that path width. Try a smaller path width or a bigger page.");
+      return;
+    }
+
+    let W = s.fill ? maxW : s.w;
+    let H = s.fill ? maxH : s.h;
+    if (W > maxW || H > maxH) {
+      warnings.push(`A ${W} × ${H} maze doesn't fit at ${s.corridor} mm paths on a ${s.cells} × ${s.lines} page, so it was shrunk to the largest that fits (${Math.min(W, maxW)} × ${Math.min(H, maxH)}).`);
+      W = Math.min(W, maxW);
+      H = Math.min(H, maxH);
+    }
+    if (s.fill) { $("gridW").value = W; $("gridH").value = H; }
+
+    // Center horizontally (walls on the left dot column of a cell); top-align under the title.
+    const usedCells = W * cellsPer + 1;
+    const X = wallPositions(2 * Math.floor((s.cells - usedCells) / 2), W, stepX);
+    const Y = wallPositions(minY, H, stepY);
+
+    // Maze
+    const rand = mulberry32(s.seed);
+    const maze = generateMaze(W, H, s.branch, s.loops, rand);
+    const ends = pickEnds(maze, s.layout, rand);
+    const openSide = (c, r, side) => s.openings && (
+      (ends.s.c === c && ends.s.r === r && ends.s.side === side) ||
+      (ends.f.c === c && ends.f.r === r && ends.f.side === side));
+
+    // Dot grid: 0 empty, 1 wall, 2 start, 3 finish, 4 title
+    const dots = new Uint8Array(g.dc * g.dr);
+    let collision = false;
+    const setDot = (x, y, t) => {
+      if (x < 0 || y < 0 || x > maxX || y > maxY) { collision = true; return; }
+      const i = y * g.dc + x;
+      if (t === 2 || t === 3) { // markers must not touch or sit right beside a wall
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx >= 0 && ny >= 0 && nx <= maxX && ny <= maxY && dots[ny * g.dc + nx] === 1) collision = true;
+          }
+      }
+      if (t !== 1 && dots[i] && dots[i] !== t) collision = true;
+      if (!dots[i] || t === 1) dots[i] = t;
+    };
+
+    // Horizontal walls
+    for (let j = 0; j <= H; j++) {
+      for (let c = 0; c < W; c++) {
+        let wall;
+        if (j === 0) wall = !openSide(c, 0, "N");
+        else if (j === H) wall = !openSide(c, H - 1, "S");
+        else wall = !maze.openS[(j - 1) * W + c];
+        if (wall) for (let x = X[c]; x <= X[c + 1]; x++) setDot(x, Y[j], 1);
+      }
+    }
+    // Vertical walls
+    for (let i = 0; i <= W; i++) {
+      for (let r = 0; r < H; r++) {
+        let wall;
+        if (i === 0) wall = !openSide(0, r, "W");
+        else if (i === W) wall = !openSide(W - 1, r, "E");
+        else wall = !maze.openE[r * W + i - 1];
+        if (wall) for (let y = Y[r]; y <= Y[r + 1]; y++) setDot(X[i], y, 1);
+      }
+    }
+
+    // Markers
+    const placeMarker = (end, key, t) => {
+      const m = MARKERS[key];
+      if (!m) return;
+      const cxMm = (g.xmm(X[end.c]) + g.xmm(X[end.c + 1])) / 2;
+      const cyMm = (g.ymm(Y[end.r]) + g.ymm(Y[end.r + 1])) / 2;
+      if (m.letter) {
+        const bits = BRF.indexOf(m.letter);
+        const ch = Math.round((cxMm - s.dotSp / 2) / s.cellW);
+        const ln = Math.round((cyMm - s.dotSp) / s.lineH);
+        for (let col = 0; col < 2; col++)
+          for (let row = 0; row < 3; row++)
+            if (bits & BIT[col][row]) setDot(ch * 2 + col, ln * 3 + row, t);
+        return;
+      }
+      const cx = nearestIndex(cxMm, g.xmm, maxX);
+      const cy = nearestIndex(cyMm, g.ymm, maxY);
+      for (const [dx, dy] of m.dots) setDot(cx + dx, cy + dy, t);
+    };
+    placeMarker(ends.s, s.startMark, 2);
+    placeMarker(ends.f, s.finishMark, 3);
+    if (collision) warnings.push("A marker touches a wall at this path width. Try a wider path or a smaller marker.");
+
+    // Title on line 1 (top line), starting at the left margin
+    for (let i = 0; i < titleBrf.length; i++) {
+      const bits = BRF.indexOf(titleBrf[i]);
+      for (let col = 0; col < 2; col++)
+        for (let row = 0; row < 3; row++)
+          if (bits > 0 && (bits & BIT[col][row])) setDot(i * 2 + col, row, 4);
+    }
+
+    // Convert to BRF lines
+    const brfLines = [], uniLines = [];
+    for (let ln = 0; ln < s.lines; ln++) {
+      let a = "", u = "";
+      for (let ch = 0; ch < s.cells; ch++) {
+        let bits = 0;
+        for (let col = 0; col < 2; col++)
+          for (let row = 0; row < 3; row++)
+            if (dots[(ln * 3 + row) * g.dc + ch * 2 + col]) bits |= BIT[col][row];
+        a += BRF[bits];
+        u += String.fromCharCode(0x2800 + bits);
+      }
+      brfLines.push(a.replace(/ +$/, ""));
+      uniLines.push(u.replace(/⠀+$/, ""));
+    }
+    while (brfLines.length && brfLines[brfLines.length - 1] === "") { brfLines.pop(); uniLines.pop(); }
+
+    let brf = brfLines.join("\r\n") + "\r\n";
+    if (s.formFeed) brf += "\f";
+
+    // Path width stats
+    const spans = (arr, mm) => {
+      const d = [];
+      for (let i = 1; i < arr.length; i++) d.push(mm(arr[i]) - mm(arr[i - 1]));
+      return [Math.min(...d), Math.max(...d)];
+    };
+    const fmt = ([a, b]) => Math.abs(a - b) < 0.05 ? `${a.toFixed(1)} mm` : `${a.toFixed(1)}–${b.toFixed(1)} mm`;
+    const across = fmt(spans(X, g.xmm)), down = fmt(spans(Y, g.ymm));
+
+    const levelName = PRESETS[s.level] ? `Level ${s.level}` : "Custom";
+    current = { brf, s, levelName, W, H };
+
+    $("summary").innerHTML =
+      `<strong>${levelName}: ${W} × ${H} squares.</strong> ` +
+      `Paths are ${across} wide left to right and ${down} top to bottom. Maze #${s.seed}.`;
+    $("warn").textContent = warnings.join(" ");
+    $("brailleText").textContent = uniLines.join("\n");
+
+    drawPreview(s, g, dots, `${levelName} maze, ${W} by ${H} squares${hasTitle ? `, titled “${titleWords}”` : ""}.`);
+  }
+
+  function showError(msg) {
+    current = null;
+    $("summary").textContent = "";
+    $("warn").textContent = msg;
+    $("brailleText").textContent = "";
+    const svg = $("preview");
+    svg.innerHTML = `<desc id="previewDesc">${msg}</desc>`;
+  }
+
+  function drawPreview(s, g, dots, desc) {
+    const pad = 6;
+    const pageW = s.cells * s.cellW + pad * 2 - (s.cellW - s.dotSp);
+    const pageH = s.lines * s.lineH + pad * 2 - (s.lineH - 2 * s.dotSp);
+    const r = Math.min(0.8, s.dotSp * 0.34);
+    const cls = ["", "d-wall", "d-start", "d-finish", "d-title"];
+    const parts = [`<desc id="previewDesc">${escapeHtml(desc)}</desc>`,
+      `<rect class="paper" x="0.3" y="0.3" width="${(pageW - 0.6).toFixed(2)}" height="${(pageH - 0.6).toFixed(2)}" rx="2"/>`];
+    for (let y = 0; y < g.dr; y++) {
+      for (let x = 0; x < g.dc; x++) {
+        const t = dots[y * g.dc + x];
+        if (!t) continue;
+        parts.push(`<circle class="${cls[t]}" cx="${(g.xmm(x) + pad).toFixed(2)}" cy="${(g.ymm(y) + pad).toFixed(2)}" r="${r.toFixed(2)}"/>`);
+      }
+    }
+    const svg = $("preview");
+    svg.setAttribute("viewBox", `0 0 ${pageW.toFixed(2)} ${pageH.toFixed(2)}`);
+    svg.innerHTML = parts.join("");
+  }
+
+  function escapeHtml(t) {
+    return t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  }
+
+  function download() {
+    if (!current) return;
+    const bytes = new Uint8Array(current.brf.length);
+    for (let i = 0; i < current.brf.length; i++) bytes[i] = current.brf.charCodeAt(i) & 0x7f;
+    const blob = new Blob([bytes], { type: "application/octet-stream" });
+    const a = document.createElement("a");
+    const level = current.levelName.toLowerCase().replace(/\s+/g, "");
+    a.href = URL.createObjectURL(blob);
+    a.download = `maze-${level}-${current.W}x${current.H}-${current.s.seed}.brf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+})();
+</script>
+</body>
+</html>
