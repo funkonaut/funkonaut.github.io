@@ -357,7 +357,8 @@
         <div class="row">
           <div class="field">
             <label for="cells">Cells per line</label>
-            <input type="text" id="cells" inputmode="numeric" autocomplete="off" value="40" aria-describedby="pageHint1 pageHint2">
+            <input type="text" id="cells" inputmode="numeric" autocomplete="off" value="40" aria-describedby="monarchHint pageHint1 pageHint2">
+            <p class="hint" id="monarchHint">Use 32 for a Monarch.</p>
           </div>
           <div class="field">
             <label for="lines">Lines per page</label>
@@ -901,9 +902,10 @@
     $("gridW").value = W;
     $("gridH").value = H;
 
-    // Center horizontally (walls on the left dot column of a cell); top-align under the title.
+    // Start the maze in cell 1 so narrow mazes also fit smaller displays like the
+    // 32-cell Monarch without wrapping. Top-align under the title.
     const usedCells = W * cellsPer + 1;
-    const X = wallPositions(2 * Math.floor((s.cells - usedCells) / 2), W, stepX);
+    const X = wallPositions(0, W, stepX);
     const Y = wallPositions(minY, H, stepY);
 
     // Maze
@@ -975,7 +977,8 @@
     placeMarker(ends.f, s.finishMark, 3);
     if (collision) warn.marker.push("A marker is touching a wall at this path width.", "Choose a wider path or a smaller marker.");
 
-    // Title on the top line, starting at the left margin
+    // Title on the top line, starting in cell 1 so it's always in the same place
+    // (top-left, where students start exploring a page) and lines up with the maze.
     for (let i = 0; i < titleBrf.length; i++) {
       const bits = BRF.indexOf(titleBrf[i]);
       for (let col = 0; col < 2; col++)
