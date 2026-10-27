@@ -212,7 +212,7 @@
 <div class="top">
   <h1>Tactile Word Search Maker</h1>
   <p>Makes braille word searches for a braille embosser.</p>
-  <p>Words hide across and down in a grid of spaced, uncontracted letters.</p>
+  <p>Words hide across and down in a grid of uncontracted letters.</p>
 </div>
 
 <main>
@@ -336,6 +336,7 @@
           <label class="choice"><input type="radio" name="dirs" value="across"><span>Across only<small><span class="sr-only">, </span>Left to right</small></span></label>
           <label class="choice"><input type="radio" name="dirs" value="both"><span>Across and down<small><span class="sr-only">, </span>Left to right and top to bottom</small></span></label>
         </div>
+        <label class="choice"><input type="checkbox" id="backward"><span>Words can be backward<small><span class="sr-only">, </span>About a third read right to left, or bottom to top</small></span></label>
 
         <h3>Helpers</h3>
         <label class="choice"><input type="checkbox" id="onePer"><span>Each word gets its own row or column</span></label>
@@ -349,8 +350,8 @@
         </div>
 
         <h3>Spacing</h3>
+        <label class="choice"><input type="checkbox" id="letterGap" checked><span>Blank cell between letters<small><span class="sr-only">, </span>Easier to feel where each letter starts</small></span></label>
         <label class="choice"><input type="checkbox" id="rowGap" checked><span>Blank line between rows<small><span class="sr-only">, </span>Easier to track a row and read down a column</small></span></label>
-        <p class="hint">Letters always have a blank cell between them.</p>
 
         <h3>Word list on the page</h3>
         <label class="choice"><input type="checkbox" id="showList" checked><span>Put the word list above the puzzle</span></label>
@@ -468,7 +469,9 @@
   const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
   const ANNOUNCE_DELAY_MS = 700;
   const TYPING_DELAY_MS = 1500;
-  const MAX_ACROSS = 20;
+  const MAX_ACROSS = 40;   // without letter spacing; with spacing a 40-cell line holds 20
+  const FULL_ACROSS = 20;  // Level 5 width, the same with or without letter spacing
+  const MAX_WORD_LEN = 20;
   const MAX_WORDS = 20;
 
   const PRESETS = {
@@ -519,11 +522,11 @@
     "xvxr puvax tbbx avt avttre pbba").split(" ").map((w) => w.replace(/[a-z]/g, (ch) => ALPHABET[(ALPHABET.indexOf(ch) + 13) % 26]));
 
   const $ = (id) => document.getElementById(id);
-  const FIELD_IDS = ["difficulty","wordList","ownWords","gridW","gridH","wordCount","minLen","maxLen","onePer","cross",
-                     "rowGap","showList","useTitle","titleText","addLevel","answerKey","highlight",
+  const FIELD_IDS = ["difficulty","wordList","ownWords","gridW","gridH","wordCount","minLen","maxLen","backward","onePer","cross",
+                     "letterGap","rowGap","showList","useTitle","titleText","addLevel","answerKey","highlight",
                      "cells","lines","cellW","lineH","dotSp","formFeed"];
   const RADIO_NAMES = ["dirs", "filler", "view"];
-  const PUZZLE_FIELDS = ["gridW","gridH","wordCount","minLen","maxLen","dirs","onePer","cross","filler"];
+  const PUZZLE_FIELDS = ["gridW","gridH","wordCount","minLen","maxLen","dirs","backward","onePer","cross","filler"];
   const VIEW_FIELDS = ["view", "highlight"];
   const STORE_KEY = "tactileWordSearch.v1";
 
@@ -549,7 +552,7 @@
   }
   fillNumberOptions($("wordCount"), 1, MAX_WORDS);
   fillNumberOptions($("minLen"), 2, 10);
-  fillNumberOptions($("maxLen"), 2, MAX_ACROSS);
+  fillNumberOptions($("maxLen"), 2, MAX_WORD_LEN);
   fillNumberOptions($("gridW"), 2, MAX_ACROSS); // trimmed to what fits on first build
   fillNumberOptions($("gridH"), 2, 25);
   setRadio("view", "dots");
@@ -685,6 +688,7 @@
     $("maxLen").value = p.max;
     $("onePer").checked = p.onePer;
     $("cross").checked = p.cross;
+    $("backward").checked = false; // backward words are only in Custom
     setRadio("dirs", p.dirs);
     setRadio("filler", p.filler);
   }
@@ -704,11 +708,13 @@
       h: Math.round(num("gridH", 2, 40, 5)),
       count: Math.round(num("wordCount", 1, MAX_WORDS, 3)),
       minLen: Math.round(num("minLen", 2, 10, 3)),
-      maxLen: Math.round(num("maxLen", 2, MAX_ACROSS, 6)),
+      maxLen: Math.round(num("maxLen", 2, MAX_WORD_LEN, 6)),
       dirs: getRadio("dirs") || "across",
+      backward: $("backward").checked,
       onePer: $("onePer").checked,
       cross: $("cross").checked,
       filler: getRadio("filler") || "standard",
+      letterGap: $("letterGap").checked,
       rowGap: $("rowGap").checked,
       showList: $("showList").checked,
       useTitle: $("useTitle").checked,
@@ -787,9 +793,12 @@
     return out;
   }
 
+  const reverse = (w) => [...w].reverse().join("");
+
   // Picks the hidden words. Built-in lists prefer the chosen lengths and widen them
   // only if the list runs short. A word is skipped if it sits inside another chosen
-  // word, like "an" in "and", since it would then be hidden twice.
+  // word, like "an" in "and", since it would then be hidden twice. With backward
+  // words on, the same goes for a word spelled backward, like "dog" and "god".
   function chooseWords(s, W, H, rand) {
     const own = s.list === "own";
     const pool = own ? parseOwnWords(s.ownText) : LISTS[s.list].words.split(" ");
@@ -813,7 +822,8 @@
     tiers.forEach((tier, t) => {
       for (const w of shuffle(tier.slice(), rand)) {
         if (chosen.length >= s.count) return;
-        if (chosen.some((c) => c.includes(w) || w.includes(c))) { inside.push(w); continue; }
+        const clash = (c, x) => c.includes(x) || x.includes(c);
+        if (chosen.some((c) => clash(c, w) || (s.backward && clash(c, reverse(w))))) { inside.push(w); continue; }
         chosen.push(w);
         if (t > 0) relaxed = true;
       }
@@ -836,9 +846,12 @@
       const rowsUsed = new Set(), colsUsed = new Set();
       const placed = [], missed = [];
       let nA = 0, nD = 0;
+      // About a third of the words, and at least one, are laid in backward.
+      const back = new Set(s.backward ? shuffle(words.slice(), rand).slice(0, Math.max(1, Math.round(words.length / 3))) : []);
       const order = shuffle(words.slice(), rand).sort((a, b) => b.length - a.length);
       for (const word of order) {
         const L = word.length;
+        const laid = back.has(word) ? reverse(word) : word; // letters in grid order
         const opts = { A: [], D: [] };
         for (const d of dirs) {
           const across = d === "A", bit = across ? 1 : 2;
@@ -854,7 +867,7 @@
               for (let i = 0; i < L && ok; i++) {
                 const k = across ? r * W + c + i : (r + i) * W + c;
                 if (!grid[k]) continue;
-                if (!s.cross || grid[k] !== word[i] || (dirAt[k] & bit)) ok = false;
+                if (!s.cross || grid[k] !== laid[i] || (dirAt[k] & bit)) ok = false;
                 else shared++;
               }
               if (ok) opts[d].push({ r, c, d, shared });
@@ -873,11 +886,11 @@
         const across = o.d === "A";
         for (let i = 0; i < L; i++) {
           const k = across ? o.r * W + o.c + i : (o.r + i) * W + o.c;
-          grid[k] = word[i];
+          grid[k] = laid[i];
           dirAt[k] |= across ? 1 : 2;
         }
         if (across) { rowsUsed.add(o.r); nA++; } else { colsUsed.add(o.c); nD++; }
-        placed.push({ word, r: o.r, c: o.c, across });
+        placed.push({ word, r: o.r, c: o.c, across, back: back.has(word) });
       }
       if (!best || placed.length > best.placed.length) best = { grid, placed, missed };
       if (!missed.length) break;
@@ -893,16 +906,20 @@
     return out;
   }
 
-  function countWord(grid, W, H, word) {
-    let n = 0;
+  // Counts the places a word can be found. With backward on it also reads each line in
+  // reverse; a word that reads the same both ways, like "mom", counts its spot once.
+  function countWord(grid, W, H, word, backward) {
+    const spots = new Set();
+    const forms = backward ? [word, reverse(word)] : [word];
     for (const cells of gridLines(W, H)) {
       const text = cells.map((k) => grid[k]).join("");
-      for (let i = text.indexOf(word); i >= 0; i = text.indexOf(word, i + 1)) n++;
+      for (const f of forms)
+        for (let i = text.indexOf(f); i >= 0; i = text.indexOf(f, i + 1)) spots.add(`${cells[i]}-${cells[i + f.length - 1]}`);
     }
-    return n;
+    return spots.size;
   }
 
-  function fillGrid(grid, W, H, words, mode, rand, notes) {
+  function fillGrid(grid, W, H, words, mode, backward, rand, notes) {
     const ri = (n) => Math.floor(rand() * n);
     const used = new Set(words.join(""));
     let pool = [...ALPHABET];
@@ -920,7 +937,8 @@
     // Re-roll filler letters that spell a hidden word a second time or an unwanted word.
     // Hidden words themselves contain no filler, so they are never touched.
     const lines = gridLines(W, H);
-    const targets = words.concat(BLOCKED);
+    let targets = words.concat(BLOCKED);
+    if (backward) targets = targets.concat(targets.map(reverse)); // searching for "god" finds "dog" read backward
     for (let round = 0; round < 500; round++) {
       const bad = [];
       for (const cells of lines) {
@@ -993,9 +1011,9 @@
     const preset = PRESETS[s.level];
     const levelName = preset ? `Level ${s.level}` : "Custom";
 
-    const maxW = Math.min(MAX_ACROSS, Math.floor((s.cells + 1) / 2));
+    const maxW = Math.min(MAX_ACROSS, s.letterGap ? Math.floor((s.cells + 1) / 2) : s.cells);
     fillNumberOptions($("gridW"), 2, maxW);
-    let W = s.fill ? maxW : preset ? preset.w : s.w;
+    let W = s.fill ? Math.min(FULL_ACROSS, maxW) : preset ? preset.w : s.w;
     if (W > maxW) {
       warn.size.push(`${W} letters across does not fit on this line length.`, `This puzzle is ${maxW} across, the widest that fits.`);
       W = maxW;
@@ -1050,8 +1068,8 @@
     for (let tries = 0; tries < 20; tries++) {
       layout = placeWords(pick.words, W, H, s, rand);
       fillNotes = [];
-      filler = fillGrid(layout.grid, W, H, layout.placed.map((p) => p.word), s.filler, rand, fillNotes);
-      if (layout.placed.every((p) => countWord(layout.grid, W, H, p.word) === 1)) break;
+      filler = fillGrid(layout.grid, W, H, layout.placed.map((p) => p.word), s.filler, s.backward, rand, fillNotes);
+      if (layout.placed.every((p) => countWord(layout.grid, W, H, p.word, s.backward) === 1)) break;
     }
     if (layout.missed.length) {
       warn.words.push(`Did not fit, left out: ${layout.missed.join(", ")}.`, "Try a bigger size, fewer words, or turn off helpers.");
@@ -1072,7 +1090,7 @@
       let print = "", kind = "";
       for (let c = 0; c < W; c++) {
         const k = r * W + c;
-        if (c) { print += " "; kind += " "; }
+        if (c && s.letterGap) { print += " "; kind += " "; }
         print += keyOnly && filler[k] ? " " : grid[k];
         kind += filler[k] ? "f" : "h";
       }
@@ -1106,12 +1124,15 @@
       nD ? `${plural(placed.length, "hidden word")}: ${nA} across, ${nD} down`
          : `${plural(placed.length, "hidden word")}, all across`,
     ];
-    let chunk = [];
+    const nBack = placed.filter((p) => p.back).length;
+    if (nBack) facts.push(`${nBack} ${nBack === 1 ? "is" : "are"} backward`);
+    let chunk = [], wordLines = 0;
+    const pushWords = () => { facts.push(`${wordLines++ ? "More words" : "Words"}: ${chunk.join(", ")}`); chunk = []; };
     for (const w of words) {
       chunk.push(w);
-      if (chunk.join(", ").length > 60) { facts.push(`${facts.length === 2 ? "Words" : "More words"}: ${chunk.join(", ")}`); chunk = []; }
+      if (chunk.join(", ").length > 60) pushWords();
     }
-    if (chunk.length) facts.push(`${facts.length === 2 ? "Words" : "More words"}: ${chunk.join(", ")}`);
+    if (chunk.length) pushWords();
     facts.push(`From: ${pick.own ? "your own words" : LISTS[s.list].name}`);
     if (pick.own && pick.total > words.length) facts.push(`Using ${words.length} of your ${pick.total} words. Press New puzzle for a different mix`);
     facts.push(`Puzzle code ${s.code}`);
@@ -1119,9 +1140,14 @@
     const pageFacts = [`Uses ${page.length} of ${s.lines} braille lines.`];
     if (key.length) pageFacts.push("Answer key on page 2.");
 
-    const answers = placed.map((p) => p.across
-      ? `${p.word}: across, row ${p.r + 1}, letters ${p.c + 1} to ${p.c + p.word.length}.`
-      : `${p.word}: down, letter ${p.c + 1}, rows ${p.r + 1} to ${p.r + p.word.length}.`);
+    // Positions are given in reading order, so a backward word starts at its far end.
+    const answers = placed.map((p) => {
+      const first = p.across ? p.c + 1 : p.r + 1, last = first + p.word.length - 1;
+      if (p.across && p.back) return `${p.word}: backward, row ${p.r + 1}, from letter ${last} to letter ${first}.`;
+      if (p.across) return `${p.word}: across, row ${p.r + 1}, letters ${first} to ${last}.`;
+      if (p.back) return `${p.word}: up, letter ${p.c + 1}, from row ${last} to row ${first}.`;
+      return `${p.word}: down, letter ${p.c + 1}, rows ${first} to ${last}.`;
+    });
     const gridText = [];
     for (let r = 0; r < H; r++) gridText.push(`Row ${r + 1}: ${grid.slice(r * W, r * W + W).join(" ")}`);
 
