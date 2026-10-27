@@ -357,8 +357,7 @@
         <div class="row">
           <div class="field">
             <label for="cells">Cells per line</label>
-            <input type="text" id="cells" inputmode="numeric" autocomplete="off" value="40" aria-describedby="monarchHint pageHint1 pageHint2">
-            <p class="hint" id="monarchHint">Use 32 for a Monarch.</p>
+            <input type="text" id="cells" inputmode="numeric" autocomplete="off" value="40" aria-describedby="pageHint1 pageHint2">
           </div>
           <div class="field">
             <label for="lines">Lines per page</label>
@@ -902,8 +901,7 @@
     $("gridW").value = W;
     $("gridH").value = H;
 
-    // Start the maze in cell 1 so narrow mazes also fit smaller displays like the
-    // 32-cell Monarch without wrapping. Top-align under the title.
+    // Start the maze in cell 1, lined up with the title. Top-align under the title.
     const usedCells = W * cellsPer + 1;
     const X = wallPositions(0, W, stepX);
     const Y = wallPositions(minY, H, stepY);
