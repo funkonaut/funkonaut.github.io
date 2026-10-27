@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tactile Word Search Maker</title>
+<meta name="description" content="Generate braille word searches as BRF files for braille embossers.">
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --panel: #ffffff;
+    --ink: #1c1e22;
+    --muted: #555c6b;
+    --line: #d8d5cb;
+    --field-border: #6f7584;
+    --field-bg: #ffffff;
+    --accent: #1f5fae;
+    --accent-ink: #ffffff;
+    --focus: #0b3d91;
+    --focus-halo: #ffffff;
+    --paper: #fffdf7;
+    --paper-edge: #8f8a7c;
+    --dot: #1c1e22;
+    --found: #b33a09;
+    --found-bg: #ffe0c7;
+    --title: #5a3db0;
+    --warn-bg: #fff3d1;
+    --warn-ink: #4f3700;
+    --warn-edge: #a87a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
+      --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
+      --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
+      --dot: #f2f0ea; --found: #fb923c; --found-bg: #4a2c16; --title: #b8a3ff;
+      --warn-bg: #3a2f10; --warn-ink: #ffe2a3; --warn-edge: #d4a017;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
+    --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
+    --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
+    --dot: #f2f0ea; --found: #fb923c; --found-bg: #4a2c16; --title: #b8a3ff;
+    --warn-bg: #3a2f10; --warn-ink: #ffe2a3; --warn-edge: #d4a017;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .top, main, .help { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .top { padding-top: 24px; }
+  h1 { font-size: 1.9rem; margin: 0 0 4px; }
+  .top p { margin: 0; color: var(--muted); max-width: 70ch; }
+  h2 { font-size: 1.3rem; margin: 0 0 10px; }
+  h3 { font-size: 1.08rem; margin: 16px 0 8px; }
+
+  main {
+    display: grid;
+    grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+    grid-template-areas: "make preview" "options preview";
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    padding-top: 20px;
+    padding-bottom: 24px;
+  }
+  #make { grid-area: make; }
+  #previewSection { grid-area: preview; align-self: start; position: sticky; top: 12px; }
+  #optionsCol { grid-area: options; display: flex; flex-direction: column; gap: 14px; }
+  @media (max-width: 880px) {
+    main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "make" "preview" "options"; }
+    #previewSection { position: static; }
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .intro { margin: 0 0 4px; }
+
+  .field { margin-bottom: 14px; }
+  .field > label { display: block; font-weight: 600; margin-bottom: 4px; }
+  .hint { display: block; color: var(--muted); font-size: 0.92rem; margin: 4px 0 0; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 400px) { .row, .row3 { grid-template-columns: 1fr; } }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--field-bg);
+    border: 2px solid var(--field-border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-height: 48px;
+  }
+  textarea { min-height: 130px; resize: vertical; }
+  input[type="file"] { font: inherit; color: var(--ink); max-width: 100%; min-height: 48px; padding: 6px 0; }
+
+  .choice {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 4px; min-height: 44px; cursor: pointer;
+  }
+  .choice input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--accent); cursor: pointer; }
+  .choice span small { display: block; color: var(--muted); font-size: 0.9rem; }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--focus-halo);
+  }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 8px; }
+  button {
+    font: inherit;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 10px 20px;
+    min-height: 52px;
+    cursor: pointer;
+    border: 2px solid var(--accent);
+  }
+  .primary { background: var(--accent); color: var(--accent-ink); }
+  .secondary { background: transparent; color: var(--accent); }
+  button:hover { filter: brightness(1.08); }
+
+  .disclosure {
+    width: 100%;
+    display: flex; align-items: center; gap: 12px;
+    text-align: left;
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 1.15rem;
+  }
+  .disclosure[aria-expanded="true"] { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .chev {
+    display: inline-block; flex: none; width: 0; height: 0;
+    border-top: 0.4em solid transparent; border-bottom: 0.4em solid transparent;
+    border-left: 0.6em solid currentColor;
+    transition: transform 0.15s;
+  }
+  .disclosure[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  @media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+  .disclosure-heading { margin: 0; font-size: inherit; }
+  .disclosure-body {
+    border: 1px solid var(--line);
+    border-top: 0;
+    border-radius: 0 0 12px 12px;
+    padding: 4px 18px 14px;
+    background: var(--panel);
+  }
+  .disclosure-body h3 { border-top: 1px solid var(--line); padding-top: 14px; margin-top: 14px; }
+  .disclosure-body > p:first-child + h3, .disclosure-body > h3:first-child { border-top: 0; padding-top: 0; }
+
+  .warn {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    border-left: 4px solid var(--warn-edge);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 6px 0 12px;
+    font-size: 0.95rem;
+  }
+  .warn:empty { display: none; }
+
+  .desc { margin: 0 0 12px; }
+  .desc div { margin: 0 0 2px; }
+  .desc div:first-child { font-weight: 700; }
+  .lines div { margin: 0 0 2px; }
+  .preview-wrap { background: var(--bg); border-radius: 10px; padding: 12px; }
+  #preview { display: block; width: 100%; height: auto; max-height: 76vh; border-radius: 4px; }
+  #preview .paper { fill: var(--paper); stroke: var(--paper-edge); stroke-width: 0.6; }
+  #preview .d-dot { fill: var(--dot); }
+  #preview .d-found { fill: var(--found); }
+  #preview .d-title { fill: var(--title); }
+  #preview .found-bg { fill: var(--found-bg); }
+  #preview text { font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: 7.4px; fill: var(--dot); }
+  #preview text.t-title { font-family: system-ui, "Segoe UI", sans-serif; font-size: 6.4px; fill: var(--title); font-weight: 700; }
+  #preview text.t-found { fill: var(--found); font-weight: 700; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 0.9rem; }
+  .legend span::before {
+    content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 50%;
+    margin-right: 6px; vertical-align: -1px; background: var(--c);
+  }
+  .legend span[hidden] { display: none; }
+  .view-controls { margin-top: 6px; }
+
+  .help { padding-bottom: 36px; }
+  .help ol, .help ul { margin: 4px 0 0; padding-left: 22px; }
+  .help li { margin-bottom: 4px; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Text rule: keep every paragraph, hint, and list item under about 90 characters.
+     JAWS splits longer text into several "lines" when reading with the arrow keys. -->
+<div class="top">
+  <h1>Tactile Word Search Maker</h1>
+  <p>Makes braille word searches for a braille embosser.</p>
+  <p>Words hide across and down in a grid of spaced, uncontracted letters.</p>
+</div>
+
+<main>
+  <!-- Simple view: everything most people need -->
+  <div id="make" class="panel">
+    <h2>Make a word search</h2>
+    <p class="intro">Choose a level and a word list, then download the braille file.</p>
+    <p class="intro">Press New puzzle for different words and letters.</p>
+
+    <h3 id="levelHeading">Change level</h3>
+    <div class="field">
+      <select id="difficulty" aria-labelledby="levelHeading" aria-describedby="levelHint">
+        <option value="1" selected>Level 1: 8 by 5 letters, 3 words across</option>
+        <option value="2">Level 2: 10 by 6 letters, 4 words across</option>
+        <option value="3">Level 3: 10 by 8 letters, 6 words across and down</option>
+        <option value="4">Level 4: 14 by 10 letters, 8 words across and down</option>
+        <option value="5">Level 5: full page, 10 words across and down</option>
+        <option value="custom">Custom, set in More word search options</option>
+      </select>
+      <p class="hint" id="levelHint">Higher levels are bigger, with more and longer words.</p>
+    </div>
+
+    <h3 id="listHeading">Word list</h3>
+    <div class="field">
+      <select id="wordList" aria-labelledby="listHeading" aria-describedby="listHint"></select>
+      <p class="hint" id="listHint">Choose My own words to type, paste, or load your own.</p>
+    </div>
+
+    <div id="ownBox" hidden>
+      <div class="field">
+        <label for="ownWords">Your words</label>
+        <textarea id="ownWords" spellcheck="false" aria-describedby="ownHint1 ownHint2"></textarea>
+        <p class="hint" id="ownHint1">Separate words with spaces, commas, or new lines.</p>
+        <p class="hint" id="ownHint2">Only the letters a to z are used.</p>
+      </div>
+      <div class="field">
+        <label for="ownFile">Or load a text file</label>
+        <input type="file" id="ownFile" accept=".txt,.csv,text/plain,text/csv" aria-describedby="fileHint">
+        <p class="hint" id="fileHint">A .txt or .csv file. It replaces the words in the box.</p>
+      </div>
+    </div>
+
+    <h3>Make and download</h3>
+    <div class="actions">
+      <button type="button" class="secondary" id="newBtn">New puzzle</button>
+      <button type="button" class="primary" id="downloadBtn">Download braille file</button>
+    </div>
+
+    <div class="warn" id="warnAll"></div>
+  </div>
+
+  <!-- Preview. Each fact is its own short line for arrow-key reading. The picture is a
+       Tab stop named "Puzzle picture" and described by those lines, so Tab reads them all. -->
+  <div id="previewSection" class="panel">
+    <h2>Current puzzle</h2>
+    <div class="desc" id="desc"></div>
+    <div class="preview-wrap">
+      <svg id="preview" role="img" tabindex="0" aria-label="Puzzle picture" aria-describedby="desc" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span style="--c: var(--dot)" id="legendDots">Braille dots</span>
+      <span style="--c: var(--found)" id="legendFound">Hidden words</span>
+      <span style="--c: var(--title)">Title</span>
+    </div>
+    <div class="view-controls">
+      <h3 id="viewHeading">Show in the picture</h3>
+      <div role="radiogroup" aria-labelledby="viewHeading">
+        <label class="choice"><input type="radio" name="view" value="dots"><span>Braille dots</span></label>
+        <label class="choice"><input type="radio" name="view" value="print"><span>Print letters<small><span class="sr-only">, </span>For sighted helpers who do not read braille</small></span></label>
+      </div>
+      <label class="choice"><input type="checkbox" id="highlight"><span>Highlight the hidden words</span></label>
+    </div>
+  </div>
+
+  <!-- Advanced, collapsed by default -->
+  <div id="optionsCol">
+    <div>
+      <h2 class="disclosure-heading">
+        <button type="button" class="disclosure" id="moreBtn" aria-expanded="false" aria-controls="moreBody">
+          <span class="chev" aria-hidden="true"></span>More word search options
+        </button>
+      </h2>
+      <div class="disclosure-body" id="moreBody" hidden>
+        <p class="hint">Changing size, words, directions, or filler switches the level to Custom.</p>
+
+        <h3>Puzzle size</h3>
+        <div class="row">
+          <div class="field">
+            <label for="gridW">Letters across</label>
+            <select id="gridW" aria-describedby="sizeHint warnSize"></select>
+          </div>
+          <div class="field">
+            <label for="gridH">Rows down</label>
+            <select id="gridH" aria-describedby="sizeHint warnSize"></select>
+          </div>
+        </div>
+        <p class="hint" id="sizeHint" style="margin-top:-8px">Only sizes that fit on the page are listed.</p>
+        <div class="warn" id="warnSize"></div>
+
+        <h3 id="countHeading">Number of words</h3>
+        <div class="field">
+          <select id="wordCount" aria-labelledby="countHeading" aria-describedby="warnWords"></select>
+        </div>
+
+        <h3 id="lengthHeading">Word length</h3>
+        <div class="row">
+          <div class="field">
+            <label for="minLen">Shortest</label>
+            <select id="minLen" aria-describedby="lengthHint"></select>
+          </div>
+          <div class="field">
+            <label for="maxLen">Longest</label>
+            <select id="maxLen" aria-describedby="lengthHint"></select>
+          </div>
+        </div>
+        <p class="hint" id="lengthHint" style="margin-top:-8px">For the built-in lists. Your own words can be any length that fits.</p>
+        <div class="warn" id="warnWords"></div>
+
+        <h3 id="dirsHeading">Directions</h3>
+        <div role="radiogroup" aria-labelledby="dirsHeading">
+          <label class="choice"><input type="radio" name="dirs" value="across"><span>Across only<small><span class="sr-only">, </span>Left to right</small></span></label>
+          <label class="choice"><input type="radio" name="dirs" value="both"><span>Across and down<small><span class="sr-only">, </span>Left to right and top to bottom</small></span></label>
+        </div>
+
+        <h3>Helpers</h3>
+        <label class="choice"><input type="checkbox" id="onePer"><span>Each word gets its own row or column</span></label>
+        <label class="choice"><input type="checkbox" id="cross"><span>Words can cross and share a letter<small><span class="sr-only">, </span>Harder</small></span></label>
+
+        <h3 id="fillerHeading">Filler letters</h3>
+        <div role="radiogroup" aria-labelledby="fillerHeading">
+          <label class="choice"><input type="radio" name="filler" value="easy"><span>Easy<small><span class="sr-only">, </span>Only letters that are not in the hidden words</small></span></label>
+          <label class="choice"><input type="radio" name="filler" value="standard"><span>Standard<small><span class="sr-only">, </span>Any letter</small></span></label>
+          <label class="choice"><input type="radio" name="filler" value="hard"><span>Hard<small><span class="sr-only">, </span>Only letters from the hidden words</small></span></label>
+        </div>
+
+        <h3>Spacing</h3>
+        <label class="choice"><input type="checkbox" id="rowGap" checked><span>Blank line between rows<small><span class="sr-only">, </span>Easier to track a row and read down a column</small></span></label>
+        <p class="hint">Letters always have a blank cell between them.</p>
+
+        <h3>Word list on the page</h3>
+        <label class="choice"><input type="checkbox" id="showList" checked><span>Put the word list above the puzzle</span></label>
+
+        <h3>Braille title</h3>
+        <label class="choice"><input type="checkbox" id="useTitle" checked><span>Put a title on the top line</span></label>
+        <div class="field">
+          <label for="titleText">Title text</label>
+          <input type="text" id="titleText" value="Word Search" maxlength="60" aria-describedby="titleHint warnTitle">
+          <p class="hint" id="titleHint">Written in uncontracted braille.</p>
+        </div>
+        <label class="choice"><input type="checkbox" id="addLevel" checked><span>Add the level, like “Word Search Level 1”</span></label>
+        <div class="warn" id="warnTitle"></div>
+
+        <h3>Answer key</h3>
+        <label class="choice"><input type="checkbox" id="answerKey"><span>Add an answer key page<small><span class="sr-only">, </span>Page 2 shows only the hidden words</small></span></label>
+
+        <h3 id="codeHeading">Puzzle code</h3>
+        <div class="field">
+          <input type="text" id="puzzleCode" inputmode="numeric" autocomplete="off" maxlength="6" value="1"
+                 aria-labelledby="codeHeading" aria-describedby="codeHint1 codeHint2 codeHint3">
+          <p class="hint" id="codeHint1">Each code makes a different puzzle.</p>
+          <p class="hint" id="codeHint2">Type a code you used before to get the same puzzle again.</p>
+          <p class="hint" id="codeHint3">Up and Down arrows change the code by one.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="disclosure-heading">
+        <button type="button" class="disclosure" id="answersBtn" aria-expanded="false" aria-controls="answersBody">
+          <span class="chev" aria-hidden="true"></span>Answers and letter grid
+        </button>
+      </h2>
+      <div class="disclosure-body" id="answersBody" hidden>
+        <h3>Where each word is</h3>
+        <div class="lines" id="answers"></div>
+        <h3>Letters, row by row</h3>
+        <div class="lines" id="gridText"></div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="disclosure-heading">
+        <button type="button" class="disclosure" id="setupBtn" aria-expanded="false" aria-controls="setupBody">
+          <span class="chev" aria-hidden="true"></span>Embosser and page setup
+        </button>
+      </h2>
+      <div class="disclosure-body" id="setupBody" hidden>
+        <h3>Page size</h3>
+        <div class="row">
+          <div class="field">
+            <label for="cells">Cells per line</label>
+            <input type="text" id="cells" inputmode="numeric" autocomplete="off" value="40" aria-describedby="pageHint1 pageHint2">
+          </div>
+          <div class="field">
+            <label for="lines">Lines per page</label>
+            <input type="text" id="lines" inputmode="numeric" autocomplete="off" value="25" aria-describedby="pageHint1 pageHint2">
+          </div>
+        </div>
+        <p class="hint" id="pageHint1" style="margin-top:-8px">40 by 25 fits standard 11.5 by 11 inch braille paper.</p>
+        <p class="hint" id="pageHint2">These must match your embosser and BrailleBlaster page settings.</p>
+        <label class="choice"><input type="checkbox" id="formFeed" checked><span>End the file with a page break</span></label>
+
+        <h3>Dot spacing for the picture</h3>
+        <div class="row3">
+          <div class="field">
+            <label for="cellW">Cell to cell</label>
+            <input type="text" id="cellW" inputmode="decimal" autocomplete="off" value="6.2" aria-describedby="spacingHint1 spacingHint2">
+          </div>
+          <div class="field">
+            <label for="lineH">Line to line</label>
+            <input type="text" id="lineH" inputmode="decimal" autocomplete="off" value="10" aria-describedby="spacingHint1 spacingHint2">
+          </div>
+          <div class="field">
+            <label for="dotSp">Dot to dot</label>
+            <input type="text" id="dotSp" inputmode="decimal" autocomplete="off" value="2.5" aria-describedby="spacingHint1 spacingHint2">
+          </div>
+        </div>
+        <p class="hint" id="spacingHint1" style="margin-top:-8px">In millimeters, measured center to center.</p>
+        <p class="hint" id="spacingHint2">These only change the picture. The defaults are standard US braille.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="help">
+  <div class="panel">
+    <h2>Embossing with BrailleBlaster</h2>
+    <ol>
+      <li>Press Download braille file.</li>
+      <li>In BrailleBlaster, choose File, Open. The puzzle opens in Braille Preview.</li>
+      <li>Choose File, Emboss (Control E) and pick your embosser.</li>
+      <li>Set Interpoint to No.</li>
+    </ol>
+    <ul>
+      <li>Cells per line and lines per page must match your embosser.</li>
+      <li>If they are bigger, lines wrap and break the puzzle.</li>
+      <li>Students read the word list first, then search each row for a word.</li>
+      <li>Every letter is uncontracted, so “the” is spelled t h e.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Screen reader announcements -->
+<div id="announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  // North American Braille ASCII, indexed by dot bits (dot1=1, dot2=2, dot3=4, dot4=8, dot5=16, dot6=32).
+  const BRF = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
+  const BIT = [[1, 2, 4], [8, 16, 32]]; // BIT[col][row]
+  const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+  const ANNOUNCE_DELAY_MS = 700;
+  const TYPING_DELAY_MS = 1500;
+  const MAX_ACROSS = 20;
+  const MAX_WORDS = 20;
+
+  const PRESETS = {
+    1: { w: 8,  h: 5,  count: 3,  dirs: "across", min: 3, max: 3,  onePer: true,  cross: false, filler: "easy" },
+    2: { w: 10, h: 6,  count: 4,  dirs: "across", min: 3, max: 4,  onePer: false, cross: false, filler: "easy" },
+    3: { w: 10, h: 8,  count: 6,  dirs: "both",   min: 3, max: 6,  onePer: false, cross: false, filler: "standard" },
+    4: { w: 14, h: 10, count: 8,  dirs: "both",   min: 3, max: 8,  onePer: false, cross: true,  filler: "standard" },
+    5: { fill: true,   count: 10, dirs: "both",   min: 3, max: 10, onePer: false, cross: true,  filler: "standard" },
+  };
+
+  // Dolch lists leave out one-letter words and contractions.
+  const LISTS = {
+    preprimer: { group: "Dolch sight words", name: "Dolch Pre-primer",
+      words: "and away big blue can come down find for funny go help here in is it jump little look make me my not one play red run said see the three to two up we where yellow you" },
+    primer: { group: "Dolch sight words", name: "Dolch Primer",
+      words: "all am are at ate be black brown but came did do eat four get good have he into like must new no now on our out please pretty ran ride saw say she so soon that there they this too under want was well went what white who will with yes" },
+    first: { group: "Dolch sight words", name: "Dolch First grade",
+      words: "after again an any as ask by could every fly from give giving had has her him his how just know let live may of old once open over put round some stop take thank them then think walk were when" },
+    second: { group: "Dolch sight words", name: "Dolch Second grade",
+      words: "always around because been before best both buy call cold does fast first five found gave goes green its made many off or pull read right sing sit sleep tell their these those upon us use very wash which why wish work would write your" },
+    third: { group: "Dolch sight words", name: "Dolch Third grade",
+      words: "about better bring carry clean cut done draw drink eight fall far full got grow hold hot hurt if keep kind laugh light long much myself never only own pick seven shall show six small start ten today together try warm" },
+    nouns: { group: "Dolch sight words", name: "Dolch Nouns",
+      words: "apple baby back ball bear bed bell bird birthday boat box boy bread brother cake car cat chair chicken children christmas coat corn cow day dog doll door duck egg eye farm farmer father feet fire fish floor flower game garden girl goodbye grass ground hand head hill home horse house kitty leg letter man men milk money morning mother name nest night paper party picture pig rabbit rain ring robin school seed sheep shoe sister snow song squirrel stick street sun table thing time top toy tree watch water way window wood" },
+    animals: { group: "Themes", name: "Animals",
+      words: "cat dog cow pig hen fox bat owl bee ant bear duck fish frog goat lion wolf deer seal crab horse sheep mouse snake tiger zebra whale shark eagle rabbit turtle monkey spider giraffe penguin elephant" },
+    body: { group: "Themes", name: "Body parts",
+      words: "arm leg ear eye toe lip hip hand foot head nose knee neck back chin hair mouth elbow wrist thumb finger ankle tooth shoulder" },
+    braille: { group: "Themes", name: "Braille tools",
+      words: "cane dots cell slate stylus braille brailler paper tactile book read touch finger embosser listen audio" },
+    colors: { group: "Themes", name: "Colors",
+      words: "red tan blue pink gold gray green black white brown purple orange yellow silver" },
+    family: { group: "Themes", name: "Family",
+      words: "mom dad son baby aunt twin uncle sister brother cousin family father mother nephew niece grandma grandpa daughter parent" },
+    food: { group: "Themes", name: "Food",
+      words: "egg jam pie ham nut corn rice soup cake milk pear plum bread apple pizza salad grape peach juice cookie cheese carrot banana cereal orange sandwich" },
+    school: { group: "Themes", name: "School",
+      words: "bus pen art desk book glue math chair class paper lunch music ruler recess pencil crayon teacher friend library eraser school backpack" },
+    travel: { group: "Themes", name: "Transportation",
+      words: "car bus van jet boat ship train plane truck bike taxi rocket subway wagon scooter tractor sailboat helicopter" },
+    weather: { group: "Themes", name: "Weather",
+      words: "hot wet fog sun icy wind rain snow cold warm hail cloud storm windy sunny rainy foggy frost thunder rainbow tornado lightning" },
+  };
+
+  // Words the filler letters must never spell by accident (rot13 so the source stays clean).
+  const BLOCKED = ("nff shpx shx spx fuvg qnza uryy penc cvff qvpx pbpx phz snt gvg gvgf fyhg cbea frk frkl " +
+    "ahqr anmv encr phag gjng ubr ubrf jgs ovgpu wvmm nany nahf obbo xxx qvyqb juber chor gheq ubzb fcvp " +
+    "xvxr puvax tbbx avt avttre pbba").split(" ").map((w) => w.replace(/[a-z]/g, (ch) => ALPHABET[(ALPHABET.indexOf(ch) + 13) % 26]));
+
+  const $ = (id) => document.getElementById(id);
+  const FIELD_IDS = ["difficulty","wordList","ownWords","gridW","gridH","wordCount","minLen","maxLen","onePer","cross",
+                     "rowGap","showList","useTitle","titleText","addLevel","answerKey","highlight",
+                     "cells","lines","cellW","lineH","dotSp","formFeed"];
+  const RADIO_NAMES = ["dirs", "filler", "view"];
+  const PUZZLE_FIELDS = ["gridW","gridH","wordCount","minLen","maxLen","dirs","onePer","cross","filler"];
+  const VIEW_FIELDS = ["view", "highlight"];
+  const STORE_KEY = "tactileWordSearch.v1";
+
+  let current = null;       // last build result
+  let announceTimer = 0;
+
+  // ---------- setup ----------
+  const groups = {};
+  for (const [key, list] of Object.entries(LISTS)) {
+    if (!groups[list.group]) {
+      groups[list.group] = document.createElement("optgroup");
+      groups[list.group].label = list.group;
+      $("wordList").appendChild(groups[list.group]);
+    }
+    const o = document.createElement("option");
+    o.value = key; o.textContent = list.name;
+    groups[list.group].appendChild(o);
+  }
+  {
+    const o = document.createElement("option");
+    o.value = "own"; o.textContent = "My own words";
+    $("wordList").appendChild(o);
+  }
+  fillNumberOptions($("wordCount"), 1, MAX_WORDS);
+  fillNumberOptions($("minLen"), 2, 10);
+  fillNumberOptions($("maxLen"), 2, MAX_ACROSS);
+  fillNumberOptions($("gridW"), 2, MAX_ACROSS); // trimmed to what fits on first build
+  fillNumberOptions($("gridH"), 2, 25);
+  setRadio("view", "dots");
+
+  loadSettings();
+  $("puzzleCode").value = randomCode();
+  if ($("difficulty").value !== "custom") applyPreset();
+  showOwnBox();
+
+  // Disclosure buttons (collapsed on every visit)
+  for (const btn of document.querySelectorAll(".disclosure")) {
+    btn.addEventListener("click", () => {
+      const open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", String(open));
+      $(btn.getAttribute("aria-controls")).hidden = !open;
+    });
+  }
+
+  // One handler for every setting: text-like fields on input, the rest on change.
+  const onSetting = (e) => {
+    const el = e.target;
+    if (el.type === "file") return;
+    const key = el.type === "radio" ? el.name : el.id;
+    if (!key) return;
+    const textLike = el.type === "text" || el.tagName === "TEXTAREA";
+    if (textLike !== (e.type === "input")) return;
+    if (VIEW_FIELDS.includes(key)) {
+      saveSettings();
+      if (current) drawPreview(current);
+      return;
+    }
+    if (key === "puzzleCode") {
+      const digits = el.value.replace(/\D/g, "");
+      if (digits !== el.value) el.value = digits;
+    }
+    if (key === "difficulty") applyPreset();
+    if (key === "wordList") showOwnBox();
+    if (PUZZLE_FIELDS.includes(key)) $("difficulty").value = "custom";
+    if (key !== "puzzleCode") saveSettings();
+    build();
+    scheduleAnnounce(key === "ownWords" ? TYPING_DELAY_MS : ANNOUNCE_DELAY_MS);
+  };
+  document.addEventListener("input", onSetting);
+  document.addEventListener("change", onSetting);
+
+  // Up and Down arrows step the puzzle code, like a spin button.
+  $("puzzleCode").addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    const n = parseInt($("puzzleCode").value, 10) || 1;
+    $("puzzleCode").value = Math.min(999999, Math.max(1, n + (e.key === "ArrowUp" ? 1 : -1)));
+    build();
+    scheduleAnnounce();
+  });
+
+  $("ownFile").addEventListener("change", () => {
+    const file = $("ownFile").files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      $("ownWords").value = String(reader.result);
+      $("ownFile").value = ""; // so the same file can be loaded again
+      saveSettings();
+      build();
+      clearTimeout(announceTimer);
+      const n = parseOwnWords($("ownWords").value).length;
+      announce(`Loaded ${plural(n, "word")} from ${file.name}. ${current ? current.summary : warnText()}`);
+    };
+    reader.onerror = () => announce("That file could not be read.");
+    reader.readAsText(file);
+  });
+
+  $("newBtn").addEventListener("click", () => {
+    $("puzzleCode").value = randomCode();
+    build();
+    scheduleAnnounce(150);
+  });
+  $("downloadBtn").addEventListener("click", download);
+
+  // ---------- announcements ----------
+  // Waits until changes stop, then speaks one message, so arrowing through a
+  // list or typing a number doesn't read a sentence on every keypress.
+  function scheduleAnnounce(delay = ANNOUNCE_DELAY_MS) {
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(() => {
+      if (!current) { announce(warnText()); return; }
+      announce([current.summary, ...current.warnings].join(" "));
+    }, delay);
+  }
+
+  function announce(text) {
+    const region = $("announcer");
+    region.textContent = "";
+    // Clearing first and setting on the next tick makes repeat messages speak again.
+    setTimeout(() => { region.textContent = text; }, 60);
+  }
+
+  // ---------- settings ----------
+  function randomCode() { return 1 + Math.floor(Math.random() * 99999); }
+
+  function getRadio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : null;
+  }
+  function setRadio(name, value) {
+    const el = document.querySelector(`input[name="${name}"][value="${value}"]`);
+    if (el) el.checked = true;
+  }
+
+  // Number lists only offer values that fit, so an impossible size can't be chosen.
+  function fillNumberOptions(sel, lo, hi) {
+    if (sel.options.length === hi - lo + 1 && +sel.options[0].value === lo) return;
+    const keep = sel.value;
+    sel.textContent = "";
+    for (let n = lo; n <= hi; n++) {
+      const o = document.createElement("option");
+      o.value = n; o.textContent = n;
+      sel.appendChild(o);
+    }
+    if (keep) sel.value = Math.min(hi, Math.max(lo, +keep));
+  }
+
+  function showOwnBox() {
+    $("ownBox").hidden = $("wordList").value !== "own";
+  }
+
+  function applyPreset() {
+    const p = PRESETS[$("difficulty").value];
+    if (!p) return;
+    if (!p.fill) { $("gridW").value = p.w; $("gridH").value = p.h; }
+    $("wordCount").value = p.count;
+    $("minLen").value = p.min;
+    $("maxLen").value = p.max;
+    $("onePer").checked = p.onePer;
+    $("cross").checked = p.cross;
+    setRadio("dirs", p.dirs);
+    setRadio("filler", p.filler);
+  }
+
+  function num(id, lo, hi, fallback) {
+    const v = parseFloat($(id).value);
+    if (!isFinite(v)) return fallback;
+    return Math.min(hi, Math.max(lo, v));
+  }
+
+  function readSettings() {
+    const s = {
+      level: $("difficulty").value,
+      list: $("wordList").value,
+      ownText: $("ownWords").value,
+      w: Math.round(num("gridW", 2, MAX_ACROSS, 8)),
+      h: Math.round(num("gridH", 2, 40, 5)),
+      count: Math.round(num("wordCount", 1, MAX_WORDS, 3)),
+      minLen: Math.round(num("minLen", 2, 10, 3)),
+      maxLen: Math.round(num("maxLen", 2, MAX_ACROSS, 6)),
+      dirs: getRadio("dirs") || "across",
+      onePer: $("onePer").checked,
+      cross: $("cross").checked,
+      filler: getRadio("filler") || "standard",
+      rowGap: $("rowGap").checked,
+      showList: $("showList").checked,
+      useTitle: $("useTitle").checked,
+      titleText: $("titleText").value,
+      addLevel: $("addLevel").checked,
+      answerKey: $("answerKey").checked,
+      cells: Math.round(num("cells", 10, 60, 40)),
+      lines: Math.round(num("lines", 5, 40, 25)),
+      cellW: num("cellW", 4, 10, 6.2),
+      lineH: num("lineH", 5, 15, 10),
+      dotSp: num("dotSp", 1.5, 3.5, 2.5),
+      formFeed: $("formFeed").checked,
+      code: Math.round(num("puzzleCode", 1, 999999, 1)),
+    };
+    s.fill = !!(PRESETS[s.level] && PRESETS[s.level].fill);
+    if (s.minLen > s.maxLen) [s.minLen, s.maxLen] = [s.maxLen, s.minLen];
+    // Keep a cell's two dot columns inside the cell, and a line's three dot rows inside the line.
+    s.dotSp = Math.min(s.dotSp, s.cellW * 0.6, s.lineH / 2.2);
+    return s;
+  }
+
+  function saveSettings() {
+    try {
+      const out = {};
+      for (const id of FIELD_IDS) {
+        const el = $(id);
+        out[id] = el.type === "checkbox" ? el.checked : el.value;
+      }
+      for (const name of RADIO_NAMES) out[name] = getRadio(name);
+      localStorage.setItem(STORE_KEY, JSON.stringify(out));
+    } catch (e) { /* storage unavailable; settings just won't persist */ }
+  }
+
+  function loadSettings() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      if (!saved) return;
+      for (const id of FIELD_IDS) {
+        if (!(id in saved)) continue;
+        const el = $(id);
+        if (el.type === "checkbox") el.checked = !!saved[id];
+        else el.value = saved[id];
+      }
+      for (const name of RADIO_NAMES) if (saved[name]) setRadio(name, saved[name]);
+    } catch (e) { /* ignore */ }
+  }
+
+  // ---------- random ----------
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffle(arr, rand) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  const plural = (n, word) => n === 0 ? `no ${word}s` : `${n} ${word}${n === 1 ? "" : "s"}`;
+
+  // ---------- words ----------
+  // Lowercase a to z only; accents are dropped, anything else separates words.
+  function parseOwnWords(text) {
+    const out = [];
+    for (const raw of text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/[^a-z]+/)) {
+      if (raw.length >= 2 && !out.includes(raw)) out.push(raw);
+    }
+    return out;
+  }
+
+  // Picks the hidden words. Built-in lists prefer the chosen lengths and widen them
+  // only if the list runs short. A word is skipped if it sits inside another chosen
+  // word, like "an" in "and", since it would then be hidden twice.
+  function chooseWords(s, W, H, rand) {
+    const own = s.list === "own";
+    const pool = own ? parseOwnWords(s.ownText) : LISTS[s.list].words.split(" ");
+    const longest = s.dirs === "both" ? Math.max(W, H) : W;
+    const notes = [];
+    let tiers;
+    if (own) {
+      const tooLong = pool.filter((w) => w.length > longest);
+      if (tooLong.length) notes.push(`Too long for this puzzle, left out: ${tooLong.join(", ")}.`);
+      tiers = [pool.filter((w) => w.length <= longest)];
+    } else {
+      const fit = pool.filter((w) => w.length <= longest);
+      tiers = [
+        fit.filter((w) => w.length >= s.minLen && w.length <= s.maxLen),
+        fit.filter((w) => w.length > s.maxLen),
+        fit.filter((w) => w.length < s.minLen),
+      ];
+    }
+    const chosen = [], inside = [];
+    let relaxed = false;
+    tiers.forEach((tier, t) => {
+      for (const w of shuffle(tier.slice(), rand)) {
+        if (chosen.length >= s.count) return;
+        if (chosen.some((c) => c.includes(w) || w.includes(c))) { inside.push(w); continue; }
+        chosen.push(w);
+        if (t > 0) relaxed = true;
+      }
+    });
+    if (own && inside.length) notes.push(`Left out because it is inside another word: ${inside.join(", ")}.`);
+    if (relaxed) notes.push("This list has few words of the chosen length, so other lengths were used too.");
+    const available = tiers.reduce((n, t) => n + t.length, 0);
+    if (!own && chosen.length < s.count) notes.push(`This list has only ${plural(chosen.length, "word")} that fit this puzzle.`);
+    return { words: chosen, notes, own, total: own ? available : 0 };
+  }
+
+  // Tries many random layouts and keeps the one that hides the most words.
+  function placeWords(words, W, H, s, rand) {
+    const ri = (n) => Math.floor(rand() * n);
+    const dirs = s.dirs === "both" ? ["A", "D"] : ["A"];
+    let best = null;
+    for (let attempt = 0; attempt < 60; attempt++) {
+      const grid = new Array(W * H).fill("");
+      const dirAt = new Uint8Array(W * H); // 1 = part of an across word, 2 = part of a down word
+      const rowsUsed = new Set(), colsUsed = new Set();
+      const placed = [], missed = [];
+      let nA = 0, nD = 0;
+      const order = shuffle(words.slice(), rand).sort((a, b) => b.length - a.length);
+      for (const word of order) {
+        const L = word.length;
+        const opts = { A: [], D: [] };
+        for (const d of dirs) {
+          const across = d === "A", bit = across ? 1 : 2;
+          const rLimit = across ? H : H - L + 1, cLimit = across ? W - L + 1 : W;
+          for (let r = 0; r < rLimit; r++) {
+            for (let c = 0; c < cLimit; c++) {
+              if (s.onePer && (across ? rowsUsed.has(r) : colsUsed.has(c))) continue;
+              // Words going the same way keep at least one letter between them.
+              const before = across ? (c > 0 ? r * W + c - 1 : -1) : (r > 0 ? (r - 1) * W + c : -1);
+              const after = across ? (c + L < W ? r * W + c + L : -1) : (r + L < H ? (r + L) * W + c : -1);
+              if ((before >= 0 && dirAt[before] & bit) || (after >= 0 && dirAt[after] & bit)) continue;
+              let ok = true, shared = 0;
+              for (let i = 0; i < L && ok; i++) {
+                const k = across ? r * W + c + i : (r + i) * W + c;
+                if (!grid[k]) continue;
+                if (!s.cross || grid[k] !== word[i] || (dirAt[k] & bit)) ok = false;
+                else shared++;
+              }
+              if (ok) opts[d].push({ r, c, d, shared });
+            }
+          }
+        }
+        // Balance across and down words.
+        const pref = nA === nD ? (rand() < 0.5 ? "A" : "D") : nA < nD ? "A" : "D";
+        let list = opts[pref].length ? opts[pref] : opts[pref === "A" ? "D" : "A"];
+        if (!list.length) { missed.push(word); continue; }
+        if (s.cross && rand() < 0.6) {
+          const crossing = list.filter((o) => o.shared);
+          if (crossing.length) list = crossing;
+        }
+        const o = list[ri(list.length)];
+        const across = o.d === "A";
+        for (let i = 0; i < L; i++) {
+          const k = across ? o.r * W + o.c + i : (o.r + i) * W + o.c;
+          grid[k] = word[i];
+          dirAt[k] |= across ? 1 : 2;
+        }
+        if (across) { rowsUsed.add(o.r); nA++; } else { colsUsed.add(o.c); nD++; }
+        placed.push({ word, r: o.r, c: o.c, across });
+      }
+      if (!best || placed.length > best.placed.length) best = { grid, placed, missed };
+      if (!missed.length) break;
+    }
+    return best;
+  }
+
+  // Every row and column as a list of grid indexes, for spotting accidental words.
+  function gridLines(W, H) {
+    const out = [];
+    for (let r = 0; r < H; r++) out.push(Array.from({ length: W }, (_, c) => r * W + c));
+    for (let c = 0; c < W; c++) out.push(Array.from({ length: H }, (_, r) => r * W + c));
+    return out;
+  }
+
+  function countWord(grid, W, H, word) {
+    let n = 0;
+    for (const cells of gridLines(W, H)) {
+      const text = cells.map((k) => grid[k]).join("");
+      for (let i = text.indexOf(word); i >= 0; i = text.indexOf(word, i + 1)) n++;
+    }
+    return n;
+  }
+
+  function fillGrid(grid, W, H, words, mode, rand, notes) {
+    const ri = (n) => Math.floor(rand() * n);
+    const used = new Set(words.join(""));
+    let pool = [...ALPHABET];
+    if (mode === "easy") {
+      const unused = pool.filter((ch) => !used.has(ch));
+      if (unused.length >= 6) pool = unused;
+      else notes.push("These words use most of the alphabet, so standard filler letters were used.");
+    } else if (mode === "hard" && used.size) {
+      pool = [...used];
+    }
+    const filler = new Uint8Array(W * H);
+    for (let k = 0; k < grid.length; k++) {
+      if (!grid[k]) { filler[k] = 1; grid[k] = pool[ri(pool.length)]; }
+    }
+    // Re-roll filler letters that spell a hidden word a second time or an unwanted word.
+    // Hidden words themselves contain no filler, so they are never touched.
+    const lines = gridLines(W, H);
+    const targets = words.concat(BLOCKED);
+    for (let round = 0; round < 500; round++) {
+      const bad = [];
+      for (const cells of lines) {
+        const text = cells.map((k) => grid[k]).join("");
+        for (const t of targets) {
+          for (let i = text.indexOf(t); i >= 0; i = text.indexOf(t, i + 1)) {
+            const free = cells.slice(i, i + t.length).filter((k) => filler[k]);
+            if (free.length) bad.push(free);
+          }
+        }
+      }
+      if (!bad.length) break;
+      const choices = round < 400 ? pool : ALPHABET; // widen the letters if a small pool keeps failing
+      for (const free of bad) grid[free[ri(free.length)]] = choices[ri(choices.length)];
+    }
+    return filler;
+  }
+
+  // ---------- braille text (uncontracted UEB) ----------
+  const PUNCT = { ".": "4", ",": "1", "?": "8", "!": "6", "'": "'", "-": "-", ":": "3", ";": "2" };
+
+  function toBrailleAscii(text) {
+    let out = "";
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    words.forEach((w, wi) => {
+      if (wi) out += " ";
+      const letters = w.replace(/[^A-Za-z]/g, "");
+      const allCaps = letters.length >= 2 && letters === letters.toUpperCase();
+      if (allCaps) out += ",,";
+      let inNum = false;
+      for (const ch of w) {
+        if (ch >= "0" && ch <= "9") {
+          if (!inNum) { out += "#"; inNum = true; }
+          out += "JABCDEFGHI"[+ch];
+        } else if (/[A-Za-z]/.test(ch)) {
+          if (inNum && ch >= "a" && ch <= "j") out += ";"; // grade 1 indicator after a number
+          inNum = false;
+          if (!allCaps && ch >= "A" && ch <= "Z") out += ",";
+          out += ch.toUpperCase();
+        } else {
+          inNum = false;
+          if (PUNCT[ch]) out += PUNCT[ch];
+        }
+      }
+    });
+    return out;
+  }
+
+  // Words go across the line with two blank cells between them, never split.
+  function wrapWords(words, cells) {
+    const out = [];
+    let line = "";
+    for (const w of words) {
+      if (line && line.length + 2 + w.length > cells) { out.push(line); line = ""; }
+      line += (line ? "  " : "") + w;
+    }
+    if (line) out.push(line);
+    return out;
+  }
+
+  // ---------- build ----------
+  // A page line: brf is the braille ASCII; print and kind give each cell's print
+  // letter and color for the picture. A title line keeps its print text whole.
+  const blankLine = () => ({ brf: "", print: "", kind: "" });
+  const textLine = (text, kind) => ({ brf: text.toUpperCase(), print: text, kind: kind.repeat(text.length) });
+
+  function build() {
+    const s = readSettings();
+    const warn = { size: [], words: [], title: [] };
+    const preset = PRESETS[s.level];
+    const levelName = preset ? `Level ${s.level}` : "Custom";
+
+    const maxW = Math.min(MAX_ACROSS, Math.floor((s.cells + 1) / 2));
+    fillNumberOptions($("gridW"), 2, maxW);
+    let W = s.fill ? maxW : preset ? preset.w : s.w;
+    if (W > maxW) {
+      warn.size.push(`${W} letters across does not fit on this line length.`, `This puzzle is ${maxW} across, the widest that fits.`);
+      W = maxW;
+    }
+    const wantH = s.fill ? s.lines : preset ? preset.h : s.h;
+
+    // Title text
+    let titleBrf = "";
+    let titleWords = "";
+    if (s.useTitle) {
+      titleWords = s.titleText.trim();
+      if (s.addLevel && preset) titleWords += (titleWords ? " " : "") + levelName;
+      titleBrf = toBrailleAscii(titleWords);
+      if (titleBrf.length > s.cells) {
+        titleBrf = titleBrf.slice(0, s.cells);
+        warn.title.push("The title is too long for one braille line.", "The end was cut off.");
+      }
+    }
+    const hasTitle = titleBrf.length > 0;
+
+    // Words. The word list is sized before placing so the rows below it can be counted;
+    // if a word can't be placed the list only gets shorter.
+    const rand = mulberry32(s.code);
+    const pick = chooseWords(s, W, wantH, rand);
+    warn.words.push(...pick.notes);
+    if (!pick.words.length) {
+      showError(s.list === "own"
+        ? ["No words to hide yet.", "Type or paste words in the Your words box."]
+        : ["No words in this list fit this puzzle.", "Choose a bigger size or a different list."]);
+      return;
+    }
+    const step = s.rowGap ? 2 : 1;
+    const topLines = (wordList) => (hasTitle ? 2 : 0) + (wordList.length ? wordList.length + 1 : 0);
+    const plannedList = s.showList ? wrapWords(pick.words, s.cells) : [];
+    const maxH = Math.min(40, Math.floor((s.lines - topLines(plannedList) - 1) / step) + 1);
+    if (maxH < 2) {
+      showError(["The puzzle does not fit below the title and word list.", "Use fewer words, a bigger page, or no title."]);
+      return;
+    }
+    fillNumberOptions($("gridH"), 2, maxH);
+    let H = s.fill ? maxH : wantH;
+    if (H > maxH) {
+      warn.size.push(`${H} rows down does not fit on this page.`, `This puzzle has ${maxH} rows, the most that fit.`);
+      H = maxH;
+    }
+    $("gridW").value = W;
+    $("gridH").value = H;
+
+    // Crossing words can spell a hidden word a second time out of other words' letters,
+    // which filler can't fix, so try a fresh layout when that happens.
+    let layout, filler, fillNotes;
+    for (let tries = 0; tries < 20; tries++) {
+      layout = placeWords(pick.words, W, H, s, rand);
+      fillNotes = [];
+      filler = fillGrid(layout.grid, W, H, layout.placed.map((p) => p.word), s.filler, rand, fillNotes);
+      if (layout.placed.every((p) => countWord(layout.grid, W, H, p.word) === 1)) break;
+    }
+    if (layout.missed.length) {
+      warn.words.push(`Did not fit, left out: ${layout.missed.join(", ")}.`, "Try a bigger size, fewer words, or turn off helpers.");
+    }
+    warn.words.push(...fillNotes);
+    const placed = layout.placed.sort((a, b) => a.word.localeCompare(b.word));
+    const words = placed.map((p) => p.word);
+    const grid = layout.grid;
+
+    // Page 1: title, blank, word list, blank, then grid rows.
+    const page = [];
+    if (hasTitle) page.push({ brf: titleBrf, print: "", kind: "", title: titleWords }, blankLine());
+    const listLines = s.showList ? wrapWords(words, s.cells) : [];
+    for (const l of listLines) page.push(textLine(l, "l"));
+    if (listLines.length) page.push(blankLine());
+    const gridTop = page.length;
+    const rowLine = (r, keyOnly) => {
+      let print = "", kind = "";
+      for (let c = 0; c < W; c++) {
+        const k = r * W + c;
+        if (c) { print += " "; kind += " "; }
+        print += keyOnly && filler[k] ? " " : grid[k];
+        kind += filler[k] ? "f" : "h";
+      }
+      return { brf: print.toUpperCase(), print, kind };
+    };
+    for (let r = 0; r < H; r++) {
+      if (r && s.rowGap) page.push(blankLine());
+      page.push(rowLine(r, false));
+    }
+
+    // Optional page 2: only the hidden words, in the same places.
+    const key = [];
+    if (s.answerKey) {
+      key.push({ brf: toBrailleAscii("Answer Key") }, blankLine());
+      for (let r = 0; r < H; r++) {
+        if (r && s.rowGap) key.push(blankLine());
+        key.push(rowLine(r, true));
+      }
+    }
+
+    const brfText = (lines) => lines.map((l) => l.brf.replace(/ +$/, "")).join("\r\n") + "\r\n";
+    let brf = brfText(page);
+    if (key.length) brf += "\f" + brfText(key);
+    if (s.formFeed) brf += "\f";
+
+    // Text description: one short fact per line (under JAWS's 100-character line limit),
+    // and the picture is described by these lines.
+    const nA = placed.filter((p) => p.across).length, nD = placed.length - nA;
+    const facts = [
+      `${levelName}, ${W} letters across and ${H} rows down`,
+      nD ? `${plural(placed.length, "hidden word")}: ${nA} across, ${nD} down`
+         : `${plural(placed.length, "hidden word")}, all across`,
+    ];
+    let chunk = [];
+    for (const w of words) {
+      chunk.push(w);
+      if (chunk.join(", ").length > 60) { facts.push(`${facts.length === 2 ? "Words" : "More words"}: ${chunk.join(", ")}`); chunk = []; }
+    }
+    if (chunk.length) facts.push(`${facts.length === 2 ? "Words" : "More words"}: ${chunk.join(", ")}`);
+    facts.push(`From: ${pick.own ? "your own words" : LISTS[s.list].name}`);
+    if (pick.own && pick.total > words.length) facts.push(`Using ${words.length} of your ${pick.total} words. Press New puzzle for a different mix`);
+    facts.push(`Puzzle code ${s.code}`);
+    const summary = facts.join(". ") + ".";
+    const pageFacts = [`Uses ${page.length} of ${s.lines} braille lines.`];
+    if (key.length) pageFacts.push("Answer key on page 2.");
+
+    const answers = placed.map((p) => p.across
+      ? `${p.word}: across, row ${p.r + 1}, letters ${p.c + 1} to ${p.c + p.word.length}.`
+      : `${p.word}: down, letter ${p.c + 1}, rows ${p.r + 1} to ${p.r + p.word.length}.`);
+    const gridText = [];
+    for (let r = 0; r < H; r++) gridText.push(`Row ${r + 1}: ${grid.slice(r * W, r * W + W).join(" ")}`);
+
+    const allWarnings = [...warn.size, ...warn.words, ...warn.title];
+    const levelKey = levelName.toLowerCase().replace(/\s+/g, "");
+    current = {
+      s,
+      page,
+      brf,
+      levelName,
+      code: s.code,
+      filename: `word-search-${levelKey}-${s.list}-code${s.code}.brf`,
+      summary,
+      warnings: allWarnings,
+    };
+
+    setLines("desc", facts.map((f) => f + ".").concat(pageFacts));
+    setLines("answers", answers);
+    setLines("gridText", gridText);
+    setLines("warnAll", allWarnings);
+    setLines("warnSize", warn.size);
+    setLines("warnWords", warn.words);
+    setLines("warnTitle", warn.title);
+
+    drawPreview(current);
+  }
+
+  // Each sentence gets its own line, so arrow keys read whole sentences.
+  function setLines(id, lines) {
+    const el = $(id);
+    el.textContent = "";
+    for (const line of lines) {
+      const div = document.createElement("div");
+      div.textContent = line;
+      el.appendChild(div);
+    }
+  }
+
+  function warnText() {
+    return [...$("warnAll").children].map((d) => d.textContent).join(" ");
+  }
+
+  function showError(lines) {
+    current = null;
+    setLines("desc", ["No puzzle."]);
+    setLines("answers", []);
+    setLines("gridText", []);
+    setLines("warnAll", lines);
+    setLines("warnSize", []);
+    setLines("warnWords", lines);
+    setLines("warnTitle", []);
+    $("preview").innerHTML = "";
+  }
+
+  // ---------- picture ----------
+  function drawPreview(cur) {
+    const { s, page } = cur;
+    const printView = getRadio("view") === "print";
+    const highlight = $("highlight").checked;
+    $("legendDots").textContent = printView ? "Letters" : "Braille dots";
+    $("legendFound").hidden = !highlight;
+
+    const pad = 6;
+    const pageW = s.cells * s.cellW + pad * 2 - (s.cellW - s.dotSp);
+    const pageH = s.lines * s.lineH + pad * 2 - (s.lineH - 2 * s.dotSp);
+    const r = Math.min(0.8, s.dotSp * 0.34);
+    const parts = [`<rect class="paper" x="0.3" y="0.3" width="${(pageW - 0.6).toFixed(2)}" height="${(pageH - 0.6).toFixed(2)}" rx="2"/>`];
+    const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+    page.forEach((line, ln) => {
+      if (ln >= s.lines) return;
+      const y0 = pad + ln * s.lineH;
+      if (printView && line.title !== undefined) {
+        parts.push(`<text class="t-title" x="${pad - 0.6}" y="${(y0 + s.dotSp + 2.2).toFixed(2)}">${esc(line.title)}</text>`);
+        return;
+      }
+      for (let ch = 0; ch < line.brf.length && ch < s.cells; ch++) {
+        const kind = line.title !== undefined ? "t" : line.kind[ch];
+        const found = highlight && kind === "h";
+        const x0 = pad + ch * s.cellW;
+        if (found) {
+          parts.push(`<rect class="found-bg" x="${(x0 - 1.4).toFixed(2)}" y="${(y0 - 1.4).toFixed(2)}" width="${(s.dotSp + 2.8).toFixed(2)}" height="${(2 * s.dotSp + 2.8).toFixed(2)}" rx="1"/>`);
+        }
+        if (printView) {
+          const p = line.print[ch];
+          if (!p || p === " ") continue;
+          parts.push(`<text${found ? ' class="t-found"' : ""} x="${(x0 + s.dotSp / 2).toFixed(2)}" y="${(y0 + s.dotSp + 2.6).toFixed(2)}" text-anchor="middle">${esc(p)}</text>`);
+          continue;
+        }
+        const bits = BRF.indexOf(line.brf[ch]);
+        if (bits <= 0) continue;
+        const cls = kind === "t" ? "d-title" : found ? "d-found" : "d-dot";
+        for (let col = 0; col < 2; col++)
+          for (let row = 0; row < 3; row++)
+            if (bits & BIT[col][row])
+              parts.push(`<circle class="${cls}" cx="${(x0 + col * s.dotSp).toFixed(2)}" cy="${(y0 + row * s.dotSp).toFixed(2)}" r="${r.toFixed(2)}"/>`);
+      }
+    });
+
+    const svg = $("preview");
+    svg.setAttribute("viewBox", `0 0 ${pageW.toFixed(2)} ${pageH.toFixed(2)}`);
+    svg.innerHTML = parts.join("");
+  }
+
+  function download() {
+    if (!current) {
+      announce(warnText() || "There is no puzzle to download.");
+      return;
+    }
+    const bytes = new Uint8Array(current.brf.length);
+    for (let i = 0; i < current.brf.length; i++) bytes[i] = current.brf.charCodeAt(i) & 0x7f;
+    const blob = new Blob([bytes], { type: "application/octet-stream" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = current.filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    clearTimeout(announceTimer);
+    announce(`Downloaded braille file: ${current.levelName}, puzzle code ${current.code}.`);
+  }
+
+  build();
+})();
+</script>
+</body>
+</html>
