@@ -516,9 +516,10 @@
   const FIELD_IDS = ["difficulty","gridW","gridH","layout","pathWidth","startMark","finishMark","openings",
                      "useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed",
                      "sigRes","sigW","sigH"];
-  // File type and maze style are left out on purpose: every visit starts on a
-  // braille file (.brf) with walls.
-  const RADIO_NAMES = ["branch", "loops", "lineWidth"];
+  // File type is remembered, so a refresh keeps .brf or .sig (the maze itself is new
+  // each time, since every page load picks a new maze code). Maze style is left out
+  // on purpose: every visit starts with walls.
+  const RADIO_NAMES = ["branch", "loops", "lineWidth", "fileType"];
   const MAZE_FIELDS = ["gridW","gridH","branch","loops"];
   const PATH_FIELDS = ["pathWidth","cellW","lineH","dotSp","fileType","sigRes","lineStyle"];
   const PATH_NAMES = { 2: "Narrow", 3: "Standard", 4: "Wide", 5: "Extra wide" };
