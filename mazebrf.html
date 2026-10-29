@@ -46,6 +46,7 @@
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     margin: 0;
     background: var(--bg);
@@ -205,7 +206,8 @@
 <div class="top">
   <h1>Tactile Maze Maker</h1>
   <p>Makes finger-tracing mazes for a braille embosser.</p>
-  <p>The walls are lines of dots. You trace the open path between them.</p>
+  <p>Works with any braille embosser. Graphics embossers can also use QuickTac (.sig).</p>
+  <p>Trace the path between walls of dots, or follow a raised line.</p>
 </div>
 
 <main>
@@ -228,6 +230,10 @@
       <p class="hint" id="levelHint">Higher levels are bigger, with more turns and dead ends.</p>
     </div>
 
+    <h3>Maze style</h3>
+    <label class="choice"><input type="checkbox" id="lineStyle" aria-describedby="styleHint"><span>Follow a raised line instead of walls</span></label>
+    <p class="hint" id="styleHint">Unchecked, you trace the open path between walls of dots.</p>
+
     <h3>Make and download</h3>
     <div class="actions">
       <button type="button" class="secondary" id="newBtn">New maze</button>
@@ -246,7 +252,7 @@
       <svg id="preview" role="img" tabindex="0" aria-label="Maze picture" aria-describedby="desc" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
     <div class="legend" aria-hidden="true">
-      <span style="--c: var(--dot)">Wall dots</span>
+      <span style="--c: var(--dot)" id="legendDots">Wall dots</span>
       <span style="--c: var(--start)">Start</span>
       <span style="--c: var(--finish)">Finish</span>
       <span style="--c: var(--title)">Title</span>
@@ -263,6 +269,17 @@
       </h2>
       <div class="disclosure-body" id="moreBody" hidden>
         <p class="hint">Changing size, dead ends, or extra routes switches the level to Custom.</p>
+
+        <!-- Line maze settings, shown only when "Follow a raised line" is checked -->
+        <div id="lineGroup" hidden>
+          <h3 id="lineWidthHeading">Line thickness</h3>
+          <div role="radiogroup" aria-labelledby="lineWidthHeading">
+            <label class="choice"><input type="radio" name="lineWidth" value="2"><span>Double<small><span class="sr-only">, </span>2 dots wide, easier to follow</small></span></label>
+            <label class="choice"><input type="radio" name="lineWidth" value="1"><span>Single<small><span class="sr-only">, </span>1 dot wide</small></span></label>
+          </div>
+          <p class="hint">Braille files have small gaps in lines between braille cells.</p>
+          <p class="hint">For solid lines, choose QuickTac graphic in Embosser and page setup.</p>
+        </div>
 
         <h3>Maze size</h3>
         <div class="row">
@@ -310,7 +327,7 @@
           <label for="finishMark">Finish marker</label>
           <select id="finishMark" aria-describedby="warnMarker"></select>
         </div>
-        <label class="choice"><input type="checkbox" id="openings" checked><span>Gaps in the outer wall at start and finish</span></label>
+        <label class="choice" id="openingsChoice"><input type="checkbox" id="openings" checked><span>Gaps in the outer wall at start and finish</span></label>
         <div class="warn" id="warnMarker"></div>
 
         <h3 id="pathHeading">Path width</h3>
@@ -353,6 +370,42 @@
         </button>
       </h2>
       <div class="disclosure-body" id="setupBody" hidden>
+        <h3 id="fileTypeHeading">File type</h3>
+        <div role="radiogroup" aria-labelledby="fileTypeHeading">
+          <label class="choice"><input type="radio" name="fileType" value="brf"><span>Braille file (.brf)<small><span class="sr-only">, </span>For BrailleBlaster or any braille embosser</small></span></label>
+          <label class="choice"><input type="radio" name="fileType" value="sig"><span>QuickTac graphic (.sig)<small><span class="sr-only">, </span>Evenly spaced dots, for graphics embossing</small></span></label>
+        </div>
+
+        <!-- QuickTac graphic settings, shown only when that file type is chosen -->
+        <div id="sigGroup" hidden>
+          <h3 id="resHeading">Graphics resolution</h3>
+          <div class="field">
+            <select id="sigRes" aria-labelledby="resHeading" aria-describedby="resHint1 resHint2">
+              <option value="0.08">12.5 dots per inch, 0.08 inch spacing</option>
+              <option value="0.06">16.7 dots per inch, 0.06 inch spacing</option>
+              <option value="0.05">20 dots per inch, 0.05 inch spacing</option>
+            </select>
+            <p class="hint" id="resHint1">Match the Dot Spacing in QuickTac, File, Page Setup.</p>
+            <p class="hint" id="resHint2">A Dot Spacing of 2.032 millimeters is 12.5 dots per inch.</p>
+          </div>
+
+          <h3>Image size</h3>
+          <div class="row">
+            <div class="field">
+              <label for="sigW">Width in dots</label>
+              <input type="text" id="sigW" inputmode="numeric" autocomplete="off" value="120" aria-describedby="imgHint1 imgHint2">
+            </div>
+            <div class="field">
+              <label for="sigH">Height in dots</label>
+              <input type="text" id="sigH" inputmode="numeric" autocomplete="off" value="135" aria-describedby="imgHint1 imgHint2">
+            </div>
+          </div>
+          <p class="hint" id="imgHint1" style="margin-top:-8px">Use the largest Image Size in QuickTac, File, Page Setup.</p>
+          <p class="hint" id="imgHint2">Changing the resolution resizes these to cover the same paper.</p>
+        </div>
+
+        <!-- Braille file settings, shown only when that file type is chosen -->
+        <div id="brfGroup">
         <h3>Page size</h3>
         <div class="row">
           <div class="field">
@@ -367,8 +420,9 @@
         <p class="hint" id="pageHint1" style="margin-top:-8px">40 by 25 fits standard 11.5 by 11 inch braille paper.</p>
         <p class="hint" id="pageHint2">These must match your embosser and BrailleBlaster page settings.</p>
         <label class="choice"><input type="checkbox" id="formFeed" checked><span>End the file with a page break</span></label>
+        </div>
 
-        <h3>Dot spacing</h3>
+        <h3>Braille dot spacing</h3>
         <div class="row3">
           <div class="field">
             <label for="cellW">Cell to cell</label>
@@ -404,6 +458,15 @@
       <li>If they are bigger, lines wrap and break the maze.</li>
       <li>Emboss a test page first. If paths feel too narrow or wide, change the path width.</li>
     </ul>
+
+    <h2 style="margin-top:20px">Embossing a QuickTac graphic</h2>
+    <ol>
+      <li>In Embosser and page setup, choose QuickTac graphic.</li>
+      <li>Set the resolution and image size to match QuickTac, File, Page Setup.</li>
+      <li>Press Download QuickTac graphic.</li>
+      <li>In QuickTac, choose File, Open and open the .sig file.</li>
+      <li>Check File, Page Setup shows your embosser, then emboss.</li>
+    </ol>
   </div>
 </div>
 
@@ -416,7 +479,11 @@
 
   // North American Braille ASCII, indexed by dot bits (dot1=1, dot2=2, dot3=4, dot4=8, dot5=16, dot6=32).
   const BRF = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
+  // QuickTac .sig uses the same table except dots 246, 1256, 12456 are { | } instead of [ \ ].
+  // With [ \ ] QuickTac refuses to open the file.
+  const SIG = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%{$+X!&;:4|0Z7(_?W}#Y)=";
   const BIT = [[1, 2, 4], [8, 16, 32]]; // BIT[col][row]
+  const MM_PER_INCH = 25.4;
   const TITLE_GAP_MM = 7;
   const ANNOUNCE_DELAY_MS = 700;
 
@@ -431,24 +498,29 @@
     5: { fill: true, branch: "many", loops: "none" },
   };
 
-  // Marker shapes as dot offsets [dx, dy] around the dot nearest the square's center.
+  // Marker shapes: has(dx, dy, k) says whether the dot at offset [dx, dy] from the square's
+  // center is raised. k is the shape's reach in dots: 1 on a braille page (a 3 by 3 area);
+  // on a fine graphics grid it grows so the marker stays about the same size on paper.
   const MARKERS = {
-    block:   { label: "Solid block, 9 dots", dots: [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]] },
-    x:       { label: "X shape, 5 dots", dots: [[-1,-1],[1,-1],[0,0],[-1,1],[1,1]] },
-    diamond: { label: "Diamond ring, 4 dots", dots: [[0,-1],[-1,0],[1,0],[0,1]] },
-    pair:    { label: "Two dots side by side", dots: [[-1,0],[1,0]] },
-    single:  { label: "Single dot", dots: [[0,0]] },
+    block:   { label: "Solid block", has: (dx, dy, k) => true },
+    x:       { label: "X shape", has: (dx, dy, k) => Math.abs(dx) === Math.abs(dy) },
+    diamond: { label: "Diamond ring", has: (dx, dy, k) => Math.abs(dx) + Math.abs(dy) === k },
+    pair:    { label: "Two dots side by side", has: (dx, dy, k) => dy === 0 && Math.abs(dx) === k },
+    single:  { label: "Single dot", has: (dx, dy, k) => dx === 0 && dy === 0 },
     letterS: { label: "Braille letter s", letter: "S" },
     letterF: { label: "Braille letter f", letter: "F" },
-    none:    { label: "No marker", dots: [] },
+    none:    { label: "No marker", has: () => false },
   };
 
   const $ = (id) => document.getElementById(id);
   const FIELD_IDS = ["difficulty","gridW","gridH","layout","pathWidth","startMark","finishMark","openings",
-                     "useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed"];
-  const RADIO_NAMES = ["branch", "loops"];
+                     "useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed",
+                     "sigRes","sigW","sigH"];
+  // File type and maze style are left out on purpose: every visit starts on a
+  // braille file (.brf) with walls.
+  const RADIO_NAMES = ["branch", "loops", "lineWidth"];
   const MAZE_FIELDS = ["gridW","gridH","branch","loops"];
-  const PATH_FIELDS = ["pathWidth","cellW","lineH","dotSp"];
+  const PATH_FIELDS = ["pathWidth","cellW","lineH","dotSp","fileType","sigRes","lineStyle"];
   const PATH_NAMES = { 2: "Narrow", 3: "Standard", 4: "Wide", 5: "Extra wide" };
   const STORE_KEY = "tactileMaze.v3";
 
@@ -468,12 +540,17 @@
   $("finishMark").value = "x";
   setRadio("branch", "few");
   setRadio("loops", "none");
-  fillSizeOptions($("gridW"), 40); // trimmed to what fits on first build
-  fillSizeOptions($("gridH"), 40);
+  setRadio("fileType", "brf");
+  setRadio("lineWidth", "2");
+  fillSizeOptions($("gridW"), 60); // trimmed to what fits on first build
+  fillSizeOptions($("gridH"), 60);
 
   loadSettings();
   $("mazeCode").value = randomCode();
   if ($("difficulty").value !== "custom") applyPreset();
+  let lastPitch = parseFloat($("sigRes").value);
+  applyFileType();
+  applyMazeStyle();
 
   // Disclosure buttons (collapsed on every visit)
   for (const btn of document.querySelectorAll(".disclosure")) {
@@ -496,6 +573,9 @@
       if (digits !== el.value) el.value = digits;
     }
     if (key === "difficulty") applyPreset();
+    if (key === "fileType") applyFileType();
+    if (key === "lineStyle") applyMazeStyle();
+    if (key === "sigRes") rescaleImage();
     if (MAZE_FIELDS.includes(key)) $("difficulty").value = "custom";
     if (PATH_FIELDS.includes(key)) pathsChanged = true;
     if (key !== "mazeCode") saveSettings();
@@ -569,12 +649,46 @@
     if (keep) sel.value = Math.min(max, Math.max(2, +keep));
   }
 
+  // Path width choices are named in braille cells (2 to 5). On a graphics grid the same
+  // width is rounded to whole dots instead.
+  function graphicStep(s, n) { return Math.max(4, Math.round(n * s.cellW / s.pitch)); }
+
   function updatePathLabels(s) {
     for (const o of $("pathWidth").options) {
       const n = +o.value;
-      const text = `${PATH_NAMES[n]}, about ${Math.round(n * s.cellW)} millimeters${n === 3 ? ", one adult finger" : ""}`;
+      const mm = s.sig ? graphicStep(s, n) * s.pitch : n * s.cellW;
+      const text = `${PATH_NAMES[n]}, about ${Math.round(mm)} millimeters${n === 3 ? ", one adult finger" : ""}`;
       if (o.textContent !== text) o.textContent = text;
     }
+  }
+
+  // Show the settings for the chosen file type, and name the Download button after it.
+  function applyFileType() {
+    const sig = getRadio("fileType") === "sig";
+    $("sigGroup").hidden = !sig;
+    $("brfGroup").hidden = sig;
+    $("downloadBtn").textContent = sig ? "Download QuickTac graphic" : "Download braille file";
+  }
+
+  // Show the settings for the chosen maze style, and name things to match it.
+  function applyMazeStyle() {
+    const lines = $("lineStyle").checked;
+    $("lineGroup").hidden = !lines;
+    $("openingsChoice").hidden = lines;
+    $("pathHeading").textContent = lines ? "Line spacing" : "Path width";
+    $("pathHint1").textContent = lines ? "Measured from line to line." : "Measured wall to wall.";
+    $("pathHint2").textContent = lines ? "Every line is the same distance from its neighbours."
+                                       : "Every path in the maze is the same width.";
+    $("legendDots").textContent = lines ? "Line dots" : "Wall dots";
+  }
+
+  // Keep the image covering the same paper when the resolution changes.
+  function rescaleImage() {
+    const p = parseFloat($("sigRes").value);
+    const ratio = lastPitch / p;
+    $("sigW").value = 2 * Math.floor(num("sigW", 20, 600, 120) * ratio / 2);
+    $("sigH").value = 3 * Math.floor(num("sigH", 21, 600, 135) * ratio / 3);
+    lastPitch = p;
   }
 
   function applyPreset() {
@@ -613,6 +727,12 @@
       dotSp: num("dotSp", 1.5, 3.5, 2.5),
       formFeed: $("formFeed").checked,
       code: Math.round(num("mazeCode", 1, 999999, 1)),
+      lineStyle: $("lineStyle").checked,
+      lineWidth: getRadio("lineWidth") === "1" ? 1 : 2,
+      sig: getRadio("fileType") === "sig",
+      pitch: num("sigRes", 0.03, 0.12, 0.08) * MM_PER_INCH,          // graphics dot spacing in mm
+      sigW: 2 * Math.floor(num("sigW", 20, 600, 120) / 2),           // .sig rows pack 2 dots per character
+      sigH: 3 * Math.floor(num("sigH", 21, 600, 135) / 3),           // and 3 dot rows per line
     };
     s.fill = !!(PRESETS[s.level] && PRESETS[s.level].fill);
     // Keep a cell's two dot columns inside the cell, and a line's three dot rows inside the line.
@@ -648,6 +768,10 @@
 
   // ---------- geometry ----------
   function makeGeom(s) {
+    if (s.sig) {
+      // Graphics grid: every dot the same distance from its neighbours.
+      return { dc: s.sigW, dr: s.sigH, xmm: (x) => x * s.pitch, ymm: (y) => y * s.pitch };
+    }
     return {
       dc: s.cells * 2,                 // dot columns on the page
       dr: s.lines * 3,                 // dot rows on the page
@@ -852,6 +976,22 @@
     const warn = { size: [], marker: [], title: [] };
     const levelName = PRESETS[s.level] ? `Level ${s.level}` : "Custom";
 
+    // Braille on the grid. On a braille page a cell is 2 dot columns and 3 dot rows. On a
+    // graphics grid, braille is snapped as close to standard spacing as the grid allows.
+    const bDot = s.sig ? Math.max(1, Math.round(s.dotSp / s.pitch)) : 1;          // dot to dot
+    const bCell = s.sig ? Math.max(bDot + 2, Math.round(s.cellW / s.pitch)) : 2;  // cell to cell
+    const brailleDots = (ch, x0, y0) => {
+      const out = [];
+      const bits = BRF.indexOf(ch);
+      for (let col = 0; col < 2; col++)
+        for (let row = 0; row < 3; row++)
+          if (bits > 0 && (bits & BIT[col][row])) out.push([x0 + col * bDot, y0 + row * bDot]);
+      return out;
+    };
+    const brailleChar = (ch, x0, y0, t) => {
+      for (const [x, y] of brailleDots(ch, x0, y0)) setDot(x, y, t);
+    };
+
     // Title text
     let titleBrf = "";
     let titleWords = "";
@@ -859,26 +999,35 @@
       titleWords = s.titleText.trim();
       if (s.addLevel && PRESETS[s.level]) titleWords += (titleWords ? " " : "") + levelName;
       titleBrf = toBrailleAscii(titleWords);
-      if (titleBrf.length > s.cells) {
-        titleBrf = titleBrf.slice(0, s.cells);
+      const maxChars = s.sig ? Math.floor((g.dc - 1 - bDot) / bCell) + 1 : s.cells;
+      if (titleBrf.length > maxChars) {
+        titleBrf = titleBrf.slice(0, maxChars);
         warn.title.push("The title is too long for one braille line.", "The end was cut off.");
       }
     }
     const hasTitle = titleBrf.length > 0;
 
-    // Horizontal walls run along the middle dot row of a line (dots 2-5). That leaves a whole
-    // braille line centered between two walls, so markers sit evenly spaced from both.
-    // With a title, start on the first line that leaves a clear gap below it.
-    let minY = 1;
-    if (hasTitle) {
-      const need = g.ymm(2) + TITLE_GAP_MM;
-      while (minY <= maxY && g.ymm(minY) < need) minY += 3;
+    // Braille page: horizontal walls run along the middle dot row of a line (dots 2-5). That
+    // leaves a whole braille line centered between two walls, so markers sit evenly spaced
+    // from both. With a title, start on the first line that leaves a clear gap below it.
+    // Graphics grid: start at the top row, or a clear gap below the title.
+    let minY;
+    if (s.sig) {
+      minY = hasTitle ? 2 * bDot + Math.ceil(TITLE_GAP_MM / s.pitch) : 0;
+    } else {
+      minY = 1;
+      if (hasTitle) {
+        const need = g.ymm(2) + TITLE_GAP_MM;
+        while (minY <= maxY && g.ymm(minY) < need) minY += 3;
+      }
     }
 
     updatePathLabels(s);
     const cellsPer = s.pathCells;                                            // braille cells per square
     const linesPer = Math.max(1, Math.round(cellsPer * s.cellW / s.lineH)); // braille lines per square
-    const stepX = cellsPer * 2, stepY = linesPer * 3;                        // in dot columns / rows
+    // Square size in dot columns / rows. On a graphics grid squares are truly square.
+    const stepX = s.sig ? graphicStep(s, cellsPer) : cellsPer * 2;
+    const stepY = s.sig ? stepX : linesPer * 3;
     const maxW = Math.floor(maxX / stepX);
     const maxH = Math.floor((maxY - minY) / stepY);
     if (maxW < 2 || maxH < 2) {
@@ -902,7 +1051,6 @@
     $("gridH").value = H;
 
     // Start the maze in cell 1, lined up with the title. Top-align under the title.
-    const usedCells = W * cellsPer + 1;
     const X = wallPositions(0, W, stepX);
     const Y = wallPositions(minY, H, stepY);
 
@@ -917,12 +1065,14 @@
     // Dot grid: 0 empty, 1 wall, 2 start, 3 finish, 4 title
     const dots = new Uint8Array(g.dc * g.dr);
     let collision = false;
+    // Markers must keep at least one empty dot, about 2.5 mm, between themselves and any wall.
+    const clear = s.sig ? Math.max(1, Math.floor(2.5 / s.pitch)) : 1;
     const setDot = (x, y, t) => {
       if (x < 0 || y < 0 || x > maxX || y > maxY) { collision = true; return; }
       const i = y * g.dc + x;
       if (t === 2 || t === 3) { // markers must not touch or sit right beside a wall
-        for (let dy = -1; dy <= 1; dy++)
-          for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -clear; dy <= clear; dy++)
+          for (let dx = -clear; dx <= clear; dx++) {
             const nx = x + dx, ny = y + dy;
             if (nx >= 0 && ny >= 0 && nx <= maxX && ny <= maxY && dots[ny * g.dc + nx] === 1) collision = true;
           }
@@ -931,82 +1081,139 @@
       if (!dots[i] || t === 1) dots[i] = t;
     };
 
-    // Horizontal walls
-    for (let j = 0; j <= H; j++) {
-      for (let c = 0; c < W; c++) {
-        let wall;
-        if (j === 0) wall = !openSide(c, 0, "N");
-        else if (j === H) wall = !openSide(c, H - 1, "S");
-        else wall = !maze.openS[(j - 1) * W + c];
-        if (wall) for (let x = X[c]; x <= X[c + 1]; x++) setDot(x, Y[j], 1);
+    // Center of each square, as a dot index. Line mazes run their lines through these,
+    // and markers sit on them in both styles.
+    const CX = [], CY = [];
+    for (let c = 0; c < W; c++) CX.push(nearestIndex((g.xmm(X[c]) + g.xmm(X[c + 1])) / 2, g.xmm, maxX));
+    for (let r = 0; r < H; r++) CY.push(nearestIndex((g.ymm(Y[r]) + g.ymm(Y[r + 1])) / 2, g.ymm, maxY));
+
+    // The dots of a start or finish marker in its square, as [x, y] pairs.
+    const markerDots = (end, key) => {
+      const m = MARKERS[key];
+      if (!m) return [];
+      if (m.letter && !s.sig) {
+        // On a braille page the letter goes in the braille cell nearest the square's center.
+        const cxMm = (g.xmm(X[end.c]) + g.xmm(X[end.c + 1])) / 2;
+        const cyMm = (g.ymm(Y[end.r]) + g.ymm(Y[end.r + 1])) / 2;
+        const ch = Math.round((cxMm - s.dotSp / 2) / s.cellW);
+        const ln = Math.round((cyMm - s.dotSp) / s.lineH);
+        return brailleDots(m.letter, ch * 2, ln * 3);
       }
-    }
-    // Vertical walls
-    for (let i = 0; i <= W; i++) {
+      const cx = CX[end.c], cy = CY[end.r];
+      // On a graphics grid, center the braille cell (2 columns, 3 rows) on the square.
+      if (m.letter) return brailleDots(m.letter, cx - Math.floor(bDot / 2), cy - bDot);
+      // About 2.5 mm reach, like a braille cell, whatever the grid spacing.
+      const k = s.sig ? Math.max(1, Math.round(s.dotSp / s.pitch)) : 1;
+      const out = [];
+      for (let dy = -k; dy <= k; dy++)
+        for (let dx = -k; dx <= k; dx++)
+          if (m.has(dx, dy, k)) out.push([cx + dx, cy + dy]);
+      return out;
+    };
+    const startDots = markerDots(ends.s, s.startMark);
+    const finishDots = markerDots(ends.f, s.finishMark);
+
+    if (s.lineStyle) {
+      // Line maze: a raised line down the middle of every open passage, no outer border.
+      // A double line adds the neighbouring dot row or column. On a braille page that
+      // neighbour stays inside the same cell, so the two dots sit 2.5 mm apart.
+      const partnerX = (x) => s.sig ? x + 1 : (x % 2 ? x - 1 : x + 1);
+      const partnerY = (y) => s.sig ? y + 1 : (y % 3 === 2 ? y - 1 : y + 1);
+      const xs = (x) => s.lineWidth === 2 ? [x, partnerX(x)] : [x];
+      const ys = (y) => s.lineWidth === 2 ? [y, partnerY(y)] : [y];
+      // Leave a one-dot gap all around the start and finish markers: no line dot inside
+      // each marker's outline grown by one dot.
+      const gapBoxes = [startDots, finishDots].filter((d) => d.length).map((d) => ({
+        x0: Math.min(...d.map((p) => p[0])) - 1, x1: Math.max(...d.map((p) => p[0])) + 1,
+        y0: Math.min(...d.map((p) => p[1])) - 1, y1: Math.max(...d.map((p) => p[1])) + 1,
+      }));
+      const lineDot = (x, y) => {
+        if (gapBoxes.some((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1)) return;
+        setDot(x, y, 1);
+      };
       for (let r = 0; r < H; r++) {
-        let wall;
-        if (i === 0) wall = !openSide(0, r, "W");
-        else if (i === W) wall = !openSide(W - 1, r, "E");
-        else wall = !maze.openE[r * W + i - 1];
-        if (wall) for (let y = Y[r]; y <= Y[r + 1]; y++) setDot(X[i], y, 1);
+        for (let c = 0; c < W; c++) {
+          if (c < W - 1 && maze.openE[r * W + c]) {
+            const run = [...xs(CX[c]), ...xs(CX[c + 1])];
+            for (let x = Math.min(...run); x <= Math.max(...run); x++) for (const y of ys(CY[r])) lineDot(x, y);
+          }
+          if (r < H - 1 && maze.openS[r * W + c]) {
+            const run = [...ys(CY[r]), ...ys(CY[r + 1])];
+            for (let y = Math.min(...run); y <= Math.max(...run); y++) for (const x of xs(CX[c])) lineDot(x, y);
+          }
+        }
+      }
+    } else {
+      // Horizontal walls
+      for (let j = 0; j <= H; j++) {
+        for (let c = 0; c < W; c++) {
+          let wall;
+          if (j === 0) wall = !openSide(c, 0, "N");
+          else if (j === H) wall = !openSide(c, H - 1, "S");
+          else wall = !maze.openS[(j - 1) * W + c];
+          if (wall) for (let x = X[c]; x <= X[c + 1]; x++) setDot(x, Y[j], 1);
+        }
+      }
+      // Vertical walls
+      for (let i = 0; i <= W; i++) {
+        for (let r = 0; r < H; r++) {
+          let wall;
+          if (i === 0) wall = !openSide(0, r, "W");
+          else if (i === W) wall = !openSide(W - 1, r, "E");
+          else wall = !maze.openE[r * W + i - 1];
+          if (wall) for (let y = Y[r]; y <= Y[r + 1]; y++) setDot(X[i], y, 1);
+        }
       }
     }
 
     // Markers
-    const placeMarker = (end, key, t) => {
-      const m = MARKERS[key];
-      if (!m) return;
-      const cxMm = (g.xmm(X[end.c]) + g.xmm(X[end.c + 1])) / 2;
-      const cyMm = (g.ymm(Y[end.r]) + g.ymm(Y[end.r + 1])) / 2;
-      if (m.letter) {
-        const bits = BRF.indexOf(m.letter);
-        const ch = Math.round((cxMm - s.dotSp / 2) / s.cellW);
-        const ln = Math.round((cyMm - s.dotSp) / s.lineH);
-        for (let col = 0; col < 2; col++)
-          for (let row = 0; row < 3; row++)
-            if (bits & BIT[col][row]) setDot(ch * 2 + col, ln * 3 + row, t);
-        return;
-      }
-      const cx = nearestIndex(cxMm, g.xmm, maxX);
-      const cy = nearestIndex(cyMm, g.ymm, maxY);
-      for (const [dx, dy] of m.dots) setDot(cx + dx, cy + dy, t);
-    };
-    placeMarker(ends.s, s.startMark, 2);
-    placeMarker(ends.f, s.finishMark, 3);
-    if (collision) warn.marker.push("A marker is touching a wall at this path width.", "Choose a wider path or a smaller marker.");
+    for (const [x, y] of startDots) setDot(x, y, 2);
+    for (const [x, y] of finishDots) setDot(x, y, 3);
+    if (collision) {
+      warn.marker.push(s.lineStyle
+        ? "A marker is touching a line at this line spacing."
+        : "A marker is touching a wall at this path width.",
+        s.lineStyle ? "Choose wider spacing or a smaller marker." : "Choose a wider path or a smaller marker.");
+    }
 
     // Title on the top line, starting in cell 1 so it's always in the same place
     // (top-left, where students start exploring a page) and lines up with the maze.
-    for (let i = 0; i < titleBrf.length; i++) {
-      const bits = BRF.indexOf(titleBrf[i]);
-      for (let col = 0; col < 2; col++)
-        for (let row = 0; row < 3; row++)
-          if (bits > 0 && (bits & BIT[col][row])) setDot(i * 2 + col, row, 4);
-    }
+    for (let i = 0; i < titleBrf.length; i++) brailleChar(titleBrf[i], i * bCell, 0, 4);
 
-    // Convert to BRF lines
-    const brfLines = [];
-    for (let ln = 0; ln < s.lines; ln++) {
-      let a = "";
-      for (let ch = 0; ch < s.cells; ch++) {
-        let bits = 0;
-        for (let col = 0; col < 2; col++)
-          for (let row = 0; row < 3; row++)
-            if (dots[(ln * 3 + row) * g.dc + ch * 2 + col]) bits |= BIT[col][row];
-        a += BRF[bits];
+    // Pack the dots into braille characters, 2 columns by 3 rows each.
+    const packLines = (table) => {
+      const lines = [];
+      for (let ln = 0; ln < g.dr / 3; ln++) {
+        let a = "";
+        for (let ch = 0; ch < g.dc / 2; ch++) {
+          let bits = 0;
+          for (let col = 0; col < 2; col++)
+            for (let row = 0; row < 3; row++)
+              if (dots[(ln * 3 + row) * g.dc + ch * 2 + col]) bits |= BIT[col][row];
+          a += table[bits];
+        }
+        lines.push(a);
       }
-      brfLines.push(a.replace(/ +$/, ""));
-    }
-    while (brfLines.length && brfLines[brfLines.length - 1] === "") brfLines.pop();
+      return lines;
+    };
 
-    let brf = brfLines.join("\r\n") + "\r\n";
-    if (s.formFeed) brf += "\f";
+    let output;
+    if (s.sig) {
+      // QuickTac .sig: ESC 1, one CRLF-ended line per 3 dot rows covering the whole image, ESC 1.
+      output = "\x1b1\r\n" + packLines(SIG).join("\r\n") + "\r\n\x1b1";
+    } else {
+      const brfLines = packLines(BRF).map((l) => l.replace(/ +$/, ""));
+      while (brfLines.length && brfLines[brfLines.length - 1] === "") brfLines.pop();
+      output = brfLines.join("\r\n") + "\r\n";
+      if (s.formFeed) output += "\f";
+    }
 
     // Text description: one short fact per line (under JAWS's 100-character line limit),
     // and the picture is described by these lines.
     const stats = mazeStats(maze, ends);
-    const pathAcross = (cellsPer * s.cellW).toFixed(1).replace(/\.0$/, "");
-    const pathDown = (linesPer * s.lineH).toFixed(1).replace(/\.0$/, "");
+    const mmText = (mm) => mm.toFixed(1).replace(/\.0$/, "");
+    const pathAcross = mmText(g.xmm(stepX) - g.xmm(0));
+    const pathDown = mmText(s.sig ? stepY * s.pitch : linesPer * s.lineH);
     const facts = [
       `${levelName}, ${W} by ${H} squares`,
       `Start: ${placeWords(ends.s.c, ends.s.r, W, H)}. Finish: ${placeWords(ends.f.c, ends.f.r, W, H)}`,
@@ -1014,16 +1221,23 @@
       plural(stats.deadEnds, "dead end").replace(/^./, (c) => c.toUpperCase()),
       `Maze code ${s.code}`,
     ];
-    const pathsSentence = `Paths are ${pathAcross} millimeters wide across and ${pathDown} down.`;
+    const pathsSentence = s.lineStyle
+      ? (s.sig
+        ? `Lines are ${pathAcross} millimeters apart.`
+        : `Lines are ${pathAcross} millimeters apart across and ${pathDown} down.`)
+      : (s.sig
+        ? `Paths are ${pathAcross} millimeters wide.`
+        : `Paths are ${pathAcross} millimeters wide across and ${pathDown} down.`);
     const summary = facts.join(". ") + ".";
 
     const allWarnings = [...warn.size, ...warn.marker, ...warn.title];
     const level = levelName.toLowerCase().replace(/\s+/g, "");
     current = {
-      brf,
+      output,
+      kind: s.sig ? "QuickTac graphic" : "braille file",
       levelName,
       code: s.code,
-      filename: `maze-${level}-${W}x${H}-code${s.code}.brf`,
+      filename: `maze-${level}-${W}x${H}-code${s.code}.${s.sig ? "sig" : "brf"}`,
       summary,
       pathsSentence,
       warnings: allWarnings,
@@ -1065,9 +1279,9 @@
 
   function drawPreview(s, g, dots) {
     const pad = 6;
-    const pageW = s.cells * s.cellW + pad * 2 - (s.cellW - s.dotSp);
-    const pageH = s.lines * s.lineH + pad * 2 - (s.lineH - 2 * s.dotSp);
-    const r = Math.min(0.8, s.dotSp * 0.34);
+    const pageW = g.xmm(g.dc - 1) + pad * 2;
+    const pageH = g.ymm(g.dr - 1) + pad * 2;
+    const r = Math.min(0.8, (s.sig ? s.pitch : s.dotSp) * 0.34);
     const cls = ["", "d-wall", "d-start", "d-finish", "d-title"];
     const parts = [`<rect class="paper" x="0.3" y="0.3" width="${(pageW - 0.6).toFixed(2)}" height="${(pageH - 0.6).toFixed(2)}" rx="2"/>`];
     for (let y = 0; y < g.dr; y++) {
@@ -1087,8 +1301,9 @@
       announce(warnText() || "There is no maze to download.");
       return;
     }
-    const bytes = new Uint8Array(current.brf.length);
-    for (let i = 0; i < current.brf.length; i++) bytes[i] = current.brf.charCodeAt(i) & 0x7f;
+    const text = current.output;
+    const bytes = new Uint8Array(text.length);
+    for (let i = 0; i < text.length; i++) bytes[i] = text.charCodeAt(i) & 0x7f;
     const blob = new Blob([bytes], { type: "application/octet-stream" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -1098,7 +1313,7 @@
     a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     clearTimeout(announceTimer);
-    announce(`Downloaded braille file: ${current.levelName}, maze code ${current.code}.`);
+    announce(`Downloaded ${current.kind}: ${current.levelName}, maze code ${current.code}.`);
   }
 
   build();
