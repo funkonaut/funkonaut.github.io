@@ -515,10 +515,9 @@
   const $ = (id) => document.getElementById(id);
   const FIELD_IDS = ["difficulty","gridW","gridH","layout","pathWidth","startMark","finishMark","openings",
                      "useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed",
-                     "sigRes","sigW","sigH"];
-  // File type is remembered, so a refresh keeps .brf or .sig (the maze itself is new
-  // each time, since every page load picks a new maze code). Maze style is left out
-  // on purpose: every visit starts with walls.
+                     "sigRes","sigW","sigH","lineStyle"];
+  // File type and maze style are remembered, so a refresh keeps them. The maze itself
+  // is new each time, since every page load picks a new maze code.
   const RADIO_NAMES = ["branch", "loops", "lineWidth", "fileType"];
   const MAZE_FIELDS = ["gridW","gridH","branch","loops"];
   const PATH_FIELDS = ["pathWidth","cellW","lineH","dotSp","fileType","sigRes","lineStyle"];
