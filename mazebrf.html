@@ -24,6 +24,7 @@
     --start: #137240;
     --finish: #b33a09;
     --title: #5a3db0;
+    --letter: #0e6f8a;
     --warn-bg: #fff3d1;
     --warn-ink: #4f3700;
     --warn-edge: #a87a00;
@@ -33,7 +34,7 @@
       --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
       --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
       --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
-      --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c; --title: #b8a3ff;
+      --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c; --title: #b8a3ff; --letter: #5fd4f0;
       --warn-bg: #3a2f10; --warn-ink: #ffe2a3; --warn-edge: #d4a017;
     }
   }
@@ -41,7 +42,7 @@
     --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
     --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
     --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
-    --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c; --title: #b8a3ff;
+    --dot: #f2f0ea; --start: #4ade80; --finish: #fb923c; --title: #b8a3ff; --letter: #5fd4f0;
     --warn-bg: #3a2f10; --warn-ink: #ffe2a3; --warn-edge: #d4a017;
   }
 
@@ -182,6 +183,7 @@
   #preview .d-start { fill: var(--start); }
   #preview .d-finish { fill: var(--finish); }
   #preview .d-title { fill: var(--title); }
+  #preview .d-letter { fill: var(--letter); }
   .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 0.9rem; }
   .legend span::before {
     content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 50%;
@@ -253,6 +255,7 @@
     </div>
     <div class="legend" aria-hidden="true">
       <span style="--c: var(--dot)" id="legendDots">Wall dots</span>
+      <span style="--c: var(--letter)" id="legendLetters" hidden>Letters</span>
       <span style="--c: var(--start)">Start</span>
       <span style="--c: var(--finish)">Finish</span>
       <span style="--c: var(--title)">Title</span>
@@ -329,6 +332,38 @@
         </div>
         <label class="choice" id="openingsChoice"><input type="checkbox" id="openings" checked><span>Gaps in the outer wall at start and finish</span></label>
         <div class="warn" id="warnMarker"></div>
+
+        <!-- Hidden word, wall mazes only -->
+        <div id="lettersGroup">
+          <h3>Letters</h3>
+          <label class="choice"><input type="checkbox" id="useLetters" aria-describedby="lettersHint"><span>Put a hidden word along the route</span></label>
+          <p class="hint" id="lettersHint">Its letters sit in order along the path from start to finish.</p>
+          <div id="letterOpts" hidden>
+            <div class="field">
+              <label for="word">Hidden word</label>
+              <input type="text" id="word" value="cat" maxlength="20" autocomplete="off" aria-describedby="wordHint warnLetters">
+              <p class="hint" id="wordHint">Letters a to z only, in uncontracted braille.</p>
+            </div>
+            <div class="field">
+              <label for="letterGap">Space between letters</label>
+              <select id="letterGap">
+                <option value="even">Spread evenly along the route</option>
+                <option value="0">Next to each other</option>
+                <option value="1">1 empty square between letters</option>
+                <option value="2">2 empty squares between letters</option>
+                <option value="3">3 empty squares between letters</option>
+              </select>
+            </div>
+            <h3 id="decoyHeading">Decoy letters</h3>
+            <div role="radiogroup" aria-labelledby="decoyHeading">
+              <label class="choice"><input type="radio" name="decoys" value="none"><span>None</span></label>
+              <label class="choice"><input type="radio" name="decoys" value="few"><span>A few<small><span class="sr-only">, </span>About half as many as the word has</small></span></label>
+              <label class="choice"><input type="radio" name="decoys" value="many"><span>Many<small><span class="sr-only">, </span>More decoys than word letters</small></span></label>
+            </div>
+            <p class="hint">Decoys sit in dead ends and use letters that aren't in the word.</p>
+          </div>
+          <div class="warn" id="warnLetters"></div>
+        </div>
 
         <h3 id="pathHeading">Path width</h3>
         <div class="field">
@@ -515,10 +550,10 @@
   const $ = (id) => document.getElementById(id);
   const FIELD_IDS = ["difficulty","gridW","gridH","layout","pathWidth","startMark","finishMark","openings",
                      "useTitle","titleText","addLevel","cells","lines","cellW","lineH","dotSp","formFeed",
-                     "sigRes","sigW","sigH","lineStyle"];
+                     "sigRes","sigW","sigH","lineStyle","useLetters","word","letterGap"];
   // File type and maze style are remembered, so a refresh keeps them. The maze itself
   // is new each time, since every page load picks a new maze code.
-  const RADIO_NAMES = ["branch", "loops", "lineWidth", "fileType"];
+  const RADIO_NAMES = ["branch", "loops", "lineWidth", "fileType", "decoys"];
   const MAZE_FIELDS = ["gridW","gridH","branch","loops"];
   const PATH_FIELDS = ["pathWidth","cellW","lineH","dotSp","fileType","sigRes","lineStyle"];
   const PATH_NAMES = { 2: "Narrow", 3: "Standard", 4: "Wide", 5: "Extra wide" };
@@ -542,6 +577,7 @@
   setRadio("loops", "none");
   setRadio("fileType", "brf");
   setRadio("lineWidth", "2");
+  setRadio("decoys", "none");
   fillSizeOptions($("gridW"), 60); // trimmed to what fits on first build
   fillSizeOptions($("gridH"), 60);
 
@@ -551,6 +587,7 @@
   let lastPitch = parseFloat($("sigRes").value);
   applyFileType();
   applyMazeStyle();
+  applyLetters();
 
   // Disclosure buttons (collapsed on every visit)
   for (const btn of document.querySelectorAll(".disclosure")) {
@@ -575,6 +612,7 @@
     if (key === "difficulty") applyPreset();
     if (key === "fileType") applyFileType();
     if (key === "lineStyle") applyMazeStyle();
+    if (key === "useLetters") applyLetters();
     if (key === "sigRes") rescaleImage();
     if (MAZE_FIELDS.includes(key)) $("difficulty").value = "custom";
     if (PATH_FIELDS.includes(key)) pathsChanged = true;
@@ -670,11 +708,20 @@
     $("downloadBtn").textContent = sig ? "Download QuickTac graphic" : "Download braille file";
   }
 
+  // Show the hidden-word settings only when they're turned on and the maze has walls.
+  function applyLetters() {
+    const on = $("useLetters").checked && !$("lineStyle").checked;
+    $("letterOpts").hidden = !$("useLetters").checked;
+    $("legendLetters").hidden = !on;
+  }
+
   // Show the settings for the chosen maze style, and name things to match it.
   function applyMazeStyle() {
     const lines = $("lineStyle").checked;
     $("lineGroup").hidden = !lines;
     $("openingsChoice").hidden = lines;
+    $("lettersGroup").hidden = lines; // hidden words are for wall mazes only
+    applyLetters();
     $("pathHeading").textContent = lines ? "Line spacing" : "Path width";
     $("pathHint1").textContent = lines ? "Measured from line to line." : "Measured wall to wall.";
     $("pathHint2").textContent = lines ? "Every line is the same distance from its neighbours."
@@ -728,6 +775,11 @@
       formFeed: $("formFeed").checked,
       code: Math.round(num("mazeCode", 1, 999999, 1)),
       lineStyle: $("lineStyle").checked,
+      useLetters: $("useLetters").checked,
+      wordTyped: $("word").value,
+      word: $("word").value.toLowerCase().replace(/[^a-z]/g, ""),
+      letterGap: $("letterGap").value,
+      decoys: getRadio("decoys") || "none",
       lineWidth: getRadio("lineWidth") === "1" ? 1 : 2,
       sig: getRadio("fileType") === "sig",
       pitch: num("sigRes", 0.03, 0.12, 0.08) * MM_PER_INCH,          // graphics dot spacing in mm
@@ -905,15 +957,22 @@
     return { s: { c: 0, r: 0, side: "W" }, f: { c: W - 1, r: H - 1, side: "E" } };
   }
 
+  // The squares on the shortest route, from the start square to the finish square.
+  function routeCells(m, ends) {
+    const startCell = ends.s.r * m.W + ends.s.c;
+    const finishCell = ends.f.r * m.W + ends.f.c;
+    const { parent } = searchFrom(m, startCell);
+    const route = [finishCell];
+    while (route[route.length - 1] !== startCell) route.push(parent[route[route.length - 1]]);
+    return route.reverse();
+  }
+
   // Route length, turns, and dead ends, for the text description.
   function mazeStats(m, ends) {
     const { W } = m;
     const startCell = ends.s.r * W + ends.s.c;
     const finishCell = ends.f.r * W + ends.f.c;
-    const { parent } = searchFrom(m, startCell);
-    const route = [finishCell];
-    while (route[route.length - 1] !== startCell) route.push(parent[route[route.length - 1]]);
-    route.reverse();
+    const route = routeCells(m, ends);
     let turns = 0;
     for (let i = 2; i < route.length; i++) {
       if (route[i] - route[i - 1] !== route[i - 1] - route[i - 2]) turns++;
@@ -973,7 +1032,7 @@
     const s = readSettings();
     const g = makeGeom(s);
     const maxX = g.dc - 1, maxY = g.dr - 1;
-    const warn = { size: [], marker: [], title: [] };
+    const warn = { size: [], marker: [], title: [], letters: [] };
     const levelName = PRESETS[s.level] ? `Level ${s.level}` : "Custom";
 
     // Braille on the grid. On a braille page a cell is 2 dot columns and 3 dot rows. On a
@@ -1062,22 +1121,24 @@
       (ends.s.c === c && ends.s.r === r && ends.s.side === side) ||
       (ends.f.c === c && ends.f.r === r && ends.f.side === side));
 
-    // Dot grid: 0 empty, 1 wall, 2 start, 3 finish, 4 title
+    // Dot grid: 0 empty, 1 wall, 2 start, 3 finish, 4 title, 5 hidden-word letter
     const dots = new Uint8Array(g.dc * g.dr);
-    let collision = false;
-    // Markers must keep at least one empty dot, about 2.5 mm, between themselves and any wall.
+    let collision = false, letterCollision = false;
+    // Markers and letters must keep at least one empty dot, about 2.5 mm, between
+    // themselves and any wall.
     const clear = s.sig ? Math.max(1, Math.floor(2.5 / s.pitch)) : 1;
     const setDot = (x, y, t) => {
-      if (x < 0 || y < 0 || x > maxX || y > maxY) { collision = true; return; }
+      const hit = () => { if (t === 5) letterCollision = true; else collision = true; };
+      if (x < 0 || y < 0 || x > maxX || y > maxY) { hit(); return; }
       const i = y * g.dc + x;
-      if (t === 2 || t === 3) { // markers must not touch or sit right beside a wall
+      if (t === 2 || t === 3 || t === 5) { // must not touch or sit right beside a wall
         for (let dy = -clear; dy <= clear; dy++)
           for (let dx = -clear; dx <= clear; dx++) {
             const nx = x + dx, ny = y + dy;
-            if (nx >= 0 && ny >= 0 && nx <= maxX && ny <= maxY && dots[ny * g.dc + nx] === 1) collision = true;
+            if (nx >= 0 && ny >= 0 && nx <= maxX && ny <= maxY && dots[ny * g.dc + nx] === 1) hit();
           }
       }
-      if (t !== 1 && dots[i] && dots[i] !== t) collision = true;
+      if (t !== 1 && dots[i] && dots[i] !== t) hit();
       if (!dots[i] || t === 1) dots[i] = t;
     };
 
@@ -1087,21 +1148,27 @@
     for (let c = 0; c < W; c++) CX.push(nearestIndex((g.xmm(X[c]) + g.xmm(X[c + 1])) / 2, g.xmm, maxX));
     for (let r = 0; r < H; r++) CY.push(nearestIndex((g.ymm(Y[r]) + g.ymm(Y[r + 1])) / 2, g.ymm, maxY));
 
+    // The dots of one braille letter in the middle of square (c, r), as [x, y] pairs.
+    // letter is in braille ASCII, like "S".
+    const squareLetterDots = (c, r, letter) => {
+      if (!s.sig) {
+        // On a braille page the letter goes in the braille cell nearest the square's center.
+        const cxMm = (g.xmm(X[c]) + g.xmm(X[c + 1])) / 2;
+        const cyMm = (g.ymm(Y[r]) + g.ymm(Y[r + 1])) / 2;
+        const ch = Math.round((cxMm - s.dotSp / 2) / s.cellW);
+        const ln = Math.round((cyMm - s.dotSp) / s.lineH);
+        return brailleDots(letter, ch * 2, ln * 3);
+      }
+      // On a graphics grid, center the braille cell (2 columns, 3 rows) on the square.
+      return brailleDots(letter, CX[c] - Math.floor(bDot / 2), CY[r] - bDot);
+    };
+
     // The dots of a start or finish marker in its square, as [x, y] pairs.
     const markerDots = (end, key) => {
       const m = MARKERS[key];
       if (!m) return [];
-      if (m.letter && !s.sig) {
-        // On a braille page the letter goes in the braille cell nearest the square's center.
-        const cxMm = (g.xmm(X[end.c]) + g.xmm(X[end.c + 1])) / 2;
-        const cyMm = (g.ymm(Y[end.r]) + g.ymm(Y[end.r + 1])) / 2;
-        const ch = Math.round((cxMm - s.dotSp / 2) / s.cellW);
-        const ln = Math.round((cyMm - s.dotSp) / s.lineH);
-        return brailleDots(m.letter, ch * 2, ln * 3);
-      }
+      if (m.letter) return squareLetterDots(end.c, end.r, m.letter);
       const cx = CX[end.c], cy = CY[end.r];
-      // On a graphics grid, center the braille cell (2 columns, 3 rows) on the square.
-      if (m.letter) return brailleDots(m.letter, cx - Math.floor(bDot / 2), cy - bDot);
       // About 2.5 mm reach, like a braille cell, whatever the grid spacing.
       const k = s.sig ? Math.max(1, Math.round(s.dotSp / s.pitch)) : 1;
       const out = [];
@@ -1169,6 +1236,91 @@
     // Markers
     for (const [x, y] of startDots) setDot(x, y, 2);
     for (const [x, y] of finishDots) setDot(x, y, 3);
+
+    // Hidden word (wall mazes only): its letters in order along the shortest route,
+    // never in the start or finish square, plus optional decoy letters in dead ends.
+    const letterFacts = [];
+    if (s.useLetters && !s.lineStyle) {
+      const word = s.word;
+      if (!word) {
+        warn.letters.push("Type a word using letters a to z.");
+      } else {
+        if (s.wordTyped.replace(/\s/g, "").toLowerCase() !== word) {
+          warn.letters.push("Only letters a to z are used. Other characters were left out.");
+        }
+        if (MARKERS[s.startMark].letter || MARKERS[s.finishMark].letter) {
+          warn.letters.push("A start or finish marker is a braille letter.",
+            "It could be mistaken for part of the word.");
+        }
+        const route = routeCells(maze, ends);
+        const inner = route.slice(1, -1);      // route squares between start and finish
+        const n = word.length, m = inner.length;
+        let spots = null;
+        if (s.letterGap === "even") {
+          // Spread evenly: split the inner route into n + 1 equal stretches.
+          if (n <= m) spots = word.split("").map((_, k) => inner[Math.floor((k + 1) * (m + 1) / (n + 1)) - 1]);
+        } else {
+          // A fixed number of empty squares between letters, centered on the route.
+          const gap = +s.letterGap, span = n + (n - 1) * gap;
+          if (span <= m) {
+            const first = Math.floor((m - span) / 2);
+            spots = word.split("").map((_, k) => inner[first + k * (gap + 1)]);
+          }
+        }
+        if (!spots) {
+          warn.letters.push(`${n} letters don't fit on this route with this spacing.`,
+            "Choose a bigger maze, a shorter word, or less space between letters.");
+        } else {
+          spots.forEach((cell, k) => {
+            for (const [x, y] of squareLetterDots(cell % W, Math.floor(cell / W), word[k].toUpperCase())) setDot(x, y, 5);
+          });
+          letterFacts.push(`Hidden word: ${word}, ${plural(n, "letter")} along the route`);
+
+          // Decoys: letters not in the word, in dead ends off the route, spread apart.
+          // They use their own random numbers, so turning them on never changes the maze.
+          const want = s.decoys === "few" ? Math.max(1, Math.round(n / 2)) : s.decoys === "many" ? n + 2 : 0;
+          if (want) {
+            const onRoute = new Set(route);
+            const deadEnds = [];
+            for (let cell = 0; cell < W * H; cell++) {
+              if (onRoute.has(cell)) continue;
+              if (maze.neighbors(cell).filter(([, d]) => maze.isOpen(cell, d)).length === 1) deadEnds.push(cell);
+            }
+            const drand = mulberry32((s.code * 7919 + 101) >>> 0);
+            for (let i = deadEnds.length - 1; i > 0; i--) {
+              const j = Math.floor(drand() * (i + 1));
+              [deadEnds[i], deadEnds[j]] = [deadEnds[j], deadEnds[i]];
+            }
+            const dist = (a, b) => Math.abs(a % W - b % W) + Math.abs(Math.floor(a / W) - Math.floor(b / W));
+            const taken = [...spots];
+            const chosen = [];
+            while (chosen.length < want && chosen.length < deadEnds.length) {
+              let best = -1, bestD = -1;
+              for (const cell of deadEnds) {
+                if (chosen.includes(cell)) continue;
+                const d = Math.min(...taken.map((t) => dist(cell, t)));
+                if (d > bestD) { bestD = d; best = cell; }
+              }
+              chosen.push(best);
+              taken.push(best);
+            }
+            const pool = "abcdefghijklmnopqrstuvwxyz".split("").filter((ch) => !word.includes(ch));
+            const letters = pool.length ? pool : "abcdefghijklmnopqrstuvwxyz".split("");
+            for (const cell of chosen) {
+              const ch = letters[Math.floor(drand() * letters.length)];
+              for (const [x, y] of squareLetterDots(cell % W, Math.floor(cell / W), ch.toUpperCase())) setDot(x, y, 5);
+            }
+            letterFacts.push(chosen.length
+              ? `${plural(chosen.length, "decoy letter")} in dead ends`
+              : "No decoy letters: this maze has no dead ends off the route");
+          }
+        }
+      }
+      if (letterCollision) {
+        warn.letters.push("A letter is touching a wall at this path width.", "Choose a wider path.");
+      }
+    }
+
     if (collision) {
       warn.marker.push(s.lineStyle
         ? "A marker is touching a line at this line spacing."
@@ -1219,6 +1371,7 @@
       `Start: ${placeWords(ends.s.c, ends.s.r, W, H)}. Finish: ${placeWords(ends.f.c, ends.f.r, W, H)}`,
       `Shortest route: ${stats.squares} squares with ${plural(stats.turns, "turn")}`,
       plural(stats.deadEnds, "dead end").replace(/^./, (c) => c.toUpperCase()),
+      ...letterFacts,
       `Maze code ${s.code}`,
     ];
     const pathsSentence = s.lineStyle
@@ -1230,7 +1383,7 @@
         : `Paths are ${pathAcross} millimeters wide across and ${pathDown} down.`);
     const summary = facts.join(". ") + ".";
 
-    const allWarnings = [...warn.size, ...warn.marker, ...warn.title];
+    const allWarnings = [...warn.size, ...warn.marker, ...warn.letters, ...warn.title];
     const level = levelName.toLowerCase().replace(/\s+/g, "");
     current = {
       output,
@@ -1248,6 +1401,7 @@
     setLines("warnSize", warn.size);
     setLines("warnMarker", warn.marker);
     setLines("warnTitle", warn.title);
+    setLines("warnLetters", warn.letters);
 
     drawPreview(s, g, dots);
   }
@@ -1274,6 +1428,7 @@
     setLines("warnSize", lines);
     setLines("warnMarker", []);
     setLines("warnTitle", []);
+    setLines("warnLetters", []);
     $("preview").innerHTML = "";
   }
 
@@ -1282,7 +1437,7 @@
     const pageW = g.xmm(g.dc - 1) + pad * 2;
     const pageH = g.ymm(g.dr - 1) + pad * 2;
     const r = Math.min(0.8, (s.sig ? s.pitch : s.dotSp) * 0.34);
-    const cls = ["", "d-wall", "d-start", "d-finish", "d-title"];
+    const cls = ["", "d-wall", "d-start", "d-finish", "d-title", "d-letter"];
     const parts = [`<rect class="paper" x="0.3" y="0.3" width="${(pageW - 0.6).toFixed(2)}" height="${(pageH - 0.6).toFixed(2)}" rx="2"/>`];
     for (let y = 0; y < g.dr; y++) {
       for (let x = 0; x < g.dc; x++) {
