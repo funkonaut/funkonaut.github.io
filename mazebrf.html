@@ -60,6 +60,7 @@
   .top p { margin: 0; color: var(--muted); max-width: 70ch; }
   h2 { font-size: 1.3rem; margin: 0 0 10px; }
   h3 { font-size: 1.08rem; margin: 16px 0 8px; }
+  h4 { font-size: 1rem; margin: 14px 0 6px; }
 
   main {
     display: grid;
@@ -236,6 +237,19 @@
     <label class="choice"><input type="checkbox" id="lineStyle" aria-describedby="styleHint"><span>Follow a raised line instead of walls</span></label>
     <p class="hint" id="styleHint">Unchecked, you trace the open path between walls of dots.</p>
 
+    <!-- Word find (a hidden word), wall mazes only. Spacing and decoys are in More maze options. -->
+    <div id="makeLetters">
+      <h3>Word find</h3>
+      <label class="choice"><input type="checkbox" id="useLetters" aria-describedby="lettersHint"><span>Add a word find</span></label>
+      <p class="hint" id="lettersHint">Its letters sit in order along the path from start to finish.</p>
+      <div class="field" id="wordField" hidden>
+        <label for="word">Word</label>
+        <input type="text" id="word" value="cat" maxlength="20" autocomplete="off" aria-describedby="wordHint warnLetters">
+        <p class="hint" id="wordHint">Letters a to z only, in uncontracted braille.</p>
+      </div>
+      <div class="warn" id="warnLetters"></div>
+    </div>
+
     <h3>Make and download</h3>
     <div class="actions">
       <button type="button" class="secondary" id="newBtn">New maze</button>
@@ -333,17 +347,11 @@
         <label class="choice" id="openingsChoice"><input type="checkbox" id="openings" checked><span>Gaps in the outer wall at start and finish</span></label>
         <div class="warn" id="warnMarker"></div>
 
-        <!-- Hidden word, wall mazes only -->
+        <!-- Word find fine-tuning, wall mazes only. Turned on in Make a maze. -->
         <div id="lettersGroup">
-          <h3>Letters</h3>
-          <label class="choice"><input type="checkbox" id="useLetters" aria-describedby="lettersHint"><span>Put a hidden word along the route</span></label>
-          <p class="hint" id="lettersHint">Its letters sit in order along the path from start to finish.</p>
+          <h3>Word find options</h3>
+          <p class="hint" id="lettersOffHint">Check Add a word find in Make a maze to use these.</p>
           <div id="letterOpts" hidden>
-            <div class="field">
-              <label for="word">Hidden word</label>
-              <input type="text" id="word" value="cat" maxlength="20" autocomplete="off" aria-describedby="wordHint warnLetters">
-              <p class="hint" id="wordHint">Letters a to z only, in uncontracted braille.</p>
-            </div>
             <div class="field">
               <label for="letterGap">Space between letters</label>
               <select id="letterGap">
@@ -354,7 +362,7 @@
                 <option value="3">3 empty squares between letters</option>
               </select>
             </div>
-            <h3 id="decoyHeading">Decoy letters</h3>
+            <h4 id="decoyHeading">Decoy letters</h4>
             <div role="radiogroup" aria-labelledby="decoyHeading">
               <label class="choice"><input type="radio" name="decoys" value="none"><span>None</span></label>
               <label class="choice"><input type="radio" name="decoys" value="few"><span>A few<small><span class="sr-only">, </span>About half as many as the word has</small></span></label>
@@ -362,7 +370,6 @@
             </div>
             <p class="hint">Decoys sit in dead ends and use letters that aren't in the word.</p>
           </div>
-          <div class="warn" id="warnLetters"></div>
         </div>
 
         <h3 id="pathHeading">Path width</h3>
@@ -708,11 +715,17 @@
     $("downloadBtn").textContent = sig ? "Download QuickTac graphic" : "Download braille file";
   }
 
-  // Show the hidden-word settings only when they're turned on and the maze has walls.
+  // Word find is for wall mazes only. The word box and the options in More maze
+  // options appear once "Add a word find" is checked.
   function applyLetters() {
-    const on = $("useLetters").checked && !$("lineStyle").checked;
-    $("letterOpts").hidden = !$("useLetters").checked;
-    $("legendLetters").hidden = !on;
+    const walls = !$("lineStyle").checked;
+    const checked = $("useLetters").checked;
+    $("makeLetters").hidden = !walls;
+    $("lettersGroup").hidden = !walls;
+    $("wordField").hidden = !checked;
+    $("letterOpts").hidden = !checked;
+    $("lettersOffHint").hidden = checked;
+    $("legendLetters").hidden = !(walls && checked);
   }
 
   // Show the settings for the chosen maze style, and name things to match it.
@@ -720,7 +733,6 @@
     const lines = $("lineStyle").checked;
     $("lineGroup").hidden = !lines;
     $("openingsChoice").hidden = lines;
-    $("lettersGroup").hidden = lines; // hidden words are for wall mazes only
     applyLetters();
     $("pathHeading").textContent = lines ? "Line spacing" : "Path width";
     $("pathHint1").textContent = lines ? "Measured from line to line." : "Measured wall to wall.";
@@ -1237,7 +1249,7 @@
     for (const [x, y] of startDots) setDot(x, y, 2);
     for (const [x, y] of finishDots) setDot(x, y, 3);
 
-    // Hidden word (wall mazes only): its letters in order along the shortest route,
+    // Word find (wall mazes only): a hidden word, its letters in order along the shortest route,
     // never in the start or finish square, plus optional decoy letters in dead ends.
     const letterFacts = [];
     if (s.useLetters && !s.lineStyle) {
@@ -1274,7 +1286,7 @@
           spots.forEach((cell, k) => {
             for (const [x, y] of squareLetterDots(cell % W, Math.floor(cell / W), word[k].toUpperCase())) setDot(x, y, 5);
           });
-          letterFacts.push(`Hidden word: ${word}, ${plural(n, "letter")} along the route`);
+          letterFacts.push(`Word find: ${word}, ${plural(n, "letter")} along the route`);
 
           // Decoys: letters not in the word, in dead ends off the route, spread apart.
           // They use their own random numbers, so turning them on never changes the maze.
