@@ -1,0 +1,1674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tactile Topo Maker</title>
+<meta name="description" content="Make raised-dot topographic maps as BRF or QuickTac files for braille embossers.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root {
+    --bg: #f6f5f1; --panel: #ffffff; --ink: #1c1e22; --muted: #555c6b; --line: #d8d5cb;
+    --field-border: #6f7584; --field-bg: #ffffff; --accent: #1f5fae; --accent-ink: #ffffff;
+    --focus: #0b3d91; --focus-halo: #ffffff; --paper: #fffdf7; --paper-edge: #8f8a7c;
+    --dot: #1c1e22; --peak: #b33a09; --title: #5a3db0; --frame: #d9480f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
+      --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
+      --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
+      --dot: #f2f0ea; --peak: #fb923c; --title: #b8a3ff; --frame: #ff8a4c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171b; --panel: #1e2127; --ink: #ebe9e4; --muted: #b0b5bf; --line: #353a44;
+    --field-border: #8d93a0; --field-bg: #15171b; --accent: #7cb0ff; --accent-ink: #0b1322;
+    --focus: #ffd166; --focus-halo: #15171b; --paper: #272b33; --paper-edge: #6b7280;
+    --dot: #f2f0ea; --peak: #fb923c; --title: #b8a3ff; --frame: #ff8a4c;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .top, main { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .top { padding-top: 24px; }
+  h1 { font-size: 1.9rem; margin: 0 0 4px; }
+  .top p { margin: 0; color: var(--muted); max-width: 70ch; }
+  h2 { font-size: 1.3rem; margin: 0 0 10px; }
+  h2:focus { outline: none; }
+  h3 { font-size: 1.08rem; margin: 16px 0 8px; }
+
+  main { display: grid; grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+    grid-template-areas: "make preview" "options preview"; grid-template-rows: auto 1fr;
+    gap: 20px; padding-top: 20px; padding-bottom: 36px; }
+  #make { grid-area: make; }
+  #previewSection { grid-area: preview; align-self: start; }
+  #optionsCol { grid-area: options; display: flex; flex-direction: column; gap: 14px; }
+  @media (max-width: 880px) {
+    main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "make" "preview" "options"; }
+  }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+  .intro { margin: 0 0 4px; }
+  .field { margin-bottom: 14px; }
+  .field > label { display: block; font-weight: 600; margin-bottom: 4px; }
+  .hint { display: block; color: var(--muted); font-size: 0.92rem; margin: 4px 0 0; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 400px) { .row, .row3 { grid-template-columns: 1fr; } }
+
+  input[type="text"], input[type="number"], select { width: 100%; font: inherit; color: var(--ink);
+    background: var(--field-bg); border: 2px solid var(--field-border); border-radius: 8px;
+    padding: 8px 10px; min-height: 48px; }
+
+  .choice { display: flex; gap: 10px; align-items: flex-start; padding: 8px 4px; min-height: 44px; cursor: pointer; }
+  .choice input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--accent); cursor: pointer; }
+  .choice span small { display: block; color: var(--muted); font-size: 0.9rem; }
+
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--focus-halo); }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 8px; }
+  button { font: inherit; font-weight: 700; border-radius: 10px; padding: 10px 20px; min-height: 52px;
+    cursor: pointer; border: 2px solid var(--accent); }
+  .primary { background: var(--accent); color: var(--accent-ink); }
+  .secondary { background: transparent; color: var(--accent); }
+  button:hover { filter: brightness(1.08); }
+  button[aria-busy="true"] { opacity: .6; cursor: progress; }
+
+  #results { list-style: none; padding: 0; margin: 8px 0 14px; display: grid; gap: 8px; }
+  #results button { width: 100%; text-align: left; font-weight: 600; }
+  .status { min-height: 1.5em; margin: 4px 0 0; font-weight: 600; }
+
+  .disclosure { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left;
+    background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 18px; font-size: 1.15rem; }
+  .disclosure[aria-expanded="true"] { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .chev { display: inline-block; flex: none; width: 0; height: 0; border-top: 0.4em solid transparent;
+    border-bottom: 0.4em solid transparent; border-left: 0.6em solid currentColor; transition: transform 0.15s; }
+  .disclosure[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  @media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+  .disclosure-heading { margin: 0; font-size: inherit; }
+  .disclosure-body { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px;
+    padding: 4px 18px 14px; background: var(--panel); }
+  .disclosure-body h3, .disclosure-body h4 { font-size: 1.08rem; margin: 14px 0 8px;
+    border-top: 1px solid var(--line); padding-top: 14px; }
+  .disclosure-body > h3:first-child, .disclosure-body > h4:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+  .map-tools { margin-top: 14px; }
+  .disclosure-body ul { margin: 4px 0 0; padding-left: 22px; }
+  .disclosure-body li { margin-bottom: 4px; }
+
+  .desc { margin: 0 0 12px; }
+  .desc div { margin: 0 0 2px; }
+  .desc div:first-child { font-weight: 700; }
+  .preview-wrap { background: var(--bg); border-radius: 10px; padding: 12px; }
+  #preview { display: block; width: 100%; height: auto; max-height: 76vh; object-fit: contain; border-radius: 4px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 0.9rem; }
+  .legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 50%;
+    margin-right: 6px; vertical-align: -1px; background: var(--c); }
+  #map { height: 340px; border-radius: 10px; border: 2px solid var(--line); margin-top: 8px; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+
+<!-- Text rule: keep every paragraph, hint, and list item under about 90 characters.
+     JAWS splits longer text into several "lines" when reading with the arrow keys. -->
+<div class="top">
+  <h1>Tactile Topo Maker</h1>
+  <p>Makes raised-dot topographic maps for a braille embosser.</p>
+  <p>Works with any braille embosser. Graphics embossers can also use QuickTac (.sig).</p>
+  <p>Feel contour lines, or feel the dots get thicker as the land gets higher.</p>
+  <p>It can also make a 3D printer model (.stl) of the same area.</p>
+</div>
+
+<main>
+  <!-- Simple view: everything most people need -->
+  <div id="make" class="panel">
+    <h2>Make a map</h2>
+    <p class="intro">Choose what to make, find a place, then download.</p>
+
+    <h3 id="makeHeading">What will you make?</h3>
+    <div role="radiogroup" aria-labelledby="makeHeading">
+      <label class="choice"><input type="radio" name="make" value="brf" checked><span>Braille embosser (.brf)<small><span class="sr-only">, </span>For any braille embosser</small></span></label>
+      <label class="choice"><input type="radio" name="make" value="sig"><span>QuickTac graphic (.sig)<small><span class="sr-only">, </span>Evenly spaced dots, for graphics embossing</small></span></label>
+      <label class="choice"><input type="radio" name="make" value="stl"><span>3D print (.stl)<small><span class="sr-only">, </span>For a 3D printer, with real hills to feel</small></span></label>
+    </div>
+
+    <h3 id="findHeading">Find a place</h3>
+    <form id="searchForm" role="search" aria-labelledby="findHeading">
+      <div class="field">
+        <label for="q">Place name or coordinates</label>
+        <input type="text" id="q" autocomplete="off" aria-describedby="qHint">
+        <p class="hint" id="qHint">For example: Enchanted Rock, or 30.506, -98.819</p>
+      </div>
+      <div class="actions"><button type="submit" class="secondary">Search</button></div>
+    </form>
+    <ul id="results" aria-label="Places found" hidden></ul>
+
+    <div class="field">
+      <label for="areaSize">Map size</label>
+      <select id="areaSize" aria-describedby="sizeHint">
+        <option value="0.5">Half a mile across (0.8 km)</option>
+        <option value="1">1 mile across (1.6 km)</option>
+        <option value="2">2 miles across (3.2 km)</option>
+        <option value="3" selected>3 miles across (4.8 km)</option>
+        <option value="5">5 miles across (8 km)</option>
+        <option value="10">10 miles across (16 km)</option>
+        <option value="20">20 miles across (32 km)</option>
+        <option value="50">50 miles across (80 km)</option>
+      </select>
+      <p class="hint" id="sizeHint">How much land fits, from left to right. Find a place picks a size.</p>
+    </div>
+
+    <div id="typeGroup">
+      <h3 id="typeHeading">Map type</h3>
+      <div role="radiogroup" aria-labelledby="typeHeading">
+        <label class="choice"><input type="radio" name="mapType" value="contour" checked><span>Contour lines<small><span class="sr-only">, </span>Each line is one height. Close lines mean steep ground.</small></span></label>
+        <label class="choice"><input type="radio" name="mapType" value="elevation"><span>Elevation map<small><span class="sr-only">, </span>More dots means higher ground.</small></span></label>
+        <label class="choice"><input type="radio" name="mapType" value="both"><span>Contour lines and elevation map<small><span class="sr-only">, </span>Both together. The dots change at a contour line.</small></span></label>
+      </div>
+    </div>
+    <div id="styleGroup" hidden>
+      <h3 id="styleHeading">Model style</h3>
+      <div role="radiogroup" aria-labelledby="styleHeading">
+        <label class="choice"><input type="radio" name="modelStyle" value="smooth" checked><span>Smooth hills<small><span class="sr-only">, </span>Rounded, like the real land.</small></span></label>
+        <label class="choice"><input type="radio" name="modelStyle" value="stepped"><span>Stepped<small><span class="sr-only">, </span>One flat step for each contour line, like a layer cake.</small></span></label>
+      </div>
+    </div>
+
+    <h3 id="detailHeading">Detail</h3>
+    <div role="radiogroup" aria-labelledby="detailHeading">
+      <label class="choice"><input type="radio" name="detail" value="simple"><span>Simple<small><span class="sr-only">, </span>About 3 contour lines, or 2 elevation levels</small></span></label>
+      <label class="choice"><input type="radio" name="detail" value="medium" checked><span>Medium<small><span class="sr-only">, </span>About 6 contour lines, or 3 elevation levels</small></span></label>
+      <label class="choice"><input type="radio" name="detail" value="detailed"><span>Detailed<small><span class="sr-only">, </span>About 10 contour lines, or 5 elevation levels</small></span></label>
+    </div>
+    <p class="hint" id="detailHint">Exact counts are in More map options.</p>
+
+    <label class="choice"><input type="checkbox" id="autoTurn" aria-describedby="autoTurnHint"><span>Find best angle<small id="autoTurnHint"><span class="sr-only">, </span>Turns the map so more contour rings fit whole. A braille n shows north.</small></span></label>
+
+    <label class="choice"><input type="checkbox" id="includeKey" checked><span>Include a braille key<small><span class="sr-only">, </span>Also downloads the map facts in uncontracted braille, as a .brf file</small></span></label>
+
+    <h3>Download</h3>
+    <p class="hint" id="dlHint">The preview below updates as you choose.</p>
+    <div class="actions">
+      <button type="button" class="primary" id="downloadBtn" aria-describedby="dlHint">Download braille file and key</button>
+    </div>
+    <p class="status" id="status" role="status"></p>
+  </div>
+
+  <!-- Preview. Each fact is its own short line for arrow-key reading. The picture is a
+       Tab stop named "Map picture" and described by those lines, so Tab reads them all. -->
+  <div id="previewSection" class="panel">
+    <h2 id="currentHeading" tabindex="-1">Current map</h2>
+    <div class="desc" id="desc"><div>No map yet.</div><div>Find a place to make one.</div></div>
+    <div class="preview-wrap">
+      <canvas id="preview" width="600" height="580" tabindex="0" role="img" aria-label="Map picture" aria-describedby="desc"></canvas>
+    </div>
+    <div class="legend" id="legend" aria-hidden="true">
+      <span style="--c: var(--dot)">Map dots</span>
+      <span style="--c: var(--peak)">Highest point</span>
+      <span style="--c: var(--title)">Title</span>
+      <span style="--c: var(--frame)" id="legendArrow" hidden>North marker</span>
+    </div>
+    <!-- The live map is for sighted helpers, so it starts closed. -->
+    <div class="map-tools">
+      <h3 class="disclosure-heading">
+        <button type="button" class="disclosure" id="areaBtn" aria-expanded="false" aria-controls="areaBody">
+          <span class="chev" aria-hidden="true"></span>Area on the map
+        </button>
+      </h3>
+      <div class="disclosure-body" id="areaBody" hidden>
+        <p class="hint" id="mapHint">The orange box is the area on the page. Drag the map to move it.</p>
+        <div id="map" aria-describedby="mapHint"></div>
+
+        <h4 id="rotHeading">Turn the map</h4>
+        <p class="hint" id="rotNow">Now: north is at the top.</p>
+        <div class="actions" role="group" aria-labelledby="rotHeading" aria-describedby="rotNow">
+          <button type="button" class="secondary" id="turnWest">Turn west 15 degrees</button>
+          <button type="button" class="secondary" id="turnEast">Turn east 15 degrees</button>
+          <button type="button" class="secondary" id="northUp">North up</button>
+        </div>
+        <p class="hint">When the map is turned, a braille n outside the frame shows north.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced, collapsed by default -->
+  <div id="optionsCol">
+    <div>
+      <h2 class="disclosure-heading">
+        <button type="button" class="disclosure" id="moreBtn" aria-expanded="false" aria-controls="moreBody">
+          <span class="chev" aria-hidden="true"></span>More map options
+        </button>
+      </h2>
+      <div class="disclosure-body" id="moreBody" hidden>
+        <h3>Exact detail</h3>
+        <div class="field">
+          <label for="lineCount">Number of contour lines</label>
+          <select id="lineCount" aria-describedby="lineHint">
+            <option value="3">About 3 lines</option><option value="4">About 4 lines</option>
+            <option value="5">About 5 lines</option><option value="6" selected>About 6 lines</option>
+            <option value="8">About 8 lines</option><option value="10">About 10 lines</option>
+            <option value="12">About 12 lines</option>
+          </select>
+          <p class="hint" id="lineHint">Also sets the steps on a stepped 3D model.</p>
+        </div>
+        <div class="field">
+          <label for="levels">Number of elevation levels</label>
+          <select id="levels" aria-describedby="levelHint">
+            <option value="2">2 levels</option><option value="3" selected>3 levels</option>
+            <option value="4">4 levels</option><option value="5">5 levels</option>
+          </select>
+          <p class="hint" id="levelHint">Each level has its own dot pattern.</p>
+        </div>
+
+        <h3>Contour line options</h3>
+        <label class="choice"><input type="checkbox" id="optIndex" checked><span>Thick index lines<small><span class="sr-only">, </span>Every 5th line is wider, to help count up the hill.</small></span></label>
+        <label class="choice"><input type="checkbox" id="optTop" checked><span>Mark the top<small><span class="sr-only">, </span>A solid block of dots on the highest point.</small></span></label>
+        <label class="choice"><input type="checkbox" id="optClean" checked><span>Clean up specks<small><span class="sr-only">, </span>Removes tiny bits of line shorter than about 1 centimeter.</small></span></label>
+        <label class="choice"><input type="checkbox" id="optApart" checked><span>Keep lines apart<small><span class="sr-only">, </span>Leaves a gap where lines would touch on steep ground.</small></span></label>
+
+        <h3>Smoothing</h3>
+        <div class="field">
+          <label for="smooth" class="sr-only">Smoothing</label>
+          <select id="smooth" aria-describedby="smoothHint">
+            <option value="0">None</option><option value="1">Low</option>
+            <option value="2" selected>Medium</option><option value="3">High</option>
+          </select>
+          <p class="hint" id="smoothHint">More smoothing gives rounder lines with less detail.</p>
+        </div>
+
+        <h3>Units</h3>
+        <div class="field">
+          <label for="units" class="sr-only">Units</label>
+          <select id="units"><option value="ft">Feet</option><option value="m">Meters</option></select>
+        </div>
+
+        <h3>Braille title</h3>
+        <label class="choice"><input type="checkbox" id="useTitle" checked><span>Put a title on the top line</span></label>
+        <div class="field">
+          <label for="titleText">Title text</label>
+          <input type="text" id="titleText" value="Enchanted Rock" maxlength="60" aria-describedby="titleHint">
+          <p class="hint" id="titleHint">Written in uncontracted braille. Find a place fills this in.</p>
+        </div>
+
+        <h3>Share</h3>
+        <p class="hint" id="linkHint">The link opens this place and these choices. Share it or bookmark it.</p>
+        <div class="actions">
+          <button type="button" class="secondary" id="linkBtn" aria-describedby="linkHint">Copy link to this map</button>
+        </div>
+        <div class="field" id="linkField" hidden>
+          <label for="linkText">Link to this map</label>
+          <input type="text" id="linkText" readonly>
+        </div>
+
+        <h3>Start over</h3>
+        <p class="hint" id="resetHint">The page remembers your place and choices. This clears them.</p>
+        <div class="actions">
+          <button type="button" class="secondary" id="resetBtn" aria-describedby="resetHint">Reset all choices</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="disclosure-heading">
+        <button type="button" class="disclosure" id="setupBtn" aria-expanded="false" aria-controls="setupBody">
+          <span class="chev" aria-hidden="true"></span><span id="setupLabel">Embosser and page setup</span>
+        </button>
+      </h2>
+      <div class="disclosure-body" id="setupBody" hidden>
+        <!-- 3D model settings, shown only for .stl. Model style is in Make a map. -->
+        <div id="stlGroup" hidden>
+          <h3>Model size</h3>
+          <p class="hint">Choose Smooth hills or Stepped under Model style in Make a map.</p>
+          <div class="field">
+            <label for="modelW">Model width</label>
+            <select id="modelW" aria-describedby="modelWHint">
+              <option value="100">100 millimeters, about 4 inches</option>
+              <option value="120">120 millimeters, about 4.7 inches</option>
+              <option value="150" selected>150 millimeters, about 6 inches</option>
+              <option value="170">170 millimeters, about 6.7 inches</option>
+            </select>
+            <p class="hint" id="modelWHint">A Prusa Mini fits 170 millimeters or less.</p>
+          </div>
+          <div class="field">
+            <label for="hill">Hill height</label>
+            <select id="hill" aria-describedby="hillHint1 hillHint2">
+              <option value="10">10 millimeters</option><option value="15">15 millimeters</option>
+              <option value="20" selected>20 millimeters</option><option value="30">30 millimeters</option>
+              <option value="40">40 millimeters</option>
+            </select>
+            <p class="hint" id="hillHint1">How far the highest ground rises above the lowest.</p>
+            <p class="hint" id="hillHint2">Heights are stretched to fit. The description says how much.</p>
+          </div>
+          <div class="field">
+            <label for="baseMm">Base thickness</label>
+            <select id="baseMm">
+              <option value="2">2 millimeters</option><option value="3" selected>3 millimeters</option>
+              <option value="5">5 millimeters</option>
+            </select>
+          </div>
+          <h3>Model extras</h3>
+          <label class="choice"><input type="checkbox" id="modelLines"><span>Raised contour lines<small><span class="sr-only">, </span>Thin ridges where each contour line falls. Smooth hills only.</small></span></label>
+          <label class="choice"><input type="checkbox" id="modelTop" checked><span>Bump on the highest point<small><span class="sr-only">, </span>A small round bump, like the block on the paper map.</small></span></label>
+          <label class="choice"><input type="checkbox" id="modelNorth" checked><span>North arrow<small><span class="sr-only">, </span>A raised arrow on a flat ledge along the back edge. Adds 14 millimeters.</small></span></label>
+        </div>
+
+        <!-- QuickTac graphic settings, shown only when that file type is chosen -->
+        <div id="sigGroup" hidden>
+          <h3 id="resHeading">Graphics resolution</h3>
+          <div class="field">
+            <select id="sigRes" aria-labelledby="resHeading" aria-describedby="resHint1 resHint2">
+              <option value="0.08">12.5 dots per inch, 0.08 inch spacing</option>
+              <option value="0.06">16.7 dots per inch, 0.06 inch spacing</option>
+              <option value="0.05">20 dots per inch, 0.05 inch spacing</option>
+            </select>
+            <p class="hint" id="resHint1">Match the Dot Spacing in QuickTac, File, Page Setup.</p>
+            <p class="hint" id="resHint2">A Dot Spacing of 2.032 millimeters is 12.5 dots per inch.</p>
+          </div>
+          <h3>Image size</h3>
+          <div class="row">
+            <div class="field">
+              <label for="sigW">Width in dots</label>
+              <input type="text" id="sigW" inputmode="numeric" autocomplete="off" value="120" aria-describedby="imgHint1 imgHint2">
+            </div>
+            <div class="field">
+              <label for="sigH">Height in dots</label>
+              <input type="text" id="sigH" inputmode="numeric" autocomplete="off" value="135" aria-describedby="imgHint1 imgHint2">
+            </div>
+          </div>
+          <p class="hint" id="imgHint1">Use the largest Image Size in QuickTac, File, Page Setup.</p>
+          <p class="hint" id="imgHint2">Changing the resolution resizes these to cover the same paper.</p>
+        </div>
+
+        <div id="paperGroup">
+          <h3>Paper</h3>
+          <div class="field">
+            <label for="paper" class="sr-only">Paper</label>
+            <select id="paper" aria-describedby="paperHint">
+              <option value="braille">11 by 11.5 inch braille paper</option>
+              <option value="letter">8.5 by 11 inch letter paper</option>
+            </select>
+            <p class="hint" id="paperHint">Sets the page size in the preview.</p>
+          </div>
+        </div>
+
+        <!-- Braille file settings, shown only for .brf -->
+        <div id="brfGroup">
+          <div class="row">
+            <div class="field"><label for="cols">Cells per line</label><input type="number" id="cols" min="16" max="44" value="40"></div>
+            <div class="field"><label for="lines">Lines per page</label><input type="number" id="lines" min="10" max="30" value="25"></div>
+          </div>
+          <p class="hint">Match these to your embosser's page setup.</p>
+          <h3>Dot spacing in millimeters</h3>
+          <p class="hint">Sets the map's shape so it isn't stretched. Defaults are typical braille.</p>
+          <div class="row3">
+            <div class="field"><label for="dotSp">Dot to dot</label><input type="number" id="dotSp" step="0.1" min="2" max="3.2" value="2.5"></div>
+            <div class="field"><label for="cellW">Cell to cell</label><input type="number" id="cellW" step="0.1" min="5" max="8" value="6.2"></div>
+            <div class="field"><label for="lineH">Line to line</label><input type="number" id="lineH" step="0.1" min="7" max="12" value="10"></div>
+          </div>
+        </div>
+
+        <div id="picGroup">
+          <h3>Picture files</h3>
+          <p class="hint">For checking by sight, or printing on swell paper.</p>
+          <div class="actions">
+            <button type="button" class="secondary" id="dlPng">Download PNG</button>
+            <button type="button" class="secondary" id="dlSvg">Download SVG</button>
+          </div>
+        </div>
+
+        <h3>Embossing tips</h3>
+        <ul>
+          <li>Braille file: set your embosser to the same cells per line and lines per page.</li>
+          <li>Braille file: turn off translation and page numbers, or the picture will shift.</li>
+          <li>QuickTac: open the .sig file, check File, Page Setup, then emboss from QuickTac.</li>
+          <li>3D model: print flat side down. It needs no supports.</li>
+          <li>Emboss on one side only, with interpoint off.</li>
+          <li>Emboss one test page first and check that the rows line up.</li>
+        </ul>
+        <p class="hint">Elevation data: Terrain Tiles on AWS. Place search: Nominatim.</p>
+        <p class="hint">Map: OpenTopoMap and OpenStreetMap contributors.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+/* ---------- Braille basics ----------
+   North American ASCII braille, indexed by dot bits (dot1=1, dot2=2, dot3=4, dot4=8, dot5=16, dot6=32). */
+const BRF = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
+// QuickTac .sig uses the same table except dots 246, 1256, 12456 are { | } instead of [ \ ].
+// With [ \ ] QuickTac refuses to open the file.
+const SIG = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%{$+X!&;:4|0Z7(_?W}#Y)=";
+const BIT = [[1, 2, 4], [8, 16, 32]];   // BIT[col][row]
+const MM_PER_INCH = 25.4;
+const TITLE_GAP_MM = 7;
+// On a turned QuickTac map, the gap between the north letter n and the map frame.
+const NORTH_GAP_MM = 4;
+const PUNCT = { '.': '4', ',': '1', '-': '-', "'": "'", ':': '3', ';': '2', '!': '6', '?': '8',
+  '(': '"<', ')': '">', '/': '_/', '&': '@&' };
+
+// UEB uncontracted (Grade 1), enough for a title.
+function toUEB1(text) {
+  let out = '', num = false;
+  for (const w of text.split(/(\s+)/)) {
+    if (!w) continue;
+    if (/^\s+$/.test(w)) { out += ' '; num = false; continue; }
+    const letters = w.replace(/[^A-Za-z]/g, '');
+    const allCaps = letters.length > 1 && letters === letters.toUpperCase();
+    if (allCaps) out += ',,';
+    for (let i = 0; i < w.length; i++) {
+      const ch = w[i], nx = w[i + 1] || '';
+      if (/[0-9]/.test(ch)) { if (!num) { out += '#'; num = true; } out += 'JABCDEFGHI'[+ch]; continue; }
+      if (num && (ch === '.' || ch === ',') && /[0-9]/.test(nx)) { out += ch === '.' ? '4' : '1'; continue; }
+      if (/[A-Za-z]/.test(ch)) {
+        // a-j right after a number needs the grade 1 sign; a capital sign ends the number by itself.
+        if (num && /[a-jA-J]/.test(ch) && (allCaps || ch === ch.toLowerCase())) out += ';';
+        num = false;
+        if (!allCaps && ch >= 'A' && ch <= 'Z') out += ',';
+        out += ch.toUpperCase();
+        continue;
+      }
+      num = false;
+      out += PUNCT[ch] ?? '';
+    }
+  }
+  return out;
+}
+
+/* ---------- Elevation textures ----------
+   x, y are map dots. t.cw and t.lh are one braille cell's width and line's height in dots,
+   so textures feel the same on a braille page and on an evenly spaced graphics grid. */
+const PATTERNS = [
+  { name: 'no dots',          f: () => false },
+  { name: 'scattered dots',   f: (x, y, t) => x % t.cw === 0 && y % t.lh === 1 &&
+                                 (Math.floor(x / t.cw) + Math.floor(y / t.lh)) % 2 === 0 },
+  { name: 'dashes',           f: (x, y, t) => y % t.lh === 1 && x % t.cw < 2 },
+  { name: 'up and down bars', f: (x, y, t) => x % t.cw === 0 && y % t.lh < 3 },
+  { name: 'solid dots',       f: () => true },
+];
+const LEVEL_PATTERNS = { 1: [0], 2: [0, 3], 3: [0, 1, 3], 4: [0, 1, 2, 3], 5: [0, 1, 2, 3, 4] };
+
+/* ---------- Settings and page geometry ---------- */
+const PAPERS = {
+  braille: { w: 11.5 * MM_PER_INCH, h: 11 * MM_PER_INCH, cols: 40, lines: 25 },
+  letter:  { w: 8.5 * MM_PER_INCH,  h: 11 * MM_PER_INCH, cols: 32, lines: 25 },
+};
+const num = (v, lo, hi, d) => { v = parseFloat(v); return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
+
+// "What will you make?" picks a braille file, a QuickTac graphic or a 3D model.
+function fileTypeOf() {
+  const fileType = document.querySelector('input[name=make]:checked').value;
+  return { fileType, sig: fileType === 'sig', stl: fileType === 'stl' };
+}
+// Detail sets the exact counts, which live in More map options.
+const DETAIL = { simple: { lines: 3, levels: 2 }, medium: { lines: 6, levels: 3 }, detailed: { lines: 10, levels: 5 } };
+function syncDetail() {
+  const lc = +$('lineCount').value, lv = +$('levels').value;
+  let match = null;
+  for (const [k, d] of Object.entries(DETAIL)) if (d.lines === lc && d.levels === lv) match = k;
+  document.querySelectorAll('input[name=detail]').forEach(r => { r.checked = r.value === match; });
+  $('detailHint').textContent = match ? 'Exact counts are in More map options.'
+    : `Custom: about ${lc} lines and ${lv} levels, set in More map options.`;
+}
+function readSettings() {
+  return {
+    paper: PAPERS[$('paper').value],
+    ...fileTypeOf(),
+    modelStyle: document.querySelector('input[name=modelStyle]:checked').value,
+    modelW: +$('modelW').value, hill: +$('hill').value, baseMm: +$('baseMm').value,
+    modelLines: $('modelLines').checked, modelTop: $('modelTop').checked, modelNorth: $('modelNorth').checked,
+    pitch: num($('sigRes').value, 0.03, 0.12, 0.08) * MM_PER_INCH,   // graphics dot spacing in mm
+    sigW: 2 * Math.floor(num($('sigW').value, 20, 600, 120) / 2),     // .sig packs 2 dots per character
+    sigH: 3 * Math.floor(num($('sigH').value, 21, 600, 135) / 3),     // and 3 dot rows per line
+    cols: Math.round(num($('cols').value, 16, 44, 40)),
+    lines: Math.round(num($('lines').value, 10, 30, 25)),
+    type: document.querySelector('input[name=mapType]:checked').value,
+    lineCount: +$('lineCount').value, levels: +$('levels').value,
+    smooth: +$('smooth').value, units: $('units').value,
+    index: $('optIndex').checked, top: $('optTop').checked,
+    clean: $('optClean').checked, apart: $('optApart').checked,
+    useTitle: $('useTitle').checked, title: $('titleText').value.trim(),
+    dot: num($('dotSp').value, 2, 3.2, 2.5), cellW: num($('cellW').value, 5, 8, 6.2),
+    lineH: num($('lineH').value, 7, 12, 10),
+    rot: rotation,
+  };
+}
+
+// pg: the whole page as a dot grid (dc columns, dr rows) with each dot's position in mm.
+// The map fills the grid below the title. t holds sizes in dots, so a gap or a thick line
+// is about the same size under the finger on either kind of file.
+function makeGeom(s) {
+  if (s.stl) {
+    // 3D model: same area as the braille page, sampled every ~0.75 mm.
+    const aspect = makeGeom({ ...s, stl: false, sig: false, rot: 0 }).aspect;
+    const wMm = s.modelW, dMm = wMm * aspect, c = Math.max(0.5, wMm / 200);
+    const MW = Math.round(wMm / c) + 1, MH = Math.round(dMm / c) + 1;
+    return { MW, MH, px: x => x * c, py: y => y * c, W: (MW - 1) * c, H: (MH - 1) * c, aspect,
+             model: { c, wMm: (MW - 1) * c, dMm: (MH - 1) * c } };
+  }
+  // A turned paper map gets a braille n outside the frame, so the map leaves a blank
+  // margin left, right and above it. x0, y0 are where the map starts on the page, in dots.
+  let pg, x0 = 0, y0, t, MW, MH, north = null;
+  if (s.sig) {
+    const p = s.pitch, r = mm => Math.max(1, Math.round(mm / p));
+    const bDot = r(s.dot), bCell = Math.max(bDot + 2, Math.round(s.cellW / p));
+    pg = { dc: s.sigW, dr: s.sigH, xmm: x => x * p, ymm: y => y * p };
+    t = { cw: Math.max(2, Math.round(s.cellW / p)), lh: Math.max(3, Math.round(s.lineH / p)),
+          gap: r(2.5), apart: r(2.5), thickExtra: Math.max(0, Math.round(3.5 / p) - 2),
+          speck: Math.max(5, Math.round(10 / p)), peak: Math.max(3, Math.round(5 / p)),
+          peakRing: r(5), bDot, bCell };
+    const titleRows = s.useTitle ? 2 * bDot + Math.ceil(TITLE_GAP_MM / p) : 0;
+    y0 = titleRows; MW = pg.dc;
+    if (s.rot) {
+      const lw = bDot + 1, lh = 2 * bDot + 1, gapD = Math.ceil(NORTH_GAP_MM / p);   // the letter n, in dots
+      x0 = lw + gapD; MW = pg.dc - 2 * x0; y0 = titleRows + lh + gapD;
+      north = { lh, gapD };
+    }
+  } else {
+    pg = { dc: s.cols * 2, dr: s.lines * 3,
+           xmm: x => Math.floor(x / 2) * s.cellW + (x % 2) * s.dot,
+           ymm: y => Math.floor(y / 3) * s.lineH + (y % 3) * s.dot };
+    t = { cw: 2, lh: 3, gap: 1, apart: 1, thickExtra: 0, speck: 5, peak: 0, bDot: 1, bCell: 2 };
+    const titleRows = s.useTitle ? 3 : 0;
+    y0 = titleRows; MW = pg.dc;
+    if (s.rot) { x0 = 2; MW = pg.dc - 4; y0 = titleRows + 3; north = {}; }   // a blank cell each side, a line above
+  }
+  MH = pg.dr - y0;
+  const px = mx => pg.xmm(mx + x0) - pg.xmm(x0), py = my => pg.ymm(my + y0) - pg.ymm(y0);
+  const W = px(MW - 1), H = py(MH - 1);
+  return { pg, x0, y0, t, MW, MH, px, py, W, H, aspect: H / W, north };
+}
+
+const widthKm = () => parseFloat($('areaSize').value) * 1.609344;
+// The frame in map pixels at zoom z. rot is the compass direction the top of the page
+// faces, in degrees (positive is east of north). toWorld(u, v) turns a spot on the page
+// (u across, v down, 0 to 1) into a map pixel.
+function frameGeo(frame, z) {
+  const c = map.project(frame.center, z);
+  const mpp = 156543.03392 * Math.cos(frame.center.lat * Math.PI / 180) / 2 ** z;
+  const wpx = frame.widthKm * 1000 / mpp, hpx = frame.heightKm * 1000 / mpp;
+  const r = (frame.rot || 0) * Math.PI / 180, co = Math.cos(r), si = Math.sin(r);
+  const toWorld = (u, v) => { const dx = (u - 0.5) * wpx, dy = (v - 0.5) * hpx;
+    return [c.x + dx * co - dy * si, c.y + dx * si + dy * co]; };
+  const corners = [toWorld(0, 0), toWorld(1, 0), toWorld(1, 1), toWorld(0, 1)];
+  const xs = corners.map(p => p[0]), ys = corners.map(p => p[1]);
+  return { wpx, hpx, toWorld, corners,
+           minX: Math.min(...xs), maxX: Math.max(...xs), minY: Math.min(...ys), maxY: Math.max(...ys) };
+}
+function frameFor(center, wKm, aspect, rot = 0) {
+  const f = { center, widthKm: wKm, heightKm: wKm * aspect, rot };
+  f.corners = frameGeo(f, 18).corners.map(p => map.unproject(L.point(p[0], p[1]), 18));
+  f.bounds = L.latLngBounds(f.corners);
+  return f;
+}
+let rotation = 0;               // compass bearing the top of the page faces, in degrees
+const getRot = () => rotation;
+const currentFrame = () => frameFor(map.getCenter(), widthKm(), makeGeom(readSettings()).aspect, getRot());
+// Turns the frame and says so. The "Now:" line is read with the turn buttons.
+function setRotation(a, say, focusResult = false) {
+  rotation = Math.max(-90, Math.min(90, Math.round(a / 5) * 5));
+  $('rotNow').textContent = 'Now: ' + (rotation ? facingText(rotation, 'map').replace(/^T/, 't') : 'north is at the top.');
+  if (map) updateFrame();
+  saveSettings();
+  if (say !== undefined) return build(say, focusResult);
+}
+// Turning by hand turns Find best angle off, so remaking the map keeps your turn.
+function manualTurn(a, say) {
+  const off = $('autoTurn').checked;
+  if (off) { $('autoTurn').checked = false; }
+  setRotation(a, (off ? 'Find best angle is off. ' : '') + say);
+}
+function turnBy(d) {
+  const a = rotation + d;
+  if (a > 90 || a < -90) { setStatus(`The map is turned as far as it goes, 90 degrees ${d > 0 ? 'east' : 'west'}.`); return; }
+  manualTurn(a, a ? facingText(a, 'map') : 'North is at the top.');
+}
+function facingText(rot, what) {
+  return `The top of the ${what} faces ${Math.abs(rot)} degrees ${rot > 0 ? 'east' : 'west'} of north.`;
+}
+
+/* ---------- Map ---------- */
+let map, frameRect;
+function initMap() {
+  map = L.map('map', { keyboard: true, keyboardPanDelta: 60 }).setView(startView || [30.5062, -98.8183], 13);
+  L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17,
+    attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM | Style © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)' }).addTo(map);
+  L.control.scale({ imperial: true, metric: false }).addTo(map);
+  map.getContainer().setAttribute('aria-label', 'Map for sighted helpers. Arrow keys move it.');
+  const color = getComputedStyle(document.documentElement).getPropertyValue('--frame').trim() || '#d9480f';
+  frameRect = L.polygon(currentFrame().corners, { color, weight: 3, fillOpacity: 0.06, interactive: false }).addTo(map);
+  map.on('move', updateFrame);
+  map.on('moveend', areaMoved);
+}
+function updateFrame() { frameRect.setLatLngs(currentFrame().corners); }
+// The map sits in a section that starts closed. It is fitted to the frame when opened.
+function fitToFrame() {
+  if ($('areaBody').hidden) return;
+  map.fitBounds(currentFrame().bounds, { padding: [24, 24], animate: false });
+}
+function fmtLatLon(ll) {
+  return `${Math.abs(ll.lat).toFixed(3)} ${ll.lat >= 0 ? 'north' : 'south'}, ` +
+         `${Math.abs(ll.lng).toFixed(3)} ${ll.lng >= 0 ? 'east' : 'west'}`;
+}
+/* ---------- Find a place ---------- */
+async function doSearch(q) {
+  const list = $('results'); list.innerHTML = ''; list.hidden = true;
+  const m = q.match(/^\s*(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)\s*$/);
+  if (m) { goTo(+m[1], +m[2], ''); return; }
+  if (!q.trim()) { setStatus('Type a place name first.'); $('q').focus(); return; }
+  setStatus('Searching.');
+  try {
+    const r = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&q=' +
+      encodeURIComponent(q), { headers: { 'Accept-Language': 'en' } });
+    if (!r.ok) throw new Error('the search service did not answer');
+    const items = await r.json();
+    if (!items.length) { setStatus('No places found. Try a different name.'); return; }
+    for (const it of items) {
+      const li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.className = 'secondary';
+      b.textContent = it.display_name.split(',').slice(0, 3).join(',');
+      b.addEventListener('click', () => goTo(+it.lat, +it.lon, it.name || it.display_name.split(',')[0], it));
+      li.appendChild(b); list.appendChild(li);
+    }
+    list.hidden = false;
+    setStatus(`${items.length} place${items.length > 1 ? 's' : ''} found. Choose one.`);
+    list.querySelector('button').focus();
+  } catch (e) { setStatus('Search did not work: ' + e.message + '.'); }
+}
+function goTo(lat, lon, name, place) {
+  setRotation(0);
+  const size = place && sizeFor(place);
+  if (size) $('areaSize').value = size;
+  quietly(() => { map.setView([lat, lon], map.getZoom(), { animate: false }); updateFrame(); fitToFrame(); });
+  $('titleText').value = name || 'Topographic map';
+  $('results').innerHTML = ''; $('results').hidden = true;
+  saveSettings();
+  makeMap(size ? `Map size ${sizeText(size)}.` : '', true);
+}
+// A sensible map size from what the search found: a peak gets 3 miles; a park, lake or
+// town gets the smallest size that holds its outline. Returns null to keep the size as is.
+const PEAKS = ['peak', 'volcano', 'hill', 'saddle', 'mountain_pass', 'rock', 'stone', 'cliff'];
+function sizeFor(place) {
+  const opts = [...$('areaSize').options].map(o => +o.value);
+  if (place.category === 'natural' && PEAKS.includes(place.type)) return '3';
+  const bb = (place.boundingbox || []).map(Number);
+  if (bb.length !== 4 || bb.some(v => !Number.isFinite(v))) return null;
+  const [south, north, west, east] = bb, lat = (south + north) / 2;
+  const wide = (east - west) * 69.17 * Math.cos(lat * Math.PI / 180), tall = (north - south) * 69;
+  const span = Math.max(wide, tall) * 1.1;                // miles, with a little room around it
+  if (span < 0.4) return null;                            // a single spot: keep the size
+  return String(opts.find(v => v >= span) ?? opts[opts.length - 1]);
+}
+const sizeText = v => $('areaSize').querySelector(`option[value="${v}"]`).textContent.replace(/ \(.*\)$/, '');
+// Remake the map for a new area: with Find best angle checked, it turns the map first.
+function makeMap(prefix = '', focusResult = false) {
+  return $('autoTurn').checked ? findBestAngle(prefix, focusResult) : build(prefix, focusResult);
+}
+
+/* ---------- Elevation ---------- */
+function loadImage(src) {
+  return new Promise((res, rej) => {
+    const im = new Image(); im.crossOrigin = 'anonymous';
+    im.onload = () => res(im); im.onerror = () => rej(new Error('elevation data did not load'));
+    im.src = src;
+  });
+}
+const tileCount = g => (Math.floor(g.maxX / 256) - Math.floor(g.minX / 256) + 1) *
+                       (Math.floor(g.maxY / 256) - Math.floor(g.minY / 256) + 1);
+// About 6 elevation pixels per dot, but never more than 30 tiles.
+function pickZoom(frame, dotsAcross) {
+  const cosl = Math.cos(frame.center.lat * Math.PI / 180);
+  let z = Math.round(Math.log2(156543.03392 * cosl * dotsAcross * 6 / (frame.widthKm * 1000)));
+  z = Math.max(1, Math.min(14, z));
+  while (z > 1 && tileCount(frameGeo(frame, z)) > 30) z--;
+  return z;
+}
+async function fetchElevation(frame, geom) {
+  const z = pickZoom(frame, geom.MW), g = frameGeo(frame, z);
+  const at = await loadSampler(g, z);
+  const { MW, MH } = geom, grid = new Float32Array(MW * MH);
+  const sx = g.wpx / MW * 0.33, sy = g.hpx / MH * 0.33;
+  for (let my = 0; my < MH; my++) for (let mx = 0; mx < MW; mx++) {
+    const [X, Y] = g.toWorld(geom.px(mx) / geom.W, geom.py(my) / geom.H);
+    let s = 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) s += at(X + dx * sx, Y + dy * sy);
+    grid[my * MW + mx] = s / 9;
+  }
+  return grid;
+}
+// Loads the elevation tiles covering g's box and returns at(X, Y): meters at a map pixel.
+async function loadSampler(g, z) {
+  const tx0 = Math.floor(g.minX / 256), tx1 = Math.floor(g.maxX / 256);
+  const ty0 = Math.floor(g.minY / 256), ty1 = Math.floor(g.maxY / 256);
+  const n = 2 ** z, cv = document.createElement('canvas');
+  cv.width = (tx1 - tx0 + 1) * 256; cv.height = (ty1 - ty0 + 1) * 256;
+  const ctx = cv.getContext('2d', { willReadFrequently: true }), jobs = [];
+  for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) {
+    const yy = Math.max(0, Math.min(n - 1, ty)), xx = ((tx % n) + n) % n;
+    jobs.push(loadImage(`https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${xx}/${yy}.png`)
+      .then(im => ctx.drawImage(im, (tx - tx0) * 256, (ty - ty0) * 256)));
+  }
+  await Promise.all(jobs);
+  const d = ctx.getImageData(0, 0, cv.width, cv.height).data, Wc = cv.width, Hc = cv.height;
+  const ox = tx0 * 256, oy = ty0 * 256;
+  const raw = (X, Y) => { X = Math.max(0, Math.min(Wc - 1, X)); Y = Math.max(0, Math.min(Hc - 1, Y));
+    const k = (Y * Wc + X) * 4; return d[k] * 256 + d[k + 1] + d[k + 2] / 256 - 32768; };
+  return (X, Y) => { const x = X - ox - 0.5, y = Y - oy - 0.5, x0 = Math.floor(x), y0 = Math.floor(y), fx = x - x0, fy = y - y0;
+    return raw(x0, y0) * (1 - fx) * (1 - fy) + raw(x0 + 1, y0) * fx * (1 - fy) +
+           raw(x0, y0 + 1) * (1 - fx) * fy + raw(x0 + 1, y0 + 1) * fx * fy; };
+}
+
+/* ---------- Find best angle ----------
+   Tries turning the frame every 15 degrees and keeps the angle where the most contour
+   length forms whole rings (loops that don't touch the edge). */
+function ringScore(a, gw, gh, vals) {
+  let rings = 0, len = 0;
+  const seen = new Uint8Array(a.length), stack = [];
+  for (const v of vals) {
+    const m = new Uint8Array(a.length);
+    for (let y = 1; y < gh - 1; y++) for (let x = 1; x < gw - 1; x++) {
+      const i = y * gw + x;
+      if (a[i] >= v && (a[i - 1] < v || a[i + 1] < v || a[i - gw] < v || a[i + gw] < v)) m[i] = 1;
+    }
+    seen.fill(0);
+    for (let i = 0; i < m.length; i++) {
+      if (!m[i] || seen[i]) continue;
+      let size = 0, edge = false; stack.push(i); seen[i] = 1;
+      while (stack.length) {
+        const j = stack.pop(), x = j % gw, y = (j - x) / gw; size++;
+        if (x <= 1 || y <= 1 || x >= gw - 2 || y >= gh - 2) edge = true;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          const k = (y + dy) * gw + x + dx;
+          if (m[k] && !seen[k]) { seen[k] = 1; stack.push(k); }
+        }
+      }
+      if (!edge && size >= 4) { rings++; len += size; }
+    }
+  }
+  return { rings, len };
+}
+// Only the newest search counts: picking a new place mid-search drops the old answer.
+let searchGen = 0;
+async function findBestAngle(prefix = '', focusResult = false) {
+  const gen = ++searchGen, btn = $('downloadBtn');
+  btn.setAttribute('aria-busy', 'true');
+  try {
+    setStatus('Finding the best angle.');
+    const s = readSettings(), aspect = makeGeom({ ...s, rot: 15 }).aspect, center = map.getCenter();
+    const wKm = widthKm(), hKm = wKm * aspect, diag = Math.hypot(wKm, hKm);
+    // One square of land big enough for the frame at any angle.
+    const sq = { center, widthKm: diag, heightKm: diag, rot: 0 };
+    const gw = 100, gh = Math.max(10, Math.round(100 * aspect));
+    const z = pickZoom(sq, gw * 1.5);
+    const at = await loadSampler(frameGeo(sq, z), z);
+    if (gen !== searchGen) return;
+    const grid = rot => {
+      const g = frameGeo({ center, widthKm: wKm, heightKm: hKm, rot }, z);
+      let a = new Float32Array(gw * gh);
+      for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) a[y * gw + x] = at(...g.toWorld(x / (gw - 1), y / (gh - 1)));
+      for (let p = 0; p < 2; p++) a = blur(a, gw, gh);
+      return a;
+    };
+    const U = s.units === 'ft' ? 3.28084 : 1, g0 = grid(0);
+    let min = Infinity, max = -Infinity;
+    for (const v of g0) { if (v < min) min = v; if (v > max) max = v; }
+    const vals = chooseInterval(min * U, max * U, s.lineCount).values.map(c => c.v / U);
+    if (!vals.length) { await setRotation(0, 'The land is too flat to find a best angle.', focusResult); return; }
+    const start = { rot: 0, ...ringScore(g0, gw, gh, vals) };
+    let best = start;
+    // Smaller turns first. A bigger turn must be at least 5% better to win.
+    for (let a = 15; a <= 90; a += 15) for (const rot of [a, -a]) {
+      const sc = ringScore(grid(rot), gw, gh, vals);
+      if (sc.len > best.len * 1.05) best = { rot, ...sc };
+    }
+    const msg = best.rot === 0
+      ? `North at the top is already best, with ${start.rings} whole contour rings.`
+      : `Turned ${best.rot > 0 ? 'east' : 'west'} ${Math.abs(best.rot)} degrees: ${best.rings} whole contour rings, ` +
+        (best.rings > start.rings ? `up from ${start.rings}.` : 'and bigger rings fit whole.');
+    await setRotation(best.rot, (prefix ? prefix + ' ' : '') + msg, focusResult);
+  } catch (e) {
+    console.error(e);
+    if (gen === searchGen) setStatus('The best angle could not be found: ' + e.message + '. Try again.');
+  } finally { btn.removeAttribute('aria-busy'); }
+}
+
+/* ---------- Grid helpers ---------- */
+function blur(a, W, H) {
+  const o = new Float32Array(a.length);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let s = 0, n = 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < W && Y < H) { s += a[Y * W + X]; n++; } }
+    o[y * W + x] = s / n;
+  }
+  return o;
+}
+function majority(b, W, H, L) {
+  const o = new Uint8Array(b.length), cnt = new Array(L);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    cnt.fill(0);
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < W && Y < H) cnt[b[Y * W + X]]++; }
+    let best = b[y * W + x];
+    for (let k = 0; k < L; k++) if (cnt[k] > cnt[best]) best = k;
+    o[y * W + x] = best;
+  }
+  return o;
+}
+function dilate(m, W, H, times = 1) {
+  for (let n = 0; n < times; n++) {
+    const o = new Uint8Array(m.length);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (m[y * W + x])
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < W && Y < H) o[Y * W + X] = 1; }
+    m = o;
+  }
+  return m;
+}
+// Remove 8-connected pieces smaller than minSize. Changes mask in place.
+function removeSmall(mask, W, H, minSize) {
+  const seen = new Uint8Array(mask.length), stack = [], comp = [];
+  for (let i = 0; i < mask.length; i++) {
+    if (!mask[i] || seen[i]) continue;
+    comp.length = 0; stack.push(i); seen[i] = 1;
+    while (stack.length) {
+      const j = stack.pop(), x = j % W, y = (j - x) / W; comp.push(j);
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const X = x + dx, Y = y + dy, k = Y * W + X;
+        if (X >= 0 && Y >= 0 && X < W && Y < H && mask[k] && !seen[k]) { seen[k] = 1; stack.push(k); }
+      }
+    }
+    if (comp.length < minSize) for (const j of comp) mask[j] = 0;
+  }
+}
+const fmtN = v => String(Math.round(v));
+const fmt1 = v => String(Math.round(v * 10) / 10);
+function where(i, W, H) {
+  const x = i % W, y = Math.floor(i / W);
+  const cx = Math.min(2, Math.floor(x / W * 3)), cy = Math.min(2, Math.floor(y / H * 3));
+  const ns = ['top', '', 'bottom'][cy], ew = ['left', '', 'right'][cx];
+  if (ns && ew) return `at the ${ns} ${ew}`;
+  if (ns) return `at the ${ns}`;
+  return ew ? `on the ${ew} side` : 'in the middle';
+}
+
+// Pick a round contour interval that gives close to n lines between min and max.
+function chooseInterval(min, max, n) {
+  let best = null;
+  for (let p = 0; p <= 4; p++) for (const m of [1, 2, 2.5, 4, 5, 8]) {   // 10, 20, 25, 40, 50, 80, 100...
+    const st = m * 10 ** p;
+    const kLo = Math.floor(min / st) + 1, kHi = Math.ceil(max / st) - 1, cnt = Math.max(0, kHi - kLo + 1);
+    const score = Math.abs(cnt - n) + (cnt > n ? 0.1 : 0);
+    if (!best || score < best.score) best = { st, kLo, kHi, cnt, score };
+  }
+  const values = [];
+  for (let k = best.kLo; k <= best.kHi; k++) values.push({ v: k * best.st, index: k % 5 === 0 });
+  return { step: best.st, values };
+}
+
+/* ---------- Make the map ----------
+   Returns a dot grid for the whole page: 0 empty, 1 map, 2 highest point, 4 title. */
+function compose(b) {
+  const { s, geom, elev, frame } = b, { MW, MH, t, pg, x0, y0 } = geom, N = MW * MH;
+  const U = s.units === 'ft' ? 3.28084 : 1, uWord = s.units === 'ft' ? 'feet' : 'meters';
+  const wantLines = s.type !== 'elevation', wantTex = s.type !== 'contour';
+  // Smoothing is measured in ground covered, not dots: a graphics grid has more dots
+  // per inch than a braille page (about 3.1 mm apart), so it needs more passes.
+  const passes = s.sig ? Math.round(s.smooth * 3.1 / s.pitch) : s.smooth;
+  let e = Float32Array.from(elev, v => v * U);
+  for (let p = 0; p < passes; p++) e = blur(e, MW, MH);
+
+  let min = Infinity, max = -Infinity, minI = 0, maxI = 0;
+  for (let i = 0; i < N; i++) { if (e[i] < min) { min = e[i]; minI = i; } if (e[i] > max) { max = e[i]; maxI = i; } }
+  const range = max - min;
+  const M = 1 + t.gap;                       // frame dot, then a blank gap inside it
+  const inside = (x, y) => x >= M && y >= M && x < MW - M && y < MH - M;
+
+  // ----- contour lines -----
+  const iv = chooseInterval(min, max, s.lineCount);
+  const lineId = new Int16Array(N).fill(-1);
+  if (wantLines && iv.values.length) {
+    const order = iv.values.map((c, j) => ({ ...c, j }));
+    if (s.index) order.sort((p, q) => q.index - p.index);          // thick lines claim space first
+    for (const c of order) {
+      const thick = s.index && c.index;
+      let cand = new Uint8Array(N);
+      for (let y = M; y < MH - M; y++) for (let x = M; x < MW - M; x++) {
+        const i = y * MW + x, hi = e[i] >= c.v;
+        const nb = [i - 1, i + 1, i - MW, i + MW];
+        if (hi && nb.some(k => e[k] < c.v)) cand[i] = 1;                 // high side of the line
+        else if (thick && !hi && nb.some(k => e[k] >= c.v)) cand[i] = 1; // low side too: thicker
+      }
+      if (thick && t.thickExtra) {
+        cand = dilate(cand, MW, MH, t.thickExtra);
+        for (let i = 0; i < N; i++) if (!inside(i % MW, Math.floor(i / MW))) cand[i] = 0;
+      }
+      if (s.clean) removeSmall(cand, MW, MH, t.speck);
+      for (let i = 0; i < N; i++) {
+        if (!cand[i]) continue;
+        if (s.apart) {
+          const x = i % MW, y = (i - x) / MW; let clash = false;
+          for (let dy = -t.apart; dy <= t.apart && !clash; dy++) for (let dx = -t.apart; dx <= t.apart; dx++) {
+            const X = x + dx, Y = y + dy;
+            if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+            const k = Y * MW + X; if (lineId[k] >= 0 && lineId[k] !== c.j) { clash = true; break; }
+          }
+          if (clash) continue;
+        }
+        lineId[i] = c.j;
+      }
+    }
+    if (s.clean) for (let j = 0; j < iv.values.length; j++) {     // tidy pieces left by Keep lines apart
+      const m = new Uint8Array(N); for (let i = 0; i < N; i++) m[i] = lineId[i] === j ? 1 : 0;
+      removeSmall(m, MW, MH, t.speck);
+      for (let i = 0; i < N; i++) if (lineId[i] === j && !m[i]) lineId[i] = -1;
+    }
+  }
+  // ----- mark the top: a solid block (one full cell on a braille page) -----
+  // It sits in a blank patch so the fingers can't mix it up with a line. Lines are never cut
+  // for it: it goes in the closest spot to the highest point, on the summit side of the lines,
+  // with the biggest blank margin that fits. On a braille page that is a blank cell all
+  // round, else a blank cell left and right and a dot row above and below, and so on down.
+  // If the top ring can't hold it at all, that ring is left out and the marker replaces it.
+  const mx = maxI % MW, my = Math.floor(maxI / MW);
+  const w = t.peak || 2, h = t.peak || 3;
+  // Blank margins to try, biggest first, in dots across and down. On a braille page the
+  // space between cells and lines still leaves a small gap at 0.
+  const margins = t.peak ? [[t.peakRing, t.peakRing], [t.gap, t.gap], [1, 1]] : [[2, 3], [2, 1], [1, 1], [1, 0], [0, 0]];
+  const step = t.peak ? [1, 1] : [2, 3];                  // whole cells on a braille page
+  const hx = t.peak ? mx - (w >> 1) : (mx >> 1) * 2, hy = t.peak ? my - (h >> 1) : Math.floor(my / 3) * 3;
+  const MAX_MOVE_MM = 20;
+  // Ground at least v high, joined to the highest point: the summit side of the line at v.
+  const summitSide = v => {
+    const m = new Uint8Array(N), st = [maxI]; m[maxI] = 1;
+    while (st.length) {
+      const j = st.pop(), x = j % MW, y = (j - x) / MW;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const X = x + dx, Y = y + dy, q = Y * MW + X;
+        if (X >= 0 && Y >= 0 && X < MW && Y < MH && !m[q] && e[q] >= v) { m[q] = 1; st.push(q); }
+      }
+    }
+    return m;
+  };
+  // The closest spot for the marker with no line dots within rx, ry of it.
+  // region: where it may sit (null is anywhere).
+  function placeMarker(region, rx, ry) {
+    let best = null;
+    for (let by = 0; by + h <= MH; by += step[1]) for (let bx = 0; bx + w <= MW; bx += step[0]) {
+      const d = Math.hypot(geom.px(bx) - geom.px(hx), geom.py(by) - geom.py(hy));
+      if (d > MAX_MOVE_MM || (best && d >= best.d)) continue;
+      if (!inside(bx - t.gap, by - t.gap) || !inside(bx + w - 1 + t.gap, by + h - 1 + t.gap)) continue;
+      let ok = true;
+      for (let y = by; y < by + h && ok; y++) for (let x = bx; x < bx + w; x++) {
+        const i = y * MW + x; if (lineId[i] >= 0 || (region && !region[i])) { ok = false; break; }
+      }
+      for (let y = Math.max(0, by - ry); ok && y <= Math.min(MH - 1, by + h - 1 + ry); y++)
+        for (let x = Math.max(0, bx - rx); x <= Math.min(MW - 1, bx + w - 1 + rx); x++)
+          if (lineId[y * MW + x] >= 0) { ok = false; break; }
+      if (ok) best = { d, x0: bx, y0: by, x1: bx + w - 1, y1: by + h - 1, rx, ry };
+    }
+    return best;
+  }
+  const placeBest = region => {
+    for (const [rx, ry] of margins) { const p = placeMarker(region, rx, ry); if (p) return p; }
+    return null;
+  };
+  let peak = null, droppedRing = null;
+  if (s.top) {
+    const vals = wantLines ? iv.values : [], j = vals.length - 1;
+    const region = j >= 0 ? summitSide(vals[j].v) : null;
+    peak = placeBest(region);
+    // No room inside the top ring: leave that ring out, if it is a closed ring around the top.
+    let closed = !!region;
+    for (let i = 0; closed && i < N; i++) if (region[i] && !inside(i % MW, Math.floor(i / MW))) closed = false;
+    if (!peak && closed) {
+      const kept = lineId.slice(), st = [];
+      for (let i = 0; i < N; i++) if (lineId[i] === j && region[i]) { lineId[i] = -1; st.push(i); }
+      while (st.length) {                                 // and the rest of that line, if thick
+        const q = st.pop(), x = q % MW, y = (q - x) / MW;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          const X = x + dx, Y = y + dy, k = Y * MW + X;
+          if (X >= 0 && Y >= 0 && X < MW && Y < MH && lineId[k] === j) { lineId[k] = -1; st.push(k); }
+        }
+      }
+      peak = placeBest(j > 0 ? summitSide(vals[j - 1].v) : null);
+      if (peak) droppedRing = vals[j].v; else lineId.set(kept);       // no help: keep the ring
+    }
+  }
+  const inPeak = (x, y) => peak && x >= peak.x0 && x <= peak.x1 && y >= peak.y0 && y <= peak.y1;
+  const nearPeak = (x, y) => peak && x >= peak.x0 - peak.rx && x <= peak.x1 + peak.rx &&
+                                     y >= peak.y0 - peak.ry && y <= peak.y1 + peak.ry;
+
+  const onLine = new Uint8Array(N); for (let i = 0; i < N; i++) onLine[i] = lineId[i] >= 0 ? 1 : 0;
+
+  // ----- elevation levels -----
+  let breaks = [];
+  if (wantTex && range >= 1 && s.levels > 1) {
+    const ideal = k => min + k * range / s.levels;
+    if (wantLines && iv.values.length) {      // levels change exactly at a contour line
+      const used = new Set();
+      for (let k = 1; k < s.levels; k++) {
+        let bestV = null;
+        for (const c of iv.values) if (!used.has(c.v) && (bestV === null || Math.abs(c.v - ideal(k)) < Math.abs(bestV - ideal(k)))) bestV = c.v;
+        if (bestV !== null) used.add(bestV);
+      }
+      breaks = [...used].sort((p, q) => p - q);
+    } else {
+      const r = Math.pow(10, Math.max(0, Math.floor(Math.log10(range / s.levels / 2))));
+      for (let k = 1; k < s.levels; k++) {
+        const v = Math.round(ideal(k) / r) * r;
+        if (v > min && v < max && (!breaks.length || v > breaks[breaks.length - 1])) breaks.push(v);
+      }
+    }
+  }
+  const L = breaks.length + 1, pats = LEVEL_PATTERNS[Math.min(5, L)].map(j => PATTERNS[j]);
+  let band = new Uint8Array(N);
+  for (let i = 0; i < N; i++) { let k = 0; while (k < breaks.length && e[i] >= breaks[k]) k++; band[i] = k; }
+  if (!wantLines) for (let p = 0; p < passes; p++) band = majority(band, MW, MH, L);
+  const lineHalo = dilate(onLine, MW, MH, t.apart);
+
+  // ----- the page dot grid -----
+  const dots = new Uint8Array(pg.dc * pg.dr);
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) {
+    const i = y * MW + x;
+    let v = 0;
+    if (x === 0 || y === 0 || x === MW - 1 || y === MH - 1) v = 1;              // frame
+    else if (!inside(x, y)) v = 0;                                              // gap inside frame
+    else if (inPeak(x, y)) v = 2;
+    else if (onLine[i]) v = 1;                                                  // lines are never cut
+    else if (nearPeak(x, y)) v = 0;
+    else if (wantTex && !(wantLines && lineHalo[i]) && pats[band[i]].f(x, y, t)) v = 1;
+    if (v) dots[(y + y0) * pg.dc + x + x0] = v;
+  }
+  // Title: on a braille page it fills the first line's cells. On a graphics grid it is
+  // snapped as close to standard braille spacing as the grid allows.
+  if (s.useTitle) {
+    const maxChars = Math.floor((pg.dc - 1 - t.bDot) / t.bCell) + 1;
+    const txt = toUEB1(s.title || 'Topographic map').slice(0, maxChars);
+    for (let i = 0; i < txt.length; i++) {
+      const bits = BRF.indexOf(txt[i]);
+      for (let col = 0; col < 2; col++) for (let row = 0; row < 3; row++)
+        if (bits > 0 && (bits & BIT[col][row])) dots[(row * t.bDot) * pg.dc + i * t.bCell + col * t.bDot] = 4;
+    }
+  }
+
+  // North marker, only when the map is turned: a braille n just outside the frame, where a
+  // line from the map's center toward north crosses it.
+  const rot = frame.rot || 0, nb = rot ? geom.north : null;
+  let northText = '';
+  if (nb) {
+    // Where a line from the map's center toward north leaves the frame, in page mm.
+    const L0 = pg.xmm(x0), R0 = pg.xmm(x0 + MW - 1), T0 = pg.ymm(y0), B0 = pg.ymm(y0 + MH - 1);
+    const cx = (L0 + R0) / 2, cy = (T0 + B0) / 2, r = rot * Math.PI / 180, dx = -Math.sin(r), dy = -Math.cos(r);
+    const tTop = dy < -1e-9 ? (T0 - cy) / dy : Infinity, tSide = Math.abs(dx) > 1e-9 ? ((dx < 0 ? L0 : R0) - cx) / dx : Infinity;
+    const side = tTop <= tSide ? 'top' : dx < 0 ? 'left' : 'right', tt = Math.min(tTop, tSide);
+    const ex = cx + dx * tt, ey = cy + dy * tt, clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    let lx, ly, b;                                         // top left dot of the letter, dot spacing
+    if (s.sig) {
+      b = t.bDot;
+      if (side === 'top') { lx = clamp(Math.round(ex / s.pitch) - (b >> 1), 0, pg.dc - 1 - b); ly = y0 - nb.gapD - nb.lh; }
+      else { lx = side === 'left' ? 0 : pg.dc - 1 - b; ly = clamp(Math.round(ey / s.pitch) - b, y0, pg.dr - 1 - 2 * b); }
+    } else {
+      b = 1;
+      if (side === 'top') { lx = 2 * clamp(Math.round((ex - s.dot / 2) / s.cellW), 0, s.cols - 1); ly = y0 - 3; }
+      else { lx = side === 'left' ? 0 : pg.dc - 2; ly = 3 * clamp(Math.round((ey - s.dot) / s.lineH), y0 / 3, s.lines - 1); }
+    }
+    for (const [ddx, ddy] of [[0, 0], [0, 2], [1, 0], [1, 1]]) dots[(ly + ddy * b) * pg.dc + lx + ddx * b] = 5;   // dots 1 3 4 5
+    const third = f => f < 1 / 3 ? 0 : f < 2 / 3 ? 1 : 2;
+    const spotText = side === 'top' ? `above the map, ${['toward the left', 'near the middle', 'toward the right'][third((ex - L0) / (R0 - L0))]}`
+      : `${side === 'left' ? 'left' : 'right'} of the map, ${['near the top', 'near the middle', 'near the bottom'][third((ey - T0) / (B0 - T0))]}`;
+    northText = `A braille n, ${spotText}, shows north.`;
+  }
+
+  // ----- description, one short fact per line -----
+  const du = s.units === 'ft' ? 'miles' : 'km', dk = s.units === 'ft' ? 1 / 1.609344 : 1;
+  const lines = [];
+  lines.push(`${s.title || 'Map'}, ${fmt1(frame.widthKm * dk)} by ${fmt1(frame.heightKm * dk)} ${du}.`);
+  if (rot) {
+    lines.push(facingText(rot, 'map'));
+    if (northText) lines.push(northText);
+  }
+  if (wantLines) {
+    if (iv.values.length) {
+      lines.push(`${iv.values.length} contour lines, one every ${fmtN(iv.step)} ${uWord}.`);
+      if (s.index && iv.values.some(c => c.index)) lines.push(`Thick lines every ${fmtN(iv.step * 5)} ${uWord}.`);
+      lines.push('Lines close together mean steep ground.');
+    } else lines.push('The land is too flat for contour lines here.');
+  }
+  if (wantTex) {
+    lines.push(`Elevation map with ${L} level${L > 1 ? 's' : ''}. More dots means higher.`);
+    const rng = k => L === 1 ? `all about ${fmtN(min)} ${uWord}` : k === 0 ? `below ${fmtN(breaks[0])} ${uWord}` :
+      k === L - 1 ? `${fmtN(breaks[L - 2])} ${uWord} and up` : `${fmtN(breaks[k - 1])} to ${fmtN(breaks[k])} ${uWord}`;
+    pats.forEach((p, k) => lines.push(`Level ${k + 1}, ${p.name}: ${rng(k)}.`));
+  }
+  lines.push(`Lowest: ${fmtN(min)} ${uWord}, ${where(minI, MW, MH)}.`);
+  lines.push(`Highest: ${fmtN(max)} ${uWord}, ${where(maxI, MW, MH)}.`);
+  if (s.top && droppedRing !== null) lines.push(`The ${fmtN(droppedRing)} ${uWord} ring was too small, so the marker replaces it.`);
+  if (s.top) lines.push(peak ? (s.sig ? 'A solid square of dots marks the highest point.'
+                                      : 'A full braille cell marks the highest point.')
+                             : inside(mx, my) ? 'There was no room to mark the highest point.'
+                             : 'The highest ground is at the edge, so it is not marked.');
+  lines.push(`Center: ${fmtLatLon(frame.center)}.`);
+  lines.push(s.sig ? `QuickTac graphic, ${pg.dc} by ${pg.dr} dots.` : `Braille file, ${s.cols} cells by ${s.lines} lines.`);
+  return { dots, lines, keyLines: lines.slice(0, -1) };   // the key leaves out the file size
+}
+
+/* ---------- 3D model ----------
+   Heights in mm on an even grid (row 0 is the north edge). */
+const RIDGE_MM = 0.8, BUMP_R = 3.5, BUMP_H = 2.5;
+// North arrow, in mm: a flat ledge NORTH_LEDGE deep, with an arrow 2 mm shorter than the
+// ledge so it fits at any angle, raised NORTH_RISE.
+const NORTH_LEDGE = 14, NORTH_RISE = 2;
+// Is a spot inside an arrow L mm long, with a tail? a is mm across the arrow, b is mm toward
+// the tip, from the arrow's middle. The head is 45% of the length; the tail is at least 2.5 mm wide.
+function inArrow(a, b, L) {
+  const hl = 0.45 * L, hw = 0.35 * L, sw = Math.max(1.25, 0.1 * L);
+  if (b > L / 2 || b < -L / 2) return false;
+  return b >= L / 2 - hl ? Math.abs(a) <= hw * (L / 2 - b) / hl : Math.abs(a) <= sw;
+}
+// Model mm to (a, b) around an arrow center: a is mm to the arrow's right, b is mm toward
+// north. North points (-sin rot, -cos rot), with y going down.
+function arrowCoords(cx, cy, rot) {
+  const r = rot * Math.PI / 180, d = [-Math.sin(r), -Math.cos(r)], rt = [-d[1], d[0]];
+  return (x, y) => [(x - cx) * rt[0] + (y - cy) * rt[1], (x - cx) * d[0] + (y - cy) * d[1]];
+}
+function composeModel(b) {
+  const { s, geom, elev, frame } = b, { MW: nx, MH: ny, model } = geom, c = model.c, N = nx * ny;
+  const U = s.units === 'ft' ? 3.28084 : 1, uWord = s.units === 'ft' ? 'feet' : 'meters';
+  let em = Float32Array.from(elev);                       // meters
+  const passes = Math.round(s.smooth * 3.1 / c);
+  for (let p = 0; p < passes; p++) em = blur(em, nx, ny);
+  let min = Infinity, max = -Infinity, minI = 0, maxI = 0;
+  for (let i = 0; i < N; i++) { if (em[i] < min) { min = em[i]; minI = i; } if (em[i] > max) { max = em[i]; maxI = i; } }
+  const iv = chooseInterval(min * U, max * U, s.lineCount);
+  const stepped = s.modelStyle === 'stepped' && iv.values.length > 0;
+  const h = new Float32Array(N);
+  let scale = 0;                                          // mm of height per meter of ground
+  if (stepped) {
+    const stepM = iv.step / U, base0 = Math.floor(min / stepM) * stepM;
+    const topM = Math.floor(max / stepM) * stepM - base0;
+    scale = s.hill / topM;
+    for (let i = 0; i < N; i++) h[i] = (Math.floor(em[i] / stepM) * stepM - base0) * scale;
+  } else {
+    scale = max - min > 0 ? s.hill / (max - min) : 0;
+    for (let i = 0; i < N; i++) h[i] = (em[i] - min) * scale;
+  }
+  // Raised contour lines: a ridge about 2 mm wide on the high side of each line.
+  const ridges = !stepped && s.modelLines && iv.values.length > 0;
+  if (ridges) {
+    let m = new Uint8Array(N);
+    for (const cv of iv.values) {
+      const vm = cv.v / U;
+      for (let y = 1; y < ny - 1; y++) for (let x = 1; x < nx - 1; x++) {
+        const i = y * nx + x;
+        if (em[i] >= vm && (em[i - 1] < vm || em[i + 1] < vm || em[i - nx] < vm || em[i + nx] < vm)) m[i] = 1;
+      }
+    }
+    m = dilate(m, nx, ny, Math.max(1, Math.round(0.6 / c)));
+    for (let i = 0; i < N; i++) if (m[i]) h[i] += RIDGE_MM;
+  }
+  // Bump on the highest point, if it is not right at the edge.
+  const px = maxI % nx, py = Math.floor(maxI / nx), rc = BUMP_R / c;
+  const bump = s.modelTop && px > rc + 1 && py > rc + 1 && px < nx - rc - 2 && py < ny - rc - 2;
+  if (bump) {
+    for (let y = Math.floor(py - rc); y <= Math.ceil(py + rc); y++) for (let x = Math.floor(px - rc); x <= Math.ceil(px + rc); x++) {
+      const d = Math.hypot(x - px, y - py) * c;
+      if (d < BUMP_R) h[y * nx + x] += BUMP_H * Math.sqrt(1 - (d / BUMP_R) ** 2);
+    }
+  }
+  let z = new Float32Array(N), outNy = ny;
+  for (let i = 0; i < N; i++) z[i] = s.baseMm + h[i];
+  // North arrow: a flat ledge added beyond the north edge, with a flat-topped
+  // arrow on it pointing north. It sits off the map so it never hides terrain.
+  if (s.modelNorth) {
+    const rows = Math.round(NORTH_LEDGE / c), zz = new Float32Array(nx * (ny + rows));
+    zz.fill(s.baseMm, 0, nx * rows);
+    zz.set(z, nx * rows);
+    // The arrow turns to point at true north when the map is turned.
+    const AB = arrowCoords((nx - 1) * c / 2, rows * c / 2, frame.rot || 0), len = NORTH_LEDGE - 2;
+    for (let r = 0; r < rows; r++) for (let col = 0; col < nx; col++)
+      if (inArrow(...AB(col * c, r * c), len)) zz[r * nx + col] = s.baseMm + NORTH_RISE;
+    z = zz; outNy = ny + rows;
+  }
+  let top = 0;
+  for (const v of z) if (v > top) top = v;
+
+  const du = s.units === 'ft' ? 'miles' : 'km', dk = s.units === 'ft' ? 1 / 1.609344 : 1;
+  const ex = scale / (model.wMm / (frame.widthKm * 1000));    // vertical stretch vs true scale
+  const exText = ex >= 10 ? fmtN(ex) : fmt1(ex);
+  const lines = [];
+  lines.push(`${s.title || 'Map'}, ${fmt1(frame.widthKm * dk)} by ${fmt1(frame.heightKm * dk)} ${du}.`);
+  lines.push(`3D model, ${fmtN(model.wMm)} by ${fmtN((outNy - 1) * c)} millimeters, ${fmt1(top)} millimeters tall.`);
+  if (frame.rot) lines.push(facingText(frame.rot, 'model'));
+  if (stepped) {
+    lines.push(`Stepped: each step is ${fmtN(iv.step)} ${uWord}, like one contour line.`);
+    lines.push(`Each step is ${fmt1(iv.step / U * scale)} millimeters tall.`);
+  } else lines.push('Smooth hills.');
+  if (ridges) lines.push(`Raised lines every ${fmtN(iv.step)} ${uWord}, like the paper map.`);
+  lines.push(ex > 1.05 ? `Heights are stretched ${exText} times so the hills are easy to feel.`
+                       : 'Heights are close to true scale.');
+  lines.push(`Lowest: ${fmtN(min * U)} ${uWord}, ${where(minI, nx, ny)}.`);
+  lines.push(`Highest: ${fmtN(max * U)} ${uWord}, ${where(maxI, nx, ny)}.`);
+  if (s.modelTop) lines.push(bump ? 'A small round bump marks the highest point.'
+                                  : 'The highest ground is at the edge, so it has no bump.');
+  lines.push(s.modelNorth ? 'A raised arrow on a ledge along the back edge points north.'
+             : frame.rot ? 'Turn on North arrow to show which way is north.' : 'North is the top edge in the preview.');
+  lines.push(`Center: ${fmtLatLon(frame.center)}.`);
+  return { model: { nx, ny: outNy, c, z }, lines, keyLines: lines };
+}
+
+// Binary STL: top surface, four walls, and a flat bottom, as one closed solid.
+function toSTL(m, title) {
+  const { nx, ny, c, z } = m;
+  const X = col => col * c, Y = row => (ny - 1 - row) * c;
+  const v = (row, col) => [X(col), Y(row), z[row * nx + col]];
+  const per = [];                                          // edge, counterclockwise from above
+  for (let col = 0; col < nx - 1; col++) per.push([ny - 1, col]);
+  for (let row = ny - 1; row > 0; row--) per.push([row, nx - 1]);
+  for (let col = nx - 1; col > 0; col--) per.push([0, col]);
+  for (let row = 0; row < ny - 1; row++) per.push([row, 0]);
+  const nTri = 2 * (nx - 1) * (ny - 1) + 3 * per.length;
+  const buf = new ArrayBuffer(84 + 50 * nTri), dv = new DataView(buf);
+  const head = ('Tactile Topo Maker: ' + (title || 'map')).slice(0, 79);
+  for (let i = 0; i < head.length; i++) dv.setUint8(i, head.charCodeAt(i) & 0x7f);
+  dv.setUint32(80, nTri, true);
+  let o = 84;
+  const f = n => { dv.setFloat32(o, n, true); o += 4; };
+  const tri = (a, b, d) => {
+    const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2], wx = d[0] - a[0], wy = d[1] - a[1], wz = d[2] - a[2];
+    let nxv = uy * wz - uz * wy, nyv = uz * wx - ux * wz, nzv = ux * wy - uy * wx;
+    const len = Math.hypot(nxv, nyv, nzv) || 1;
+    f(nxv / len); f(nyv / len); f(nzv / len);
+    for (const p of [a, b, d]) { f(p[0]); f(p[1]); f(p[2]); }
+    o += 2;
+  };
+  for (let r = 0; r < ny - 1; r++) for (let col = 0; col < nx - 1; col++) {
+    const a = v(r, col), b = v(r, col + 1), cc = v(r + 1, col), d = v(r + 1, col + 1);
+    tri(a, cc, b); tri(b, cc, d);
+  }
+  const center = [X(nx - 1) / 2, Y(0) / 2, 0];
+  for (let k = 0; k < per.length; k++) {
+    const pt = v(...per[k]), qt = v(...per[(k + 1) % per.length]);
+    const pb = [pt[0], pt[1], 0], qb = [qt[0], qt[1], 0];
+    tri(pb, qb, qt); tri(pb, qt, pt);                      // wall, facing out
+    tri(center, qb, pb);                                   // bottom, facing down
+  }
+  return buf;
+}
+
+// Shaded-relief picture of the model, lit from the northwest.
+function drawModel(canvas, m) {
+  const { nx, ny, c, z } = m, ctx = canvas.getContext('2d');
+  canvas.width = nx; canvas.height = ny;
+  const img = ctx.createImageData(nx, ny);
+  let zmin = Infinity, zmax = -Infinity;
+  for (const v of z) { if (v < zmin) zmin = v; if (v > zmax) zmax = v; }
+  const Lx = -0.5, Ly = 0.5, Lz = 0.7, ll = Math.hypot(Lx, Ly, Lz);
+  for (let y = 0; y < ny; y++) for (let x = 0; x < nx; x++) {
+    const at = (xx, yy) => z[Math.min(ny - 1, Math.max(0, yy)) * nx + Math.min(nx - 1, Math.max(0, xx))];
+    const dzdx = (at(x + 1, y) - at(x - 1, y)) / (2 * c) * 1.5;
+    const dzdy = (at(x, y - 1) - at(x, y + 1)) / (2 * c) * 1.5;   // north is up
+    const n = Math.hypot(dzdx, dzdy, 1);
+    const shade = Math.max(0, (-dzdx * Lx - dzdy * Ly + Lz) / (n * ll));
+    const t = zmax > zmin ? (z[y * nx + x] - zmin) / (zmax - zmin) : 0;
+    const k = (y * nx + x) * 4, g = 0.25 + 0.75 * shade;
+    img.data[k] = (150 + 95 * t) * g; img.data[k + 1] = (165 + 70 * t) * g; img.data[k + 2] = (140 + 50 * t) * g;
+    img.data[k + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+/* ---------- Output ---------- */
+// Pack the dot grid into braille characters, 2 columns by 3 rows each.
+function packLines(dots, pg, table) {
+  const lines = [];
+  for (let ln = 0; ln < pg.dr / 3; ln++) {
+    let a = '';
+    for (let ch = 0; ch < pg.dc / 2; ch++) {
+      let bits = 0;
+      for (let col = 0; col < 2; col++) for (let row = 0; row < 3; row++)
+        if (dots[(ln * 3 + row) * pg.dc + ch * 2 + col]) bits |= BIT[col][row];
+      a += table[bits];
+    }
+    lines.push(a);
+  }
+  return lines;
+}
+function fileText(r, s, pg) {
+  // QuickTac .sig: ESC 1, one CRLF-ended line per 3 dot rows covering the whole image, ESC 1.
+  if (s.sig) return '\x1b1\r\n' + packLines(r.dots, pg, SIG).join('\r\n') + '\r\n\x1b1';
+  const lines = packLines(r.dots, pg, BRF).map(l => l.replace(/ +$/, ''));
+  while (lines.length && lines[lines.length - 1] === '') lines.pop();
+  return lines.join('\r\n') + '\r\n\f';
+}
+function pageLayout(s, pg) {
+  const w = s.paper.w, h = s.paper.h;
+  return { w, h, x0: (w - pg.xmm(pg.dc - 1)) / 2, y0: (h - pg.ymm(pg.dr - 1)) / 2,
+           r: Math.min(0.75, (s.sig ? s.pitch : s.dot) * 0.34) };
+}
+function eachDot(r, pg, fn) {
+  for (let y = 0; y < pg.dr; y++) for (let x = 0; x < pg.dc; x++) {
+    const v = r.dots[y * pg.dc + x]; if (v) fn(pg.xmm(x), pg.ymm(y), v);
+  }
+}
+function drawPage(canvas, r, s, pg, scale, colors) {
+  const lay = pageLayout(s, pg), ctx = canvas.getContext('2d');
+  canvas.width = Math.round(lay.w * scale); canvas.height = Math.round(lay.h * scale);
+  ctx.fillStyle = colors.paper; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  eachDot(r, pg, (x, y, v) => {
+    ctx.fillStyle = v === 4 ? colors.title : v === 2 ? colors.peak : v === 5 ? (colors.arrow || colors.dot) : colors.dot;
+    ctx.beginPath(); ctx.arc((lay.x0 + x) * scale, (lay.y0 + y) * scale, lay.r * scale, 0, Math.PI * 2); ctx.fill();
+  });
+}
+function toSVG(r, s, pg) {
+  const lay = pageLayout(s, pg); let c = '';
+  eachDot(r, pg, (x, y) => { c += `<circle cx="${(lay.x0 + x).toFixed(2)}" cy="${(lay.y0 + y).toFixed(2)}" r="${lay.r.toFixed(2)}"/>`; });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${lay.w.toFixed(1)}mm" ` +
+    `height="${lay.h.toFixed(1)}mm" viewBox="0 0 ${lay.w.toFixed(2)} ${lay.h.toFixed(2)}">` +
+    `<rect width="100%" height="100%" fill="#fff"/><g fill="#000">${c}</g></svg>`;
+}
+function download(name, blob) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const slug = t => (t || 'topo-map').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'topo-map';
+
+/* ---------- App flow ---------- */
+const cache = { key: '', elev: null };
+let built = null, result = null, stale = true, busy = null;
+
+function setStatus(msg) { $('status').textContent = msg; }
+const elevKey = (frame, geom) => frame.bounds.toBBoxString() + '|' + frame.rot + '|' + geom.MW + 'x' + geom.MH;
+
+// Makes the map. Reuses elevation already loaded for the same area. A change made while
+// a map is being made runs again afterward, so the newest settings win.
+function build(prefix = '', focusResult = false) {
+  if (busy) return busy.then(() => build(prefix, focusResult));
+  busy = doBuild(prefix, focusResult).finally(() => { busy = null; });
+  return busy;
+}
+async function doBuild(prefix, focusResult) {
+  const s = readSettings(), geom = makeGeom(s), frame = currentFrame(), key = elevKey(frame, geom);
+  $('downloadBtn').setAttribute('aria-busy', 'true');
+  try {
+    if (cache.key !== key) {
+      setStatus((prefix ? prefix + ' ' : '') + 'Loading elevation data.');
+      cache.elev = await fetchElevation(frame, geom); cache.key = key;
+    }
+    built = { s, geom, frame, elev: cache.elev };
+    result = s.stl ? composeModel(built) : compose(built);
+    stale = false;
+    show();
+    setStatus(`${prefix ? prefix + ' ' : ''}${s.stl ? '3D model' : 'Map'} made for ${s.title || 'this area'}.`);
+    if (focusResult) $('currentHeading').focus();
+    return true;
+  } catch (e) {
+    console.error(e);
+    setStatus('The map could not be made: ' + e.message + '. Try again.');
+    return false;
+  } finally {
+    $('downloadBtn').removeAttribute('aria-busy');
+  }
+}
+function show() {
+  const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
+  if (result.model) drawModel($('preview'), result.model);
+  else drawPage($('preview'), result, built.s, built.geom.pg, 2.2,
+    { paper: v('--paper'), dot: v('--dot'), peak: v('--peak'), title: v('--title'), arrow: v('--frame') });
+  $('legend').hidden = !!result.model;
+  $('legendArrow').hidden = !built.frame.rot;
+  $('desc').innerHTML = '';
+  for (const t of result.lines) { const d = document.createElement('div'); d.textContent = t; $('desc').appendChild(d); }
+}
+// Any change remakes the preview right away, loading elevation for a new area if needed.
+function settingsChanged() {
+  updateFrame();
+  saveSettings();
+  build();
+}
+// Moving the map remakes the preview once it stops for a moment. Moves the page makes
+// itself (a new place, opening the map) are made quietly and build on their own.
+let quietMove = false, moveTimer = 0;
+function quietly(fn) { quietMove = true; try { fn(); } finally { quietMove = false; } }
+function areaMoved() {
+  saveSettings();
+  if (quietMove) return;
+  clearTimeout(moveTimer);
+  moveTimer = setTimeout(() => {
+    if (cache.key !== elevKey(currentFrame(), makeGeom(readSettings()))) makeMap('Area moved.');
+  }, 700);
+}
+// One button: makes the map first if it isn't ready, then saves it, then the key if wanted.
+async function downloadMap() {
+  if (busy) await busy;
+  if (!result || stale) { if (!(await build())) return; }
+  const { s, geom } = built;
+  let name;
+  if (s.stl) {
+    name = slug(s.title) + '.stl';
+    download(name, new Blob([toSTL(result.model, s.title)], { type: 'model/stl' }));
+  } else {
+    name = slug(s.title) + (s.sig ? '.sig' : '.brf');
+    const text = fileText(result, s, geom.pg);
+    download(name, new Blob([asciiBytes(text)], { type: 'application/octet-stream' }));
+  }
+  const what = s.stl ? '3D model' : s.sig ? 'QuickTac graphic' : 'braille file';
+  if (!$('includeKey').checked) { setStatus(`Downloaded ${what}: ${name}`); return; }
+  await new Promise(r => setTimeout(r, 400));          // some browsers drop a second download sent at once
+  const k = downloadKey();
+  setStatus(`Downloaded ${what}: ${name}. Braille key, ${k.pages} page${k.pages > 1 ? 's' : ''}: ${k.name}`);
+}
+function asciiBytes(text) {
+  const bytes = new Uint8Array(text.length);
+  for (let i = 0; i < text.length; i++) bytes[i] = text.charCodeAt(i) & 0x7f;
+  return bytes;
+}
+// The key: the Current map facts in uncontracted braille, as its own braille file. Each fact
+// starts in cell 1 and runs over to cell 3, like a list. A new page starts when one fills.
+function keyText(r, s) {
+  const cols = s.cols, out = [];
+  const head = toUEB1(`${s.title || 'Map'} key`).slice(0, cols);
+  out.push(' '.repeat(Math.floor((cols - head.length) / 2)) + head, '');
+  for (const fact of r.keyLines) {
+    let line = '', ind = '';
+    for (let w of toUEB1(fact).split(' ')) {
+      if (!w) continue;
+      for (;;) {
+        const cand = line ? line + ' ' + w : ind + w;
+        if (cand.length <= cols) { line = cand; break; }
+        if (line) { out.push(line); line = ''; ind = '  '; continue; }
+        out.push(cand.slice(0, cols)); w = cand.slice(cols); ind = '  ';   // a word longer than a line
+        if (!w) break;
+      }
+    }
+    if (line) out.push(line);
+  }
+  const pages = [];
+  for (let i = 0; i < out.length; i += s.lines) pages.push(out.slice(i, i + s.lines).join('\r\n') + '\r\n\f');
+  return { text: pages.join(''), pages: pages.length };
+}
+function downloadKey() {
+  const { s } = built, name = slug(s.title) + '-key.brf', k = keyText(result, s);
+  download(name, new Blob([asciiBytes(k.text)], { type: 'application/octet-stream' }));
+  return { name, pages: k.pages };
+}
+async function downloadPic(kind) {
+  if (!result || stale) { if (!(await build())) return; }
+  const { s, geom } = built, name = slug(s.title);
+  if (kind === 'svg') download(name + '.svg', new Blob([toSVG(result, s, geom.pg)], { type: 'image/svg+xml' }));
+  else {
+    const c = document.createElement('canvas');
+    drawPage(c, result, s, geom.pg, 300 / MM_PER_INCH, { paper: '#fff', dot: '#000', peak: '#000', title: '#000' });
+    c.toBlob(b => download(name + '.png', b), 'image/png');
+  }
+}
+
+// Show the settings for the chosen file type, and name the Download button after it.
+function applyFileType() {
+  const s = readSettings();
+  $('sigGroup').hidden = !s.sig;
+  $('brfGroup').hidden = s.fileType !== 'brf';
+  $('stlGroup').hidden = !s.stl;
+  $('styleGroup').hidden = !s.stl;
+  $('setupLabel').textContent = s.stl ? '3D printer setup' : 'Embosser and page setup';
+  $('typeGroup').hidden = s.stl;
+  $('paperGroup').hidden = s.stl;
+  $('picGroup').hidden = s.stl;
+  $('downloadBtn').textContent = (s.stl ? 'Download 3D model' : s.sig ? 'Download QuickTac graphic' : 'Download braille file') +
+    ($('includeKey').checked ? ' and key' : '');
+}
+// Keep the image covering the same paper when the resolution changes.
+let lastPitch = 0.08;
+function rescaleImage() {
+  const p = parseFloat($('sigRes').value), ratio = lastPitch / p;
+  $('sigW').value = 2 * Math.floor(num($('sigW').value, 20, 600, 120) * ratio / 2);
+  $('sigH').value = 3 * Math.floor(num($('sigH').value, 21, 600, 135) * ratio / 3);
+  lastPitch = p;
+}
+// Everything is remembered in this browser: the place, size, turn, title and every choice.
+const STORE_KEY = 'tactileTopo.v2', OLD_STORE_KEY = 'tactileTopo.v1';
+const SAVE_IDS = ['areaSize', 'lineCount', 'levels', 'smooth', 'units', 'useTitle', 'titleText',
+  'autoTurn', 'includeKey', 'optIndex', 'optTop', 'optClean', 'optApart', 'paper', 'cols', 'lines', 'dotSp', 'cellW', 'lineH',
+  'sigRes', 'sigW', 'sigH', 'modelW', 'hill', 'baseMm', 'modelLines', 'modelTop', 'modelNorth'];
+const SAVE_RADIOS = ['make', 'mapType', 'modelStyle'];
+// Short names used in a shared link. Embosser and printer setup stay with each computer.
+const LINK_KEYS = { lat: 'lat', lon: 'lon', size: 'areaSize', rot: 'rot', title: 'titleText', make: 'make',
+  type: 'mapType', lines: 'lineCount', levels: 'levels', style: 'modelStyle',
+  out: 'output', file: 'fileType' };                       // out and file: links from before "What will you make?"
+const LINK_OLD = ['out', 'file'];
+let startView = null;
+function gatherSettings() {
+  const o = {};
+  for (const id of SAVE_IDS) { const el = $(id); o[id] = el.type === 'checkbox' ? el.checked : el.value; }
+  for (const n of SAVE_RADIOS) o[n] = document.querySelector(`input[name=${n}]:checked`).value;
+  o.rot = rotation;
+  const c = map.getCenter(); o.lat = +c.lat.toFixed(5); o.lon = +c.lng.toFixed(5);
+  return o;
+}
+function applySettings(o) {
+  for (const id of SAVE_IDS) {
+    const el = $(id), v = o[id];
+    if (v == null) continue;
+    if (el.type === 'checkbox') el.checked = v === true || v === 'true';
+    else if (el.tagName !== 'SELECT' || [...el.options].some(op => op.value === String(v))) el.value = v;
+  }
+  if (o.make == null && (o.output || o.fileType))        // saved before "What will you make?"
+    o.make = o.output === 'print' || o.fileType === 'stl' ? 'stl' : o.fileType || 'brf';
+  for (const n of SAVE_RADIOS) {
+    const r = o[n] != null && document.querySelector(`input[name=${n}][value="${o[n]}"]`);
+    if (r) r.checked = true;
+  }
+  const a = parseFloat(o.rot);
+  if (Number.isFinite(a)) rotation = Math.max(-90, Math.min(90, Math.round(a / 5) * 5));
+  const lat = parseFloat(o.lat), lon = parseFloat(o.lon);
+  if (Math.abs(lat) <= 85 && Math.abs(lon) <= 180) startView = [lat, lon];
+}
+function saveSettings() {
+  if (!map) return;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(gatherSettings())); }
+  catch (e) { /* storage blocked: choices just aren't remembered */ }
+}
+// A shared link wins over what this browser remembered. It is then taken off the address,
+// so a refresh keeps any changes made after opening it.
+function loadSettings() {
+  try {
+    const o = JSON.parse(localStorage.getItem(STORE_KEY) || localStorage.getItem(OLD_STORE_KEY) || 'null');
+    if (o) applySettings(o);
+  } catch (e) { /* ignore */ }
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.has('lat')) {
+    const o = {};
+    for (const [k, id] of Object.entries(LINK_KEYS)) if (h.has(k)) o[id] = h.get(k);
+    applySettings(o);
+    history.replaceState(null, '', location.href.split('#')[0]);
+  }
+}
+function mapLink() {
+  const o = gatherSettings(), h = new URLSearchParams();
+  for (const [k, id] of Object.entries(LINK_KEYS)) if (!LINK_OLD.includes(k)) h.set(k, o[id] ?? o[k]);
+  return location.href.split('#')[0] + '#' + h.toString();
+}
+async function copyLink() {
+  const url = mapLink();
+  $('linkText').value = url; $('linkField').hidden = false;
+  try {
+    await navigator.clipboard.writeText(url);
+    setStatus('Link copied. Paste it into an email, or bookmark it.');
+  } catch (e) {
+    $('linkText').focus(); $('linkText').select();
+    setStatus('Copy the link from the Link to this map box.');
+  }
+}
+function resetAll() {
+  if (!confirm('Reset all choices and go back to Enchanted Rock?')) return;
+  try { localStorage.removeItem(STORE_KEY); localStorage.removeItem(OLD_STORE_KEY); } catch (e) { /* ignore */ }
+  map = null;                                           // nothing saves on the way out
+  location.reload();
+}
+function disclosure(btnId, bodyId, onOpen) {
+  $(btnId).addEventListener('click', () => {
+    const open = $(btnId).getAttribute('aria-expanded') === 'true';
+    $(btnId).setAttribute('aria-expanded', String(!open)); $(bodyId).hidden = open;
+    if (!open && onOpen) onOpen();
+  });
+}
+
+/* ---------- Wire up ---------- */
+loadSettings();
+syncDetail();
+lastPitch = parseFloat($('sigRes').value);
+applyFileType();
+initMap();
+setRotation(rotation);
+disclosure('moreBtn', 'moreBody');
+disclosure('setupBtn', 'setupBody');
+disclosure('areaBtn', 'areaBody', () => quietly(() => { map.invalidateSize(); fitToFrame(); }));
+$('searchForm').addEventListener('submit', e => { e.preventDefault(); doSearch($('q').value); });
+$('downloadBtn').addEventListener('click', downloadMap);
+$('dlPng').addEventListener('click', () => downloadPic('png'));
+$('dlSvg').addEventListener('click', () => downloadPic('svg'));
+$('areaSize').addEventListener('change', () => {
+  quietly(() => { updateFrame(); fitToFrame(); }); saveSettings(); makeMap(`Map size ${sizeText($('areaSize').value)}.`);
+});
+$('includeKey').addEventListener('change', () => { applyFileType(); saveSettings(); });
+document.querySelectorAll('input[name=detail]').forEach(r => r.addEventListener('change', () => {
+  const d = DETAIL[r.value]; $('lineCount').value = d.lines; $('levels').value = d.levels; syncDetail(); settingsChanged();
+}));
+['lineCount', 'levels'].forEach(id => $(id).addEventListener('change', syncDetail));
+$('linkBtn').addEventListener('click', copyLink);
+$('resetBtn').addEventListener('click', resetAll);
+$('paper').addEventListener('change', () => {
+  const p = PAPERS[$('paper').value]; $('cols').value = p.cols; $('lines').value = p.lines; settingsChanged();
+});
+// Switching emboss/print or the file type remakes the preview right away, loading
+// elevation for the new grid if needed.
+document.querySelectorAll('input[name=make]').forEach(el =>
+  el.addEventListener('change', () => { applyFileType(); updateFrame(); saveSettings(); build(); }));
+$('sigRes').addEventListener('change', () => { rescaleImage(); settingsChanged(); });
+$('turnEast').addEventListener('click', () => turnBy(15));
+$('turnWest').addEventListener('click', () => turnBy(-15));
+$('northUp').addEventListener('click', () => {
+  if (rotation || $('autoTurn').checked) manualTurn(0, 'North is at the top.'); else setStatus('North is already at the top.');
+});
+$('autoTurn').addEventListener('change', () => {
+  saveSettings();
+  if ($('autoTurn').checked) findBestAngle();
+  else if (rotation) setRotation(0, 'Find best angle is off. North is at the top.');
+  else setStatus('Find best angle is off.');
+});
+document.querySelectorAll('#make input[name=mapType], #make input[name=modelStyle], #lineCount, #levels, #moreBody input, #moreBody select, #brfGroup input, #sigW, #sigH, #stlGroup input, #stlGroup select')
+  .forEach(el => el.addEventListener('change', settingsChanged));
+build();
+</script>
+</body>
+</html>
